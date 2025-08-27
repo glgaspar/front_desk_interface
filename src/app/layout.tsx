@@ -22,9 +22,9 @@ export const metadata: Metadata = {
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
 
 	Api().get("/validate")
-	.then((response:any) => {
+	.then(response => {
 		console.log("user is valid:", response.data);
-	}).catch((error: any) => {
+	}).catch(error => {
 		if (error.status === 401 || error.status === 403) {
 			window.location.href = "/login";
 			return;
