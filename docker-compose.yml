@@ -1,0 +1,9 @@
+services:
+  front_desk_interface:
+    build: .
+    container_name: front_desk_interface
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
