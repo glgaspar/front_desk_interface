@@ -37,13 +37,13 @@ export default function Home() {
           <hr className="" />
           <div className='flex flex-wrap gap-4 justify-center items-center mt-5'>
             {apps?.map((item) => (
-              <a href={item.Link} target="_blank" rel="noopener noreferrer">
-                <Card key={item.ID}>
-                  <img src={item.Image} alt={item.Names} className="m-auto h-20 w-20 rounded-lg"/>
+                <Card>
+                  <a key={item.ID} href={item.Link} target="_blank" rel="noopener noreferrer">
+                      <img src={item.Image} alt={item.Names} className="m-auto h-20 w-20 rounded-lg"/>
+                  </a>
                   <span className='text-center'>{item.Names}</span>
                   <span className='text-center text-sm'>{item.Status}</span>
                 </Card>
-              </a>
             ))}
           </div>
         </div>
@@ -52,12 +52,12 @@ export default function Home() {
           <hr className="" />
           <div className='grid grid-cols-3 gap-5 mt-5'>
             {featrues?.map((item) => (
-              <a href={item.Path} target="_blank" rel="noopener noreferrer">
-                <Card key={item.Name}>
-                  <img src={item.Img} alt={item.Name} className="m-auto h-20 w-20 rounded-lg"/>
+              <Card>
+                  <a key={item.Name} href={item.Path} target="_blank" rel="noopener noreferrer">
+                    <img src={item.Img} alt={item.Name} className="m-auto h-20 w-20 rounded-lg"/>
+                </a>
                   <span className='text-center'>{item.Name}</span>
                 </Card>
-              </a>
             ))}
           </div>
         </div>
