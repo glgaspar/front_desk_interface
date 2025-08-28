@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import React, { useLayoutEffect } from "react";
-import Api from "@/Components/Api";
+import React from "react";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -20,26 +19,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
-	useLayoutEffect(()=> {
-		Api().get("/validate")
-			.then(response => {
-				console.log("user is valid:", response.data);
-			}).catch(error => {
-				if (error.status === 401 || error.status === 403) {
-					window.location.href = "/login";
-					return;
-				}
-				if (error.status === 404) {
-					window.location.href = "/register";
-					return;
-				}
-				console.error("API Error:", error);
-				alert("An error occurred while validating the user.");
-				window.location.href = "/login";
-			});
-	},[])
-	
-
 	return (
 		<html lang="en">
 			<body
