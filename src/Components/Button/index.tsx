@@ -3,8 +3,9 @@ import React from "react";
 interface Button {
 	id: string;
 	type: "submit" | "reset" | "button" | undefined,
-	text: string;
+	children: React.ReactNode;
 	className?: string;
+	onClick: () => void
 }
 
 export default function Button(props:Button) {
@@ -14,7 +15,7 @@ export default function Button(props:Button) {
 			className={props.className ? props.className : "cursor-pointer bg-[#b3078b]"}
 			type={props.type}
 		>
-			{props.text}
+			{props.children}
 		</button>
 	);
 }

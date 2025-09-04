@@ -1,5 +1,5 @@
 import React from 'react'
-import { Activity, Cpu, HardDrive, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 export default function Loader() {
   return (
