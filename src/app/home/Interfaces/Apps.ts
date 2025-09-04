@@ -6,7 +6,7 @@ export default interface Apps {
   Name: string
   RestartCount: number
   Config: Config
-  link: any
+  link: string
 }
 
 export interface State {
