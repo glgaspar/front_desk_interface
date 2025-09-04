@@ -1,6 +1,6 @@
 import React from "react";
 
-interface Button {
+interface Button extends React.ComponentProps<"button">{
 	id: string;
 	type: "submit" | "reset" | "button" | undefined,
 	children: React.ReactNode;
@@ -10,12 +10,6 @@ interface Button {
 
 export default function Button(props:Button) {
 	return (
-		<button
-			id={props.id}
-			className={props.className ? props.className : "cursor-pointer bg-[#b3078b]"}
-			type={props.type}
-		>
-			{props.children}
-		</button>
+		<button {...{...props, className:props.className ? props.className : "cursor-pointer bg-[#b3078b]"}} />
 	);
 }

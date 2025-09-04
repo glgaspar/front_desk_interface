@@ -31,13 +31,13 @@ export default function Home() {
     <div className='m-auto w-[95vw]'>
       <div className="m-2 grid grid-cols-[1fr_3fr_1fr] gap-5">
         <div className="">
-          <p className="text-center m-5">Hardware</p>
-          <hr className="" />
+          <p className="text-center m-2">Hardware</p>
+          <hr className="mb-3" />
           <Hardware />
         </div>
         <div className="">
-          <p className='text-center m-5'>Apps</p>
-          <hr className="" />
+          <p className='text-center m-2'>Apps</p>
+          <hr className="mb-3" />
           <div className='flex flex-wrap gap-4 justify-center items-center mt-5'>
             {apps?.map((item) => (
                 <Card key={item.Id}>
@@ -51,8 +51,8 @@ export default function Home() {
           </div>
         </div>
         <div className="">
-          <p className='text-center m-5'>Features</p>
-          <hr className="" />
+          <p className='text-center m-2'>Features</p>
+          <hr className="mb-3" />
           <div className='grid grid-cols-3 gap-5 mt-5'>
             {featrues?.map((item) => (
               <Card key={item.Name}>
