@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import Apps from './Interfaces/Apps';
 import Featrues from './Interfaces/Features';
+import Hardware from './Components/Hardware ';
+import dockerSVG from '@/Components/Static/docker-svgrepo-com.svg';
 
 export default function Home() {
   const [apps, setApps] = useState<Array<Apps>>([])
@@ -31,18 +33,19 @@ export default function Home() {
         <div className="">
           <p className="text-center m-5">Hardware</p>
           <hr className="" />
+          <Hardware />
         </div>
         <div className="">
           <p className='text-center m-5'>Apps</p>
           <hr className="" />
           <div className='flex flex-wrap gap-4 justify-center items-center mt-5'>
             {apps?.map((item) => (
-                <Card key={item.ID}>
-                  <a href={item.Link} target="_blank" rel="noopener noreferrer">
-                      <img src={item.Image} alt={item.Names} className="m-auto h-20 w-20 rounded-lg"/>
+                <Card key={item.Id}>
+                  <a href={item.link} target="_blank" rel="noopener noreferrer">
+                      <img src={dockerSVG} alt={item.Name} className="m-auto h-20 w-20 rounded-lg"/>
                   </a>
-                  <span className='text-center'>{item.Names}</span>
-                  <span className='text-center text-sm'>{item.Status}</span>
+                  <span className='text-center'>{item.Name}</span>
+                  <span className='text-center text-sm'>{item.State.Status}</span>
                 </Card>
             ))}
           </div>
