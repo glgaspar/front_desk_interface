@@ -1,4 +1,4 @@
-export default interface Apps {
+export default interface App {
   Id: string
   Created: string
   State: State
@@ -6,7 +6,6 @@ export default interface Apps {
   Name: string
   RestartCount: number
   Config: Config
-  link: string
 }
 
 export interface State {
