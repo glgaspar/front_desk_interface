@@ -2,21 +2,23 @@
 
 import { useState, useEffect } from "react";
 import Card from '@/Components/Card';
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Activity, Cpu, HardDrive, RefreshCw } from "lucide-react";
+import ProgressBar from "@/Components/ProgressBar";
+// import { Badge } from "@/components/ui/badge";
+import Button from "@/Components/Button";
+import { Cpu, HardDrive, MemoryStick } from "lucide-react";
 import Api from "@/Components/Api";
+import Loader from "@/Components/Loader";
 
-export default function SystemMonitor() {
+export default function Hardware() {
 	const [data, setData] = useState<SystemData | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [procs, setProcs] = useState<"procMem"|"procCPU">("procCPU")
 	const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 	const [isPolling, setIsPolling] = useState(true);
 
-	const loadData = async () => {
+	function loadData(){
 		Api()
-			.get("/apps")
+			.get("/system/usage")
 			.then((response) => {
 				setData(response.data.data);
 				setLastUpdate(new Date());
@@ -27,13 +29,11 @@ export default function SystemMonitor() {
 						"Unknow error fetching apps. Better luck next time..."
 				);
 			})
-			.finally(() => {
-				setLoading(false);
-			});
 	};
 
 	useEffect(() => {
 		loadData()
+		setLoading(false);
 	}, []);
 
 	useEffect(() => {
@@ -58,15 +58,15 @@ export default function SystemMonitor() {
 		return "bg-chart-4";
 	};
 
-	if (!data) {
+	if (loading	|| !data) {
 		return (
-			
+			<Loader />
 		);
 	}
 
 	return (
 		<div className="space-y-4">
-			<div className="flex items-center justify-between">
+			{/* <div className="flex items-center justify-between">
 				<Badge
 					variant={data ? "default" : "destructive"}
 					className="text-xs"
@@ -74,19 +74,15 @@ export default function SystemMonitor() {
 					{data ? "Online" : "Offline"}
 				</Badge>
 				<Button
-					variant="ghost"
-					size="sm"
 					onClick={() => setIsPolling(!isPolling)}
-					className="h-6 w-6 p-0"
-				>
+					className="h-6 w-6 p-0" id="activity" type="button"				>
 					<Activity
 						className={`h-3 w-3 ${
 							isPolling ? "animate-pulse" : ""
 						}`}
 					/>
 				</Button>
-			</div>
-
+			</div> */}
 			<Card>
 				<div className="flex items-center gap-2 mb-2">
 					<Cpu className="h-4 w-4 text-muted-foreground" />
@@ -102,13 +98,13 @@ export default function SystemMonitor() {
 							{data.cpuPercent.toFixed(1)}%
 						</span>
 					</div>
-					<Progress value={data.cpuPercent} className="h-1.5" />
+					<ProgressBar color={getProgressColor(data.cpuPercent)} percentage={data.cpuPercent} />
 				</div>
 			</Card>
 
 			<Card>
 				<div className="flex items-center gap-2 mb-2">
-					<HardDrive className="h-4 w-4 text-muted-foreground" />
+					<MemoryStick className="h-4 w-4 text-muted-foreground" />
 					<span className="text-sm font-medium">Memory</span>
 				</div>
 				<div className="space-y-2">
@@ -121,18 +117,18 @@ export default function SystemMonitor() {
 							{data.memoryPercent.toFixed(1)}%
 						</span>
 					</div>
-					<Progress
-						value={data.memoryPercent}
-						className="h-1.5"
-					/>
+					<ProgressBar color={getProgressColor(data.memoryPercent)} percentage={data.memoryPercent} />
 				</div>
 			</Card>
 
 			<Card>
 				<div className="text-sm font-medium mb-2">Top Processes</div>
 				<div className="space-y-2">
-                    {/* TODO: CREATE SELECTOR TO TOGGLE BETWEEN CPU AND RAM */}
-					{data["procCPU"].slice(0, 3).map((process) => (
+					<div className="grid grid-cols-2">
+						<Button type="button" className={`${procs === "procCPU" ? 'border-b' : ''} text-center cursor-pointer py-0.5 mx-3`} onClick={()=>setProcs("procCPU")} id="toggleCPU" > <Cpu className="mx-auto h-4 w-4 text-muted-foreground" /></Button>
+						<Button type="button" className={`${procs === "procMem" ? 'border-b' : ''} text-center cursor-pointer py-0.5 mx-3`} onClick={()=>setProcs("procMem")} id="toggleMem"> <MemoryStick className="mx-auto h-4 w-4 text-muted-foreground" /></Button>
+					</div>
+					{data[procs].slice(0, 3).map((process) => (
 						<div
 							key={`proc-${process.pid}`}
 							className="flex items-center justify-between text-xs"
