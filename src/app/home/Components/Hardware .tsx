@@ -47,15 +47,9 @@ export default function Hardware() {
 	}, [isPolling]);
 
 	const getUsageColor = (percentage: number) => {
-		if (percentage < 30) return "text-chart-1";
-		if (percentage < 70) return "text-chart-5";
-		return "text-chart-4";
-	};
-
-	const getProgressColor = (percentage: number) => {
-		if (percentage < 30) return "bg-chart-1";
-		if (percentage < 70) return "bg-chart-5";
-		return "bg-chart-4";
+		if (percentage < 30) return "#48b53c";
+		if (percentage < 70) return "#b5a13c";
+		return "#b53c3c";
 	};
 
 	if (loading	|| !data) {
@@ -63,7 +57,6 @@ export default function Hardware() {
 			<Loader />
 		);
 	}
-
 	return (
 		<div className="space-y-4">
 			{/* <div className="flex items-center justify-between">
@@ -90,15 +83,11 @@ export default function Hardware() {
 				</div>
 				<div className="space-y-2">
 					<div className="flex items-center justify-between">
-						<span
-							className={`text-lg font-bold ${getUsageColor(
-								data.cpuPercent
-							)}`}
-						>
-							{data.cpuPercent.toFixed(1)}%
+						<span className={`text-lg font-bold bg-[${getUsageColor(data.cpuPercent)}]`}>
+							{data.cpuPercent.toFixed(3)}%
 						</span>
 					</div>
-					<ProgressBar color={getProgressColor(data.cpuPercent)} percentage={data.cpuPercent} />
+					<ProgressBar color={getUsageColor(data.cpuPercent)} percentage={data.cpuPercent} />
 				</div>
 			</Card>
 
@@ -109,15 +98,11 @@ export default function Hardware() {
 				</div>
 				<div className="space-y-2">
 					<div className="flex items-center justify-between">
-						<span
-							className={`text-lg font-bold ${getUsageColor(
-								data.memoryPercent
-							)}`}
-						>
-							{data.memoryPercent.toFixed(1)}%
+						<span className={`text-lg font-bold bg-[${getUsageColor(data.memoryPercent)}]`}>
+							{data.memoryPercent.toFixed(3)}%
 						</span>
 					</div>
-					<ProgressBar color={getProgressColor(data.memoryPercent)} percentage={data.memoryPercent} />
+					<ProgressBar color={getUsageColor(data.memoryPercent)} percentage={data.memoryPercent} />
 				</div>
 			</Card>
 
@@ -128,22 +113,39 @@ export default function Hardware() {
 						<Button type="button" className={`${procs === "procCPU" ? 'border-b' : ''} text-center cursor-pointer py-0.5 mx-3`} onClick={()=>setProcs("procCPU")} id="toggleCPU" > <Cpu className="mx-auto h-4 w-4 text-muted-foreground" /></Button>
 						<Button type="button" className={`${procs === "procMem" ? 'border-b' : ''} text-center cursor-pointer py-0.5 mx-3`} onClick={()=>setProcs("procMem")} id="toggleMem"> <MemoryStick className="mx-auto h-4 w-4 text-muted-foreground" /></Button>
 					</div>
-					{data[procs].slice(0, 3).map((process) => (
-						<div
-							key={`proc-${process.pid}`}
-							className="flex items-center justify-between text-xs"
-						>
+					<div className="py-1 flex items-center justify-between text-xs text-center">
+						<div className="truncate flex-1 mr-2">
+							<div className="font-medium">
+								Process
+							</div>
+						</div> 
+						<div className="truncate flex-1 mr-2">
+							<div className="font-medium">
+								PID
+							</div>
+						</div> 
+						<div className="truncate flex-1 mr-2">
+							<div className="font-medium">
+								Usage
+							</div>
+						</div> 
+					</div>
+					{procs && data[procs].slice(0, 3).map((process) => (
+						<div key={`proc-${process.pid}`} className="flex items-center justify-between text-xs px-1.5" >
 							<div className="truncate flex-1 mr-2">
 								<div className="font-medium">
 									{process.name}
 								</div>
-							</div>
+							</div> 
+							<div className="truncate flex-1 mr-2">
+								<div className="font-medium">
+									{process.pid}
+								</div>
+							</div> 
 							<div
-								className={`font-bold ${getUsageColor(
-									process.cpuPercent || 0
-								)}`}
+								className={`font-bold bg-[${procs == "procCPU" ? getUsageColor(process.cpuPercent || 0) : getUsageColor(process.memPercent || 0)}]`}
 							>
-								{(process.cpuPercent || 0).toFixed(1)}%
+								{(procs == "procCPU" ? (process.cpuPercent ?? 0) : (process.memPercent ?? 0)).toFixed(3)}%
 							</div>
 						</div>
 					))}
