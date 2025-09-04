@@ -58,7 +58,7 @@ export default function Hardware() {
 		);
 	}
 	return (
-		<div className="space-y-4">
+		<div className="grid grid-cols-2 md:grid-cols-1">
 			{/* <div className="flex items-center justify-between">
 				<Badge
 					variant={data ? "default" : "destructive"}
@@ -106,7 +106,7 @@ export default function Hardware() {
 				</div>
 			</Card>
 
-			<Card>
+			<Card className="hidden md:block">
 				<div className="text-sm font-medium mb-2">Top Processes</div>
 				<div className="space-y-2">
 					<div className="grid grid-cols-2">

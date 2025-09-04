@@ -19,7 +19,7 @@ export default function Home() {
             <Card className='w-[25rem] h-[9rem]'><></></Card>
           </div> */}
 			</div>
-			<div className="m-2 grid grid-cols-[1fr_5fr] gap-5">
+			<div className="m-2 grid sm:grid-cols-1 md:grid-cols-[1fr_5fr] gap-5">
 				<div className="">
 					<Hardware />
 				</div>
