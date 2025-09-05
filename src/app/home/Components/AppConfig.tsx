@@ -4,9 +4,10 @@ import Modal from '@/Components/Modal/Modal'
 import Popup from 'reactjs-popup'
 import Button from '@/Components/Button'
 import App from '../Interfaces/Apps'
+import { PopupActions } from 'reactjs-popup/dist/types'
 
 export default function AppConfig({app}:{app:App}) {
-    const ref = useRef<any>(null)
+    const ref = useRef<PopupActions>(null);
 
     return (
         <Popup  
