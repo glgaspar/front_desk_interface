@@ -17,7 +17,7 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
             toggle = "stop"
         }
         Api()
-            .get(`/apps/toggleOnOff/${item.Id}/${toggle}`)
+            .put(`/apps/toggleOnOff/${item.Id}/${toggle}`)
             .then((response) => {
                 replace(response?.data?.data)
             })
