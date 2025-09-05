@@ -1,5 +1,5 @@
 import React from "react";
-import Hardware from "./Components/Hardware ";
+import Hardware from "./Components/Hardware";
 import Apps from "./Components/Apps";
 
 export default function Home() {

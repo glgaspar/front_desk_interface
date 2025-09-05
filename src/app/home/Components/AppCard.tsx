@@ -3,8 +3,8 @@ import App from '../Interfaces/Apps'
 import dockerSVG from '@/Components/Static/docker-svgrepo-com.svg';
 import Image from 'next/image';
 import Card from '@/Components/Card';
-import Button from '@/Components/Button';
 import Api from '@/Components/Api';
+import AppConfig from './AppConfig';
 
 export default function AppCard({item, replace}:{item:App, replace:(app:App)=>void}) {
     let running: boolean = false
@@ -13,7 +13,7 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
     } 
     function turnOnOff() {
         Api()
-            .get(`/apps/toggleOnOff/${item.Id}/${String(running)}`)
+            .get(`/apps/toggleOnOff/${item.Id}/${String(!running)}`)
             .then((response) => {
                 replace(response?.data?.data)
             })
@@ -38,11 +38,9 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
             </a>
             <div className='px-5 grid grid-cols-2 gap-3'>
                 <div className='w-[2rem] h-[2rem]'>
-                    <Button className='bg-none text-[1.5rem] text-center w-[2rem] h-[2rem]' id="config" type="button" onClick={turnOnOff}>
-                        &#9881;
-                    </Button>
+                    <AppConfig  app={item} />
                 </div>
-                <div className={`w-[2rem] h-[2rem] relative grid place-items-center rounded-[50%] border-solid border-[#ddd] before:content-[""] before:w-6/12 before:h-3/6 before:absolute before:rounded-[50%] before:border-[10px] before:border-solid before:border-[#eee] hover:cursor-pointer ${running ? 'before:border-[green]' : ''}`} />
+                <div onClick={turnOnOff} className={`w-[2rem] h-[2rem] relative grid place-items-center rounded-[50%] border-solid border-[#ddd] before:content-[""] before:w-6/12 before:h-3/6 before:absolute before:rounded-[50%] before:border-[10px] before:border-solid before:border-[#eee] hover:cursor-pointer ${running ? 'before:border-[green]' : ''}`} />
             </div>
         </Card>
     )
