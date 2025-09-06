@@ -8,7 +8,7 @@ import AppConfig from './AppConfig';
 
 export default function AppCard({item, replace}:{item:App, replace:(app:App)=>void}) {
     let running: boolean = false
-    if (item.State.Status == "running") {
+    if (item.state.status == "running") {
         running = true
     } 
     function turnOnOff() {
@@ -17,7 +17,7 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
             toggle = "stop"
         }
         Api()
-            .put(`/apps/toggleOnOff/${item.Id}/${toggle}`)
+            .put(`/apps/toggleOnOff/${item.id}/${toggle}`)
             .then((response) => {
                 replace(response?.data?.data)
             })
@@ -30,15 +30,15 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
     }
 
     return (
-        <Card className='w-[9rem] h-[9rem]' key={item.Id}>
+        <Card className='w-[9rem] h-[9rem]' key={item.id}>
             <a href="" target="_blank" rel="noopener noreferrer">
                 <div className='h-[2rem] w-full text-center'>
-                    <p>{item.Config.Labels['com.docker.compose.project']}</p>
+                    <p>{item.name}</p>
                 </div>
                 <div >
-                    <Image src={dockerSVG} alt={item.Name} className="m-auto h-10 rounded-lg"/>
+                    <Image src={item.logo||dockerSVG} alt={item.name} className="m-auto h-10 rounded-lg"/>
                 </div>
-                <p className='mt-2 text-center text-xs'>{item.State.Status.toUpperCase()}</p>
+                <p className='mt-2 text-center text-xs'>{item.state.status.toUpperCase()}</p>
             </a>
             <div className='px-5 grid grid-cols-2 gap-3'>
                 <div className='w-[2rem] h-[2rem]'>

@@ -1,28 +1,18 @@
 export default interface App {
-  Id: string
-  Created: string
-  State: State
-  Image: string
-  Name: string
-  RestartCount: number
-  Config: Config
-}
+  id: string
+  created: string
+  state: State
+  image: string
+  name: string
+  url: string
+  dir: string
+  logo?: string
 
+}
 export interface State {
-  Status: string
-  ExitCode: number
-  Error: string
-  StartedAt: string
-  FinishedAt: string
-}
-
-export interface Config {
-  Labels: Labels
-}
-
-export interface Labels {
-  "com.docker.compose.project": string
-  "com.docker.compose.project.config_files": string
-  "com.docker.compose.project.working_dir": string
-  "com.docker.compose.replace": string
+  status: string
+  exitCode: number
+  error: string
+  startedAt: string
+  finishedAt: string
 }

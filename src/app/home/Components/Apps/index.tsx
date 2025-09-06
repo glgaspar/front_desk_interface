@@ -25,7 +25,7 @@ export default function Apps() {
     function replaceApp(app:App){
         setApps(prev =>
             prev.map(prevApp =>
-            prevApp.Id === app.Id ? app : prevApp
+            prevApp.id === app.id ? app : prevApp
             )
         );
     }
@@ -33,7 +33,7 @@ export default function Apps() {
 	return (
 		<div className="flex flex-wrap gap-4 justify-center items-center mt-5">
 			{apps?.map((item) => (
-				<AppCard key={item.Id} item={item} replace={replaceApp} />
+				<AppCard key={item.id} item={item} replace={replaceApp} />
 			))}
 		</div>
 	);

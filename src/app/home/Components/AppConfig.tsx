@@ -1,13 +1,63 @@
 "use client"
-import React, { useRef } from 'react'
+import React, { FormEvent, useRef, useState } from 'react'
 import Modal from '@/Components/Modal/Modal'
 import Popup from 'reactjs-popup'
 import Button from '@/Components/Button'
 import App from '../Interfaces/Apps'
 import { PopupActions } from 'reactjs-popup/dist/types'
+import Api from '@/Components/Api'
+import toast from 'react-hot-toast'
 
 export default function AppConfig({app}:{app:App}) {
+    const [loading, setLoading] = useState<boolean>(false)
+    const [compose, setCompose] = useState<string|unknown>(null)
     const ref = useRef<PopupActions>(null);
+
+    function editCompose() {
+        setLoading(true)
+        Api().get(`/apps/compose/${app.id}`)
+        .then(response => {
+            setCompose(response?.data?.data?.compose)
+        })
+        .catch((error) => {
+                toast.error(
+                    error?.response?.data?.message ||
+                        "Unknow error. Better luck next time..."
+                );
+                console.log(error)
+            })
+        .finally(()=>{
+            setLoading(false)
+        })
+    }
+
+    function cancelBttn(): void {
+        setCompose(null);
+        ref?.current?.close();
+    }
+
+    function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+        event.preventDefault()
+        const data = {
+            compose: compose
+        }
+
+        const saving = toast.loading("Saving file...") 
+        Api().post(`/apps/compose/${app.id}`, data)
+        .then(response => {
+            toast.success("Compose saved and running!")
+        })
+        .catch((error) => {
+                toast.error(
+                    error?.response?.data?.message ||
+                        "Unknow error. Better luck next time..."
+                );
+                console.log(error)
+            })
+        .finally(()=>{
+            toast.dismiss(saving)
+        })
+    }
 
     return (
         <Popup  
@@ -19,26 +69,40 @@ export default function AppConfig({app}:{app:App}) {
                 &#9881;
             </div>
         }>
-            <Modal title={app?.Name} close={()=>ref?.current?.close()}>
-                <div className='px-2'>
-                    <div className='grid grid-cols-3'>
-                        <p> Created: <span>{app?.Created}</span></p>
-                        <p> Image: <span>{app?.Image}</span></p>
-                        <p> Name: <span>{app?.Name}</span></p>
-                        <p> RestartCount: <span>{app?.RestartCount}</span></p>
+            <Modal title={app?.name} close={()=>ref?.current?.close()} className='border border-[#b3078b] bg-black w-[15rem]'>
+                <form onSubmit={handleSubmit}>
+                    <div className='px-2'>
+                        <div className='grid'>
+                            <p> URL: <span>{app?.url}</span></p>
+                            <p> Dir: <span>{app?.dir}</span></p>
+                        </div>
+                        <hr className='mx-10 my-2 border-[#b3078b]'/>
+                        <div className='grid'>
+                            <p>Status: <span>{app?.state?.status}</span></p>
+                            <p>Exit Code: <span>{app?.state?.exitCode}</span></p>
+                            <p>Error: <span>{app?.state?.error}</span></p>
+                            <p>Started At: <span>{app?.state?.startedAt}</span></p>
+                            <p>Finished At: <span>{app?.state?.finishedAt}</span></p>
+                        </div>
+                        <div className='grid'>
+                            {
+                                typeof compose != 'string'
+                                    ? <Button id='composeEdit' onClick={editCompose} type="button" disabled={loading}>Edit Compose</Button>
+                                    : <>
+                                        <textarea className='my-2 min-h-[20rem] border border-[#b3078b]' value={compose} onChange={setCompose} />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <Button className='cursor-pointer border border-[#b3078b] text-center' type='button' onClick={cancelBttn} id='cancelBttn' >
+                                                Cancel
+                                            </Button>
+                                            <button id="submitBttn" className="cursor-pointer bg-[#b3078b]" type="submit">
+                                                Submit
+                                            </button>
+                                        </div>      
+                                    </> 
+                            }
+                        </div>
                     </div>
-                    <div className='grid grid-cols-3'>
-                        <p>Status: <span>{app?.State?.Status}</span></p>
-                        <p>Exit Code: <span>{app?.State?.ExitCode}</span></p>
-                        <p>Error: <span>{app?.State?.Error}</span></p>
-                        <p>Started At: <span>{app?.State?.StartedAt}</span></p>
-                        <p>Finished At: <span>{app?.State?.FinishedAt}</span></p>
-                    </div>
-                        <p>Project: <span>{app?.Config?.Labels["com.docker.compose.project"]}</span></p>
-                        <p>Config Files: <span>{app?.Config?.Labels["com.docker.compose.project.config_files"]}</span></p>
-                        <p>Working Dir: <span>{app?.Config?.Labels["com.docker.compose.project.working_dir"]}</span></p>
-                        <p>Replace: <span>{app?.Config?.Labels["com.docker.compose.replace"]}</span></p>
-                </div>
+                </form>
             </Modal>
 
         </Popup>
