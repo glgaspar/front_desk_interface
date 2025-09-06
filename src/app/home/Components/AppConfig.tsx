@@ -17,7 +17,7 @@ export default function AppConfig({app}:{app:App}) {
         setLoading(true)
         Api().get(`/apps/compose/${app.id}`)
         .then(response => {
-            setCompose(response?.data?.data?.compose)
+            setCompose(response?.data?.data)
         })
         .catch((error) => {
                 toast.error(
