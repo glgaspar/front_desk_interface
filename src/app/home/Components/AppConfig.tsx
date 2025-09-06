@@ -69,7 +69,7 @@ export default function AppConfig({app}:{app:App}) {
                 &#9881;
             </div>
         }>
-            <Modal title={app?.name} close={()=>ref?.current?.close()} className='border border-[#b3078b] bg-black w-[15rem]'>
+            <Modal title={app?.name} close={()=>ref?.current?.close()} className='border border-[#b3078b] bg-black w-[25rem]'>
                 <form onSubmit={handleSubmit}>
                     <div className='px-2'>
                         <div className='grid'>
@@ -89,7 +89,7 @@ export default function AppConfig({app}:{app:App}) {
                                 typeof compose != 'string'
                                     ? <Button id='composeEdit' onClick={editCompose} type="button" disabled={loading}>Edit Compose</Button>
                                     : <>
-                                        <textarea className='my-2 min-h-[20rem] border border-[#b3078b]' value={compose} onChange={setCompose} />
+                                        <textarea className='text-sm my-2 min-h-[20rem] border border-[#b3078b]' value={compose} onChange={(e)=>setCompose(e)} />
                                         <div className="grid grid-cols-2 gap-4">
                                             <Button className='cursor-pointer border border-[#b3078b] text-center' type='button' onClick={cancelBttn} id='cancelBttn' >
                                                 Cancel
