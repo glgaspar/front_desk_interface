@@ -7,3 +7,8 @@ services:
     environment:
       - NODE_ENV=production
     restart: unless-stopped
+    labels:
+      front-desk.name: FrontDesk Interface
+      front-desk.url: pessimaideia.com
+      front-desk.dir: /front_desk_interface
+      front-desk.logo: https://example.com/logo.png
