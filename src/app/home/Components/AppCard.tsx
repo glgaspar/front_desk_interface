@@ -31,7 +31,7 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
 
     return (
         <Card className='w-[9rem] h-[9rem]' key={item.id}>
-            <a href="" target="_blank" rel="noopener noreferrer">
+            <a href={item.url} target="_blank" rel="noopener noreferrer">
                 <div className='h-[2rem] w-full text-center'>
                     <p>{item.name}</p>
                 </div>
