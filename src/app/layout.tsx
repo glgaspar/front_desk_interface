@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import React from "react";
 import { Toaster } from 'react-hot-toast';
+import Navbar from "@/Components/Navbar";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -26,9 +27,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<header>
-					<div className="header flex justify-center items-center p-4 border-b border-[#b3078b]"> 
-						<h2>Péssima Ideia</h2>
-					</div>
+					<Navbar />
 				</header>
 				{children}
 				<Toaster position="top-right" reverseOrder={false} />
