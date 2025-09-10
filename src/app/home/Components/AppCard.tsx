@@ -36,7 +36,7 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
                     <p>{item.name}</p>
                 </div>
                 <div >
-                    <Image src={item.logo||dockerSVG} alt={item.name} className="m-auto h-10 rounded-lg"/>
+                    <Image src={item.logo||dockerSVG} alt={item.name} className="m-auto h-10 rounded-lg" unoptimized />
                 </div>
                 <p className='mt-2 text-center text-xs'>{item.state.status.toUpperCase()}</p>
             </a>
