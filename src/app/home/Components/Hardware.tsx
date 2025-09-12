@@ -130,7 +130,7 @@ export default function Hardware() {
 							</div>
 						</div> 
 					</div>
-					{procs && data[procs].slice(0, 3).map((process) => (
+					{procs && data[procs].map((process) => (
 						<div key={`proc-${process.pid}`} className="flex items-center justify-between text-xs px-1.5" >
 							<div className="truncate flex-1 mr-2">
 								<div className="font-medium">
