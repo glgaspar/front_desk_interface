@@ -108,7 +108,7 @@ export default function Hardware() {
 
 			<Card className="hidden md:block">
 				<div className="text-sm font-medium mb-2">Top Processes</div>
-				<div className="space-y-2">
+				<div className="space-y-2 text-center">
 					<div className="grid grid-cols-2">
 						<Button type="button" className={`${procs === "procCPU" ? 'border-b' : ''} text-center cursor-pointer py-0.5 mx-3`} onClick={()=>setProcs("procCPU")} id="toggleCPU" > <Cpu className="mx-auto h-4 w-4 text-muted-foreground" /></Button>
 						<Button type="button" className={`${procs === "procMem" ? 'border-b' : ''} text-center cursor-pointer py-0.5 mx-3`} onClick={()=>setProcs("procMem")} id="toggleMem"> <MemoryStick className="mx-auto h-4 w-4 text-muted-foreground" /></Button>
