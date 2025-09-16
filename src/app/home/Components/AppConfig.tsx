@@ -7,6 +7,7 @@ import App from '../Interfaces/Apps'
 import { PopupActions } from 'reactjs-popup/dist/types'
 import Api from '@/Components/Api'
 import toast from 'react-hot-toast'
+import { maskDateTime } from '@/Utils/maskDatetime'
 
 export default function AppConfig({app}:{app:App}) {
     const [loading, setLoading] = useState<boolean>(false)
@@ -81,8 +82,8 @@ export default function AppConfig({app}:{app:App}) {
                             <p>Status: <span>{app?.state?.status}</span></p>
                             <p>Exit Code: <span>{app?.state?.exitCode}</span></p>
                             <p>Error: <span>{app?.state?.error}</span></p>
-                            <p>Started At: <span>{app?.state?.startedAt}</span></p>
-                            <p>Finished At: <span>{app?.state?.finishedAt}</span></p>
+                            <p>Started At: <span>{maskDateTime(app?.state?.startedAt)}</span></p>
+                            <p>Finished At: <span>{maskDateTime(app?.state?.finishedAt)}</span></p>
                         </div>
                         <div className='grid'>
                             {
