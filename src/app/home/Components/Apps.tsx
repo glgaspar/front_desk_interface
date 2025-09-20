@@ -23,19 +23,30 @@ export default function Apps() {
 			});
 	}, []);
 
-    function replaceApp(app:App){
-        setApps(prev =>
-            prev.map(prevApp =>
-            prevApp.id === app.id ? app : prevApp
-            )
-        );
-    }
+
+	function handleAppUpdate(oldAppID:string, updatedApp: App|null) {
+		if(updatedApp){
+			if (oldAppID===""){
+				setApps(prev => [updatedApp, ...prev]);
+				return
+			}
+			setApps(prev => 
+				prev.map(app => (app.id === oldAppID ? updatedApp : app))
+			);
+			return
+		}
+		setApps(prev => 
+				prev.filter(app => app.id !== oldAppID)
+			);
+			return
+		
+	};
 
 	return (
 		<div className="flex flex-wrap gap-4 justify-center items-center mt-5">
-			<AppCreator />
+			<AppCreator onAppUpdate={handleAppUpdate} />
 			{apps?.map((item) => (
-				<AppCard key={item.id} item={item} replace={replaceApp} />
+				<AppCard key={item.id} item={item} onAppUpdate={handleAppUpdate} />
 			))}
 		</div>
 	);

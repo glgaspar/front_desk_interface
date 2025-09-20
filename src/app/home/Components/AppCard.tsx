@@ -6,7 +6,7 @@ import Card from '@/Components/Card';
 import Api from '@/Components/Api';
 import AppConfig from './AppConfig';
 
-export default function AppCard({item, replace}:{item:App, replace:(app:App)=>void}) {
+export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     let running: boolean = false
     if (item.state.status == "running") {
         running = true
@@ -19,7 +19,7 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
         Api()
             .put(`/apps/toggleOnOff/${item.id}/${toggle}`)
             .then((response) => {
-                replace(response?.data?.data)
+                onAppUpdate(item.id, response?.data?.data)
             })
             .catch((error) => {
                 console.error(
@@ -42,7 +42,7 @@ export default function AppCard({item, replace}:{item:App, replace:(app:App)=>vo
             </a>
             <div className='px-5 grid grid-cols-2 gap-3'>
                 <div className='w-[2rem] h-[2rem]'>
-                    <AppConfig  app={item} />
+                    <AppConfig  app={item} onAppUpdate={onAppUpdate} />
                 </div>
                 <div onClick={turnOnOff} className={`w-[2rem] h-[2rem] relative grid place-items-center rounded-[50%] border-solid border-[#ddd] before:content-[""] before:w-6/12 before:h-3/6 before:absolute before:rounded-[50%] before:border-[10px] before:border-solid before:border-[#eee] hover:cursor-pointer ${running ? 'before:border-[green]' : ''}`} />
             </div>

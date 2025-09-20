@@ -9,8 +9,9 @@ import Popup from 'reactjs-popup';
 import dockerSVG from '@/Components/Static/docker-svgrepo-com.svg';
 import Image from 'next/image';
 import { PopupActions } from 'reactjs-popup/dist/types';
+import App from '../Interfaces/Apps';
 
-export default function AppCreator() {
+export default function AppCreator({onAppUpdate}:{onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     const [loading, setLoading] = useState<boolean>(false)
     const [compose, setCompose] = useState<string|unknown>(null)
     const ref = useRef<PopupActions>(null);
@@ -31,6 +32,8 @@ export default function AppCreator() {
         Api().post(`/apps/create`, data)
         .then(response => {
             toast.success("Compose saved and running!")
+            const newApp:App = response?.data?.data
+            onAppUpdate("", newApp);
         })
         .catch((error) => {
                 toast.error(
