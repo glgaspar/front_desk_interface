@@ -13,20 +13,22 @@ import App from '../Interfaces/Apps';
 
 export default function AppCreator({onAppUpdate}:{onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     const [loading, setLoading] = useState<boolean>(false)
-    const [compose, setCompose] = useState<string|unknown>(null)
     const ref = useRef<PopupActions>(null);
 
     function cancelBttn(): void {
-        setCompose(null);
         ref?.current?.close();
     }
 
     function handleSubmit(event: FormEvent<HTMLFormElement>): void {
         event.preventDefault()
         setLoading(true)
+        const form = event.target as HTMLFormElement & {
+            compose: { value: string };
+        };
+
         const data = {
-            compose: compose
-        }
+            compose: form.compose.value
+        };
 
         const saving = toast.loading("Creating container...") 
         Api().post(`/apps/create`, data)
