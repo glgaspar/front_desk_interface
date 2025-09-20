@@ -32,12 +32,12 @@ export default function Register() {
     }
     return ( 
         <div id="signupForm" className="m-auto grid gap-4 mt-[4rem]">
-            <form className="grid gap-4 bg-[#1c1c1c] p-4 rounded-lg w-[30rem] m-auto" onSubmit={handleSubmit}>
+            <form className="grid gap-4 bg-[#1c1c1c] p-4 rounded-lg max-w-[30rem] md:w-[30rem] m-auto" onSubmit={handleSubmit}>
                 <h4 className="text-center font-[600] text-lg mt-2">Create User</h4>
                 <div className="form grid gap-4">
                     <div className="col-span-1 grid">
                         <span className="text-center">Name</span>
-                        <input id="userName" name="userName" placeholder="userName" className="text-center w-[2/4] bg-black" required />
+                        <input id="userName" name="userName" placeholder="user name" className="text-center w-[2/4] bg-black" required />
                     </div>
                     <div className="col-span-1 grid">
                         <span className="text-center">Password</span>
@@ -48,7 +48,7 @@ export default function Register() {
                             Login
                         </Link>
                         <button id="registerBttn" className="cursor-pointer bg-[#b3078b]" type="submit">
-                            Login
+                            Create
                         </button>
                     </div>
                 </div>
