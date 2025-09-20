@@ -1,9 +1,10 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import App from "../../Interfaces/Apps";
-import AppCard from "../../Components/AppCard";
+import App from "../Interfaces/Apps";
+import AppCard from "./AppCard";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
+import AppCreator from "./AppCreator";
 
 export default function Apps() {
 	const [apps, setApps] = useState<Array<App>>([])
@@ -32,6 +33,7 @@ export default function Apps() {
 
 	return (
 		<div className="flex flex-wrap gap-4 justify-center items-center mt-5">
+			<AppCreator />
 			{apps?.map((item) => (
 				<AppCard key={item.id} item={item} replace={replaceApp} />
 			))}
