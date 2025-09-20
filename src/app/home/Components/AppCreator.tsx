@@ -1,0 +1,84 @@
+import Api from '@/Components/Api';
+import Button from '@/Components/Button';
+import Card from '@/Components/Card';
+import Modal from '@/Components/Modal/Modal';
+import app from 'next/app';
+import React, { FormEvent, useRef, useState } from 'react'
+import toast from 'react-hot-toast';
+import Popup from 'reactjs-popup';
+import dockerSVG from '@/Components/Static/docker-svgrepo-com.svg';
+import Image from 'next/image';
+import { PopupActions } from 'reactjs-popup/dist/types';
+
+export default function AppCreator() {
+    const [loading, setLoading] = useState<boolean>(false)
+    const [compose, setCompose] = useState<string|unknown>(null)
+    const ref = useRef<PopupActions>(null);
+
+    function cancelBttn(): void {
+        setCompose(null);
+        ref?.current?.close();
+    }
+
+    function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+        event.preventDefault()
+        setLoading(true)
+        const data = {
+            compose: compose
+        }
+
+        const saving = toast.loading("Creating container...") 
+        Api().post(`/apps/create`, data)
+        .then(response => {
+            toast.success("Compose saved and running!")
+        })
+        .catch((error) => {
+                toast.error(
+                    error?.response?.data?.message ||
+                        "Unknow error. Better luck next time..."
+                );
+                console.log(error)
+            })
+        .finally(()=>{
+            toast.dismiss(saving)
+            ref?.current?.close();
+            setLoading(false)
+        })
+    }
+
+  return (
+    <Card className='w-[9rem] h-[9rem]'>
+            <Popup  
+                    ref={ref}
+                    modal
+                    nested
+                    trigger={
+                        <div className='cursor-pointer h-full' id="add">
+                            <div className='h-[2rem] w-full text-center'>
+                                <p>Add App</p>
+                            </div>
+                            <div >
+                                <Image src={dockerSVG} alt="Add app" className="m-auto h-10 rounded-lg" unoptimized />
+                            </div>
+                        </div>
+                    }>
+                        <Modal title="New App" close={()=>ref?.current?.close()} className='border border-[#b3078b] bg-black w-[25rem]'>
+                            <form onSubmit={handleSubmit}>
+                                <div className='px-2'>
+                                    <textarea className='text-sm my-2 min-h-[20rem] border border-[#b3078b]' id='compose' placeholder='Paste your compose file here...' />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <Button className='cursor-pointer border border-[#b3078b] text-center' type='button' onClick={cancelBttn} id='cancelBttn' >
+                                                Cancel
+                                            </Button>
+                                            <button id="submitBttn" className="cursor-pointer bg-[#b3078b]" type="submit" disabled={loading}>
+                                                Submit
+                                            </button>
+                                        </div>      
+                                </div>
+                            </form>
+                        </Modal>
+            
+                    </Popup>
+        </Card>
+  )
+}
