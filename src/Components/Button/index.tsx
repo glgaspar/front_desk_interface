@@ -5,7 +5,7 @@ interface Button extends React.ComponentProps<"button">{
 	type: "submit" | "reset" | "button" | undefined,
 	children: React.ReactNode;
 	className?: string;
-	onClick: () => void
+	onClick?: () => void
 }
 
 export default function Button(props:Button) {
