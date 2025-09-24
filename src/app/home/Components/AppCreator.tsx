@@ -20,7 +20,7 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (oldAppID: strin
     useEffect(()=>{
         Api().get('/config/cloudflare')
             .then(response => {
-                setCloudflare(true);
+                setCloudflare(response?.data?.data);
             })
             .catch(error => {
                 console.error('There was an error!', error);
