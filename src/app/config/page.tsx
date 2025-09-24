@@ -1,3 +1,4 @@
+"use client"
 import Button from '@/Components/Button'
 import React from 'react'
 import User from '../login/Interfaces/User';
@@ -35,11 +36,11 @@ export default function Config() {
 
 
     return (
-        <div className='p-5 grid gap-5'>
+        <div className='p-5 grid gap-5 md:w-[55vw] mx-auto'>
             <h1 className='text-center'>Config</h1>
-            <div className='grid gap-5'>
+            <div className='grid gap-10'>
                 <div>
-                    <h4>Create New User</h4>
+                    <h4 className='text-center m-5'>Create New User</h4>
                     <form className='grid gap-2' onSubmit={e => createUser(e)}>
                         <input id='userName' type="text" placeholder='Username' className='p-2 rounded bg-black border border-white text-white'/>
                         <input id='password' type="password" placeholder='Password' className='p-2 rounded bg-black border border-white text-white'/>
@@ -47,7 +48,7 @@ export default function Config() {
                     </form>
                 </div>
                 <div>
-                    <h4>Widgets</h4>
+                    <h4 className='text-center m-5'>Widgets</h4>
                     <p>to be implemented</p>
                 </div>
             </div>
