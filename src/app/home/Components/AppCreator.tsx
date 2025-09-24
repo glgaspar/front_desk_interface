@@ -1,9 +1,10 @@
+"use client"
 import Api from "@/Components/Api";
 import Button from "@/Components/Button";
 import Card from "@/Components/Card";
 import Modal from "@/Components/Modal/Modal";
 import app from "next/app";
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
@@ -11,13 +12,21 @@ import Image from "next/image";
 import { PopupActions } from "reactjs-popup/dist/types";
 import App from "../Interfaces/Apps";
 
-export default function AppCreator({
-	onAppUpdate,
-}: {
-	onAppUpdate: (oldAppID: string, updatedApp: App | null) => void;
-}) {
+export default function AppCreator({onAppUpdate}: {onAppUpdate: (oldAppID: string, updatedApp: App | null) => void;}) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const ref = useRef<PopupActions>(null);
+	const [cloudflare, setCloudflare] = useState<boolean>(false)
+
+    useEffect(()=>{
+        Api().get('/config/cloudflare')
+            .then(response => {
+                setCloudflare(true);
+            })
+            .catch(error => {
+                console.error('There was an error!', error);
+                toast.error('Could not retrieve cloudflare configuration. Please try again.')
+            })
+    },[])
 
 	function cancelBttn(): void {
 		ref?.current?.close();
@@ -91,7 +100,7 @@ export default function AppCreator({
 								id="compose"
 								placeholder="Paste your compose file here..."
 							/>
-							<div className="p-2">
+							{cloudflare && <div className="p-2">
 								<div className="flex items-center">
 									<input
 										id="tunnel"
@@ -102,7 +111,7 @@ export default function AppCreator({
 										Create Clouflare subdomain
 									</label>
 								</div>
-							</div>
+							</div>}
 							<div className="grid grid-cols-2 gap-4 mt-5">
 								<Button
 									className="cursor-pointer border border-[#b3078b] text-center"
