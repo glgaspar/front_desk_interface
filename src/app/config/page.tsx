@@ -82,8 +82,8 @@ export default function Config() {
                 <div>
                     <h4 className='text-center mb-5'>Create New User</h4>
                     <form className='grid gap-2' onSubmit={createUser}>
-                        <input id='userName' type="text" placeholder='Username' className='p-2 rounded bg-black border border-white text-white'/>
-                        <input id='password' type="password" placeholder='Password' className='p-2 rounded bg-black border border-white text-white'/>
+                        <input id='userName' type="text" placeholder='Username' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='password' type="password" placeholder='Password' className='p-2 rounded bg-black border border-white text-white' required/>
                         <Button type='submit' id='createUser' className='p-2 rounded cursor-pointer bg-[#b3078b]'>Create User</Button>
                     </form>
                 </div>
@@ -96,11 +96,11 @@ export default function Config() {
                 <div>
                     <h4 className='text-center mb-5'>Cloudflare Integration {cloudflare ? <span className='text-green-500 text-sm'>(Configured)</span> : <span className='text-red-500 text-sm'>(Not Configured)</span>}</h4>
                     <form className='grid gap-2' onSubmit={setupCloudFlare}>
-                        <input id='accountId' type="text" placeholder='Account ID' className='p-2 rounded bg-black border border-white text-white'/>
-                        <input id='tunnelId' type="text" placeholder='Tunnel ID' className='p-2 rounded bg-black border border-white text-white'/>
-                        <input id='cloudflareAPIToken' type="text" placeholder='Cloudflare API Token' className='p-2 rounded bg-black border border-white text-white'/>
-                        <input id='localAddress' type="text" placeholder='Local address (192.168.0.10)' className='p-2 rounded bg-black border border-white text-white'/>
-                        <input id='zoneId' type="text" placeholder='Zone Id' className='p-2 rounded bg-black border border-white text-white'/>
+                        <input id='accountId' type="text" placeholder='Account ID' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='tunnelId' type="text" placeholder='Tunnel ID' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='cloudflareAPIToken' type="text" placeholder='Cloudflare API Token' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='localAddress' type="text" placeholder='Local address (192.168.0.10)' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='zoneId' type="text" placeholder='Zone Id' className='p-2 rounded bg-black border border-white text-white' required/>
                         <Button type='submit' id='setupCloudflare' className='p-2 rounded cursor-pointer bg-[#b3078b]'>Submit</Button>
                     </form>
                 </div>
