@@ -54,7 +54,8 @@ export default function Config() {
             accountId: (form.targe.accountId as HTMLInputElement).value,
             tunnelId: (form.targe.tunnelId as HTMLInputElement).value,
             cloudflareAPIToken: (form.targe.cloudflareAPIToken as HTMLInputElement).value,
-            hostname: (form.targe.hostname as HTMLInputElement).value
+            localAddress: (form.targe.localAddress as HTMLInputElement).value,
+            zoneId: (form.targe.zoneId as HTMLInputElement).value,
         }; 
         const loading = toast.loading('Setting up cloudflare...');
         Api().post('/config/cloudflare', data)
@@ -98,7 +99,8 @@ export default function Config() {
                         <input id='accountId' type="text" placeholder='Account ID' className='p-2 rounded bg-black border border-white text-white'/>
                         <input id='tunnelId' type="text" placeholder='Tunnel ID' className='p-2 rounded bg-black border border-white text-white'/>
                         <input id='cloudflareAPIToken' type="text" placeholder='Cloudflare API Token' className='p-2 rounded bg-black border border-white text-white'/>
-                        <input id='hostname' type="text" placeholder='Hostname' className='p-2 rounded bg-black border border-white text-white'/>
+                        <input id='localAddress' type="text" placeholder='Local address (192.168.0.10)' className='p-2 rounded bg-black border border-white text-white'/>
+                        <input id='zoneId' type="text" placeholder='Zone Id' className='p-2 rounded bg-black border border-white text-white'/>
                         <Button type='submit' id='setupCloudflare' className='p-2 rounded cursor-pointer bg-[#b3078b]'>Submit</Button>
                     </form>
                 </div>
