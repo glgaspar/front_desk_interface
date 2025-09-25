@@ -26,8 +26,8 @@ export default function Config() {
         const form = e.target as HTMLFormElement;
         const data:User = {
             id: 0,
-            userName: (form.targe.userName as HTMLInputElement).value,
-            password: (form.targe.password as HTMLInputElement).value
+            userName: (form.userName as HTMLInputElement).value,
+            password: (form.password as HTMLInputElement).value
         }; 
         const loading = toast.loading('Registering user...');
         Api().post('/register', data)
@@ -51,11 +51,11 @@ export default function Config() {
 
         const form = e.target as HTMLFormElement;
         const data = {
-            accountId: (form.targe.accountId as HTMLInputElement).value,
-            tunnelId: (form.targe.tunnelId as HTMLInputElement).value,
-            cloudflareAPIToken: (form.targe.cloudflareAPIToken as HTMLInputElement).value,
-            localAddress: (form.targe.localAddress as HTMLInputElement).value,
-            zoneId: (form.targe.zoneId as HTMLInputElement).value,
+            accountId: (form.accountId as HTMLInputElement).value,
+            tunnelId: (form.tunnelId as HTMLInputElement).value,
+            cloudflareAPIToken: (form.cloudflareAPIToken as HTMLInputElement).value,
+            localAddress: (form.localAddress as HTMLInputElement).value,
+            zoneId: (form.zoneId as HTMLInputElement).value,
         }; 
         const loading = toast.loading('Setting up cloudflare...');
         Api().post('/config/cloudflare', data)
