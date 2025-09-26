@@ -8,6 +8,7 @@ import { PopupActions } from 'reactjs-popup/dist/types'
 import Api from '@/Components/Api'
 import toast from 'react-hot-toast'
 import { maskDateTime } from '@/Utils/maskDatetime'
+import LogViewer from './LogViewer'
 
 export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     const [loading, setLoading] = useState<boolean>(false)
@@ -96,7 +97,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
             <Modal title={app?.name} close={()=>ref?.current?.close()} className='border border-[#b3078b] bg-black md:w-[55rem]'>
                 <form onSubmit={handleSubmit}>
                     <div className='px-2'>
-                        <div className='grid grid-cols[3fr_1fr]'>
+                        <div className='grid grid-cols-[3fr_1fr] items-center gap-5'>
                             <div className='grid'>
                                 <p> URL: <span>{app?.url}</span></p>
                                 <p> Dir: <span>{app?.dir}</span></p>
@@ -121,14 +122,16 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                             </div>
                         </div>
                         <hr className='mx-10 my-2 border-[#b3078b]'/>
-                        <div className='grid'>
+                        <div className='grid grid-cols-2 gap-4'>
                             <p>Status: <span>{app?.state?.status}</span></p>
                             <p>Exit Code: <span>{app?.state?.exitCode}</span></p>
                             <p>Error: <span>{app?.state?.error}</span></p>
                             <p>Started At: <span>{maskDateTime(app?.state?.startedAt)}</span></p>
                             <p>Finished At: <span>{maskDateTime(app?.state?.finishedAt)}</span></p>
                         </div>
-                        <div className='grid'>
+                        <div className='grid gap-4'>
+                            <LogViewer appId={app.id} />
+
                             {
                                 typeof compose != 'string'
                                     ? <Button id='composeEdit' onClick={editCompose} type="button" disabled={loading}>Edit Compose</Button>
