@@ -12,7 +12,8 @@ const LogViewer = ({ appId }: { appId: string }) => {
 
 	useEffect(() => {
 		const eventSource = new EventSource(
-			process.env.NEXT_PUBLIC_API_URL + "/logs/" + appId
+			process.env.NEXT_PUBLIC_API_URL + "/logs/" + appId,
+            { withCredentials: true }
 		);
 
 		eventSource.onopen = () => {
@@ -38,7 +39,7 @@ const LogViewer = ({ appId }: { appId: string }) => {
 			eventSource.close();
 			console.log("connection closed");
 		};
-	}, []);
+	}, [appId]);
 
 	return (
 		<Popup
