@@ -1,4 +1,5 @@
 "use client";
+import Button from "@/Components/Button";
 import Modal from "@/Components/Modal/Modal";
 import app from "next/app";
 import { useState, useEffect, useRef } from "react";
@@ -47,12 +48,7 @@ const LogViewer = ({ appId }: { appId: string }) => {
 			modal
 			nested
 			trigger={
-				<div
-					className="bg-none text-[1.5rem] text-center w-[2rem] h-[2rem] cursor-pointer "
-					id="config"
-				>
-					&#9881;
-				</div>
+                <Button id='logs' onClick={() => ref?.current?.open()} type="button">View Logs</Button>
 			}
 		>
 			<Modal
