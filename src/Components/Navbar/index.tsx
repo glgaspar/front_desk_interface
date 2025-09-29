@@ -21,7 +21,7 @@ export default function Navbar() {
                         id="menuLogo"
                         src={menu}
                         alt="menu"
-                        className="border p-1 h-[2rem] invert"
+                        className="border p-1 h-[2rem] invert cursor-pointer"
                         />
                     </button>
                 </div>

@@ -31,22 +31,22 @@ export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, show
             ${sidebar ? "left-0" : "left-[-30rem]"}
         `}>
           <ul className="grid gap-2 p-2 w-full overflow-y-auto text-center">
-            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer">
+            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>
               <Link href="/home" className="grow no-underline text-white h-full items-center rounded px-2 py-3 hover:bg-[#b3078b] focus:bg-[#b3078b]">
                 Home
               </Link>
             </li>
-            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer">
+            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>
               <Link href="/widgets" className="grow no-underline text-white h-full items-center rounded px-2 py-3 hover:bg-[#b3078b] focus:bg-[#b3078b]">
                 Widgets
               </Link>
             </li>
-            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer">
+            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>
               <Link href="/config" className="grow no-underline text-white h-full items-center rounded px-2 py-3 hover:bg-[#b3078b] focus:bg-[#b3078b]">
                 Config
               </Link>
             </li>
-            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer">
+            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>
               <div className="grow no-underline text-white h-full items-center rounded px-2 py-3 hover:bg-[#b3078b] focus:bg-[#b3078b]" onClick={logout}>
                 Logout
               </div>
