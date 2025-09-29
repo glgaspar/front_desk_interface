@@ -52,12 +52,11 @@ const LogViewer = ({ appId }: { appId: string }) => {
 			}
 		>
 			<Modal
-				title={app?.name}
+				title="Logs"
 				close={() => ref?.current?.close()}
 				className="border border-[#b3078b] bg-black md:w-[55rem]"
 			>
 				<div>
-					<h2>Logs</h2>
 					<div>
 						Connection Status:
                         <span
