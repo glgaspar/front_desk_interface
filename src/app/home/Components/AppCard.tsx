@@ -1,6 +1,6 @@
 import React from 'react'
 import App from '../Interfaces/Apps'
-import dockerSVG from '@/Components/Static/docker-svgrepo-com.svg';
+import dockerSVG from '@/Components/Static/docker-svgrepo-com.svg'
 import Image from 'next/image';
 import Card from '@/Components/Card';
 import Api from '@/Components/Api';
@@ -36,7 +36,7 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
                     <p>{item.name}</p>
                 </div>
                 <div >
-                    <Image src={item.logo||dockerSVG} alt={item.name} className="m-auto h-10 rounded-lg" unoptimized />
+                    <Image src={item.logo||dockerSVG} alt={item.name} className="m-auto h-10 w-10 rounded-lg" width={40} height={40} unoptimized />
                 </div>
                 <p className='mt-2 text-center text-xs'>{item.state.status.toUpperCase()}</p>
             </a>

@@ -6,10 +6,9 @@ import { useState, useEffect, useRef } from "react";
 import Popup from "reactjs-popup";
 import { PopupActions } from "reactjs-popup/dist/types";
 
-const LogViewer = ({ appId }: { appId: string }) => {
+const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
 	const [logs, setLogs] = useState<string[]>([]);
 	const [isConnected, setIsConnected] = useState(false);
-	const ref = useRef<PopupActions>(null);
 
 	useEffect(() => {
 		const eventSource = new EventSource(
@@ -43,17 +42,10 @@ const LogViewer = ({ appId }: { appId: string }) => {
 	}, [appId]);
 
 	return (
-		<Popup
-			ref={ref}
-			modal
-			nested
-			trigger={
-                <Button id='logs' onClick={() => ref?.current?.open()} type="button">View Logs</Button>
-			}
-		>
+		
 			<Modal
 				title="Logs"
-				close={() => ref?.current?.close()}
+				close={() => close()}
 				className="border border-[#b3078b] bg-black md:w-[55rem]"
 			>
 				<div>
@@ -72,7 +64,6 @@ const LogViewer = ({ appId }: { appId: string }) => {
                     </pre>
 				</div>
 			</Modal>
-		</Popup>
 	);
 };
 

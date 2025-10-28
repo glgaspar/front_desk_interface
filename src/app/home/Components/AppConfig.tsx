@@ -14,6 +14,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
     const [loading, setLoading] = useState<boolean>(false)
     const [compose, setCompose] = useState<string|unknown>(null)
     const ref = useRef<PopupActions>(null);
+    const refLog = useRef<PopupActions>(null);
 
     function editCompose() {
         setLoading(true)
@@ -130,7 +131,14 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                             <p>Finished At: <span>{maskDateTime(app?.state?.finishedAt)}</span></p>
                         </div>
                         <div className='grid gap-4'>
-                            <LogViewer appId={app.id} />
+                            <Popup
+                                        ref={refLog}
+                                        modal
+                                        nested
+                                        trigger={
+                                            <Button id='logs' onClick={() => refLog?.current?.open()} type="button">View Logs</Button>
+                                        }
+                                    ><LogViewer appId={app.id} close={() => refLog?.current?.close()}/></Popup>
 
                             {
                                 typeof compose != 'string'
