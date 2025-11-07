@@ -41,7 +41,7 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (oldAppID: strin
 
 		const data = {
 			compose: form.compose.value,
-            tunnel: form.tunnel.checked,
+            tunnel: form.tunnel?.checked,
 		};
 
 		const saving = toast.loading("Creating container...");
