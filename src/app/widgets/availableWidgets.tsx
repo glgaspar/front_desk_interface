@@ -1,7 +1,11 @@
-import dynamicImportAll from '@/Utils/dynamicImportAll';
+import dynamic from 'next/dynamic';
 
-const AvailableWidgets = dynamicImportAll('./components');
+const context = (require as any).context('./components', false, /\.tsx$/);
+const AvailableWidgets: Record<string, any> = {};
 
-export default AvailableWidgets
-//  const AvailableWidgets: { [key: string]: React.ReactNode } = exportedWidgets;
+context.keys().forEach((key: string) => {
+  const fileName = key.replace(/^\.\/|\.tsx$/g, '');
+  AvailableWidgets[fileName] = dynamic(() => Promise.resolve(context(key)));
+});
 
+export default AvailableWidgets;
