@@ -25,8 +25,7 @@ export default function Widgets() {
   
   return (
     <div className="w-full p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl text-center font-bold">Widgets Dashboard</h1>
+      <div className="flex justify-end items-center mb-6">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium">Edit Mode</span>
           <label className="relative inline-flex items-center cursor-pointer">
@@ -41,7 +40,7 @@ export default function Widgets() {
         </div>
       </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {selectedWidgets?.map(widgetToRender => AvailableWidgets[widgetToRender as keyof typeof AvailableWidgets])}
+          {selectedWidgets?.map(widgetToRender => React.cloneElement(AvailableWidgets[widgetToRender as keyof typeof AvailableWidgets], { selected: true }))}
         </div>
         {
           showAll &&
