@@ -4,16 +4,24 @@ import AvailableWidgets  from "./availableWidgets";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
 
-export default function Widgets() {
-  const [selectedWidgets, setSelectedWidgets] = useState<string[]|undefined>(undefined);
-  const [showAll, setShowAll] = useState(false);
+interface ServerWidget {
+  id: number
+  name: string
+  enabled: boolean
+  position: number
+  selected: boolean
+}
 
+export default function Widgets() {
+  const [availableWidgets, setAvailabledWidgets] = useState<ServerWidget[]|undefined>(undefined);
+  const [showAll, setShowAll] = useState(false);
+  
   useEffect(() => {
     Api()
-      .get("/widgets/selected")
+      .get("/widgets")
       .then((response) => {
         if (Array.isArray(response?.data?.data)) {
-          setSelectedWidgets(response.data.data);
+          setAvailabledWidgets(response.data.data);
         }
       })
       .catch((error) => {
@@ -22,7 +30,6 @@ export default function Widgets() {
       })
   }, []);
 
-  
   return (
     <div className="w-full p-4">
       <div className="flex justify-end items-center mb-6">
@@ -40,17 +47,21 @@ export default function Widgets() {
         </div>
       </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {selectedWidgets?.map(widgetToRender => React.cloneElement(AvailableWidgets[widgetToRender as keyof typeof AvailableWidgets], { selected: true }))}
+          {availableWidgets?.map(widgetToRender => {
+            const widget = AvailableWidgets[widgetToRender.name];
+            console.log(widgetToRender, widget, React.isValidElement(widget));
+            return widget && React.isValidElement(widget) ? React.cloneElement(widget) : null;
+          })}
         </div>
         {
           showAll &&
           <>
             <hr className="p-5 border-[#b3078b]" />
-            <h4 className="text-[500]">Not Selected Widgets</h4>
+            <h4 className="text-[500]">Not enabled Widgets</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {Object.entries(AvailableWidgets)
-                .filter(([key]) => !selectedWidgets?.includes(key))
-                .map(([_, widget]) => React.cloneElement(widget, { selected: false }))}
+                .filter(([key]) => !availableWidgets?.some(w => w.name === key))
+                .map(([_, widget]) => React.cloneElement(widget))}
             </div>
           </>
         }
