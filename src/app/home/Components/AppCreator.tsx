@@ -12,7 +12,7 @@ import Image from "next/image";
 import { PopupActions } from "reactjs-popup/dist/types";
 import App from "../Interfaces/Apps";
 
-export default function AppCreator({onAppUpdate}: {onAppUpdate: (oldAppID: string, updatedApp: App | null) => void;}) {
+export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: string) => void;}) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const ref = useRef<PopupActions>(null);
 	const [cloudflare, setCloudflare] = useState<boolean>(false)
@@ -49,8 +49,8 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (oldAppID: strin
 			.post(`/apps/create`, data)
 			.then((response) => {
 				toast.success("Compose saved and running!");
-				const newApp: App = response?.data?.data;
-				onAppUpdate("", newApp);
+				const newApp = response?.data?.data;
+				onAppUpdate(newApp.topic);
 			})
 			.catch((error) => {
 				toast.error(

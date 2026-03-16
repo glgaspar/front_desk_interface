@@ -1,10 +1,6 @@
 "use client";
-import Button from "@/Components/Button";
 import Modal from "@/Components/Modal/Modal";
-import app from "next/app";
 import { useState, useEffect, useRef } from "react";
-import Popup from "reactjs-popup";
-import { PopupActions } from "reactjs-popup/dist/types";
 
 const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
 	const [logs, setLogs] = useState<string[]>([]);
@@ -61,7 +57,13 @@ const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
                         {logs.map((log, index) => (
                             <div key={index}>{log}</div>
                         ))}
-                    </pre>
+                    </pre>					
+					<div ref={(el) => {
+						if (el) {
+							el.scrollIntoView({ behavior: "smooth" });
+						}
+					}} />
+
 				</div>
 			</Modal>
 	);
