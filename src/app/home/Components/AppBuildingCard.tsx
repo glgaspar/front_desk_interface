@@ -1,7 +1,7 @@
 import Modal from "@/Components/Modal/Modal";
 import { useEffect } from "react";
 
-export default function AppBuildingCard({topic,messages,}: {topic: string;messages: string[];updateTopic: (topic: string) => void;close:()=>void}) {
+export default function AppBuildingCard({topic,messages,}: {topic: string;messages: string[];updateTopic: (topic: string[]) => void;close:()=>void}) {
 		// this is a place holder for the kafka consumer. 
         // no idea if i should stream it from the api or consume directly, 
         // but why not go to the source right????

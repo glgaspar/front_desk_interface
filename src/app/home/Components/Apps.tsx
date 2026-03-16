@@ -75,7 +75,7 @@ export default function Apps() {
 				<AppCard key={item.id} item={item} onAppUpdate={handleAppUpdate} />
 			))}
 			{waitingBuilds?.map((item) => (
-				<AppBuildingCard topic={item.topic} messages={item.messages} updateTopic={handleUpdateTopic} close={handleCloseTopic}/>
+				<AppBuildingCard key={item.topic} topic={item.topic} messages={item.messages} updateTopic={(messages) => handleUpdateTopic(item.topic, messages)} close={() => handleCloseTopic(item.topic)}/>
 			))}
 		</div>
 	);
