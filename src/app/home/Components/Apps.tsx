@@ -9,7 +9,7 @@ import AppBuildingCard from "./AppBuildingCard";
 
 export default function Apps() {
 	const [apps, setApps] = useState<Array<App>>([])
-	const [waitingBuilds, setWaitingBuilds] = useState<Array<WaitingBuild>>([])
+	const [waitingBuilds, setWaitingBuilds] = useState<Array<string>>([])
 	const [update, setUpdate] = useState(0)
 
 	useEffect(() => {
@@ -26,6 +26,20 @@ export default function Apps() {
 			});
 	}, [update]);
 
+
+	useEffect(() => {
+		Api()
+			.get("/apps/waitingBuilds")
+			.then((response) => {
+				setWaitingBuilds(response.data.data);
+			})
+			.catch((error) => {
+				toast.error(
+					error?.response?.data?.message ||
+						"Unknow error fetching builds. Better luck next time..."
+				);
+			});
+	},[])
 
 	function handleAppUpdate(oldAppID:string, updatedApp: App|null) {
 		if(updatedApp){
@@ -48,23 +62,12 @@ export default function Apps() {
 	function handleNewApp(newBuildTopic: string) {
 		setWaitingBuilds((prev) => [
 			...prev,
-			{ topic: newBuildTopic, messages: ["Initializing build..."] },
+			newBuildTopic,
 		]);
 	}
 
-	function handleUpdateTopic(topic: string, messages: string[]) {
-		setWaitingBuilds((prev) =>
-			prev.map((build) =>
-				build.topic === topic
-					? { ...build, messages: [...build.messages, ...messages] }
-					: build
-			)
-		);
-	}
-
-
-	function handleCloseTopic(topic: string) {
-		setWaitingBuilds((prev) => prev.filter((b) => b.topic !== topic));
+	function handleEndBuild(topic: string) {
+		setWaitingBuilds((prev) => prev.filter((b) => b !== topic));
 		setUpdate(prev => prev + 1)
 	}
 
@@ -75,7 +78,7 @@ export default function Apps() {
 				<AppCard key={item.id} item={item} onAppUpdate={handleAppUpdate} />
 			))}
 			{waitingBuilds?.map((item) => (
-				<AppBuildingCard key={item.topic} topic={item.topic} messages={item.messages} updateTopic={(messages) => handleUpdateTopic(item.topic, messages)} close={() => handleCloseTopic(item.topic)}/>
+				<AppBuildingCard key={item} appName={item} end={() => handleEndBuild(item)}/>
 			))}
 		</div>
 	);

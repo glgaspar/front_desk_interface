@@ -72,22 +72,20 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 				ref={ref}
 				modal
 				nested
-				trigger={
-					<div className="cursor-pointer h-full" id="add">
-						<div className="h-[2rem] w-full text-center">
-							<p>Add App</p>
-						</div>
-						<div>
-							<Image
-								src={dockerSVG}
-								alt="Add app"
-								className="m-auto h-10 rounded-lg"
-								unoptimized
-							/>
-						</div>
-					</div>
-				}
-			>
+				trigger={<div className="cursor-pointer h-full" id="add">
+							<div className="h-[2rem] w-full text-center">
+								<p>Add App</p>
+							</div>
+							<div>
+								<Image
+									src={dockerSVG}
+									alt="Add app"
+									className="m-auto h-10 rounded-lg"
+									unoptimized
+								/>
+							</div>
+						</div>}
+				>
 				<Modal
 					title="New App"
 					close={() => ref?.current?.close()}

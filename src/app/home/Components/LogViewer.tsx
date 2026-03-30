@@ -1,4 +1,5 @@
 "use client";
+import { EventConsumer } from "@/Components/Api";
 import Modal from "@/Components/Modal/Modal";
 import { useState, useEffect, useRef } from "react";
 
@@ -7,10 +8,7 @@ const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
 	const [isConnected, setIsConnected] = useState(false);
 
 	useEffect(() => {
-		const eventSource = new EventSource(
-			process.env.NEXT_PUBLIC_API_URL + "/apps/logs/" + appId,
-            { withCredentials: true }
-		);
+		const eventSource = EventConsumer("/apps/logs/" + appId)
 
 		eventSource.onopen = () => {
 			setIsConnected(true);
@@ -57,12 +55,12 @@ const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
                         {logs.map((log, index) => (
                             <div key={index}>{log}</div>
                         ))}
+						<div ref={(el) => {
+							if (el) {
+								el.scrollIntoView({ behavior: "smooth" });
+							}
+						}} />
                     </pre>					
-					<div ref={(el) => {
-						if (el) {
-							el.scrollIntoView({ behavior: "smooth" });
-						}
-					}} />
 
 				</div>
 			</Modal>
