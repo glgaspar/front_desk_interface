@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default function Api() {
-	var credentials = true;
+	let credentials = true;
 	if (process.env.NEXT_PUBLIC_ENV == "DEV") {
 		credentials = false;
 	}
@@ -16,7 +16,7 @@ export default function Api() {
 }
 
 export function EventConsumer(endPoint: string) {
-	var credentials = true;
+	let credentials = true;
 	if (process.env.NEXT_PUBLIC_ENV == "DEV") {
 		credentials = false;
 	}
