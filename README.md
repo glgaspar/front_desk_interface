@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Front Desk Interface
+
+Front Desk Interface is the web frontend for the **Front Desk** system—a powerful, self-hosted homelab and cloud environment management dashboard. Built with Next.js, it connects seamlessly to the Front Desk Go backend to provide an intuitive UI for Docker container orchestration, real-time log streaming, and service integration management.
+
+## Features
+
+* **App & Container Management**: Visual interface to create, start, stop, and remove Docker containers. Dynamically edit configurations (e.g., `docker-compose.yml`) directly from the browser.
+* **Real-Time Streaming**: Watch live Docker build and execution logs rendered in the browser via Server-Sent Events (SSE) backed by Kafka.
+* **System Dashboard**: View host system CPU, memory, and top process usage. Customize your experience with toggleable widgets.
+* **Service Integrations**:
+  * **Cloudflare**: Manage Zero Trust tunnels and DNS routing.
+  * **Pi-hole**: View DNS query history and configurations.
+  * **Transmission**: Manage active torrents and update configurations.
+* **Secure Access**: Login interface backed by secure cookie-based session management.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+* Node.js 18+ (or compatible version)
+* A running instance of the Front Desk API backend
+
+### Installation & Setup
+
+1. Install the dependencies:
+
+```bash
+npm install
+# or yarn / pnpm / bun install
+```
+
+2. Set up your environment variables by creating a `.env.local` file (ensure you point it to your running Front Desk API):
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080 # Example API URL
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# or yarn dev / pnpm dev / bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploying with Docker
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This application is configured for easy deployment using Docker.
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+*   Docker
+*   Docker Compose
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Local Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Configure Environment**: Before building, ensure you have a `.env.local` file in the project root. This file provides the build-time configuration for the Next.js application to connect to your backend API.
 
-## Deploy on Vercel
+    ```env
+    # .env.local
+    NEXT_PUBLIC_API_URL=http://<your-backend-api-ip>:8080
+    ```
+    Replace `<your-backend-api-ip>` with the IP address or hostname of your Front Desk API. Note that `localhost` will not work if the backend runs on the host and the frontend is inside a Docker container, unless you use host networking.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2.  **Build and Run**: Use Docker Compose to build and run the application in production mode. The `docker-compose.yml` file will handle building the image and running the container.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```bash
+    docker compose up --build -d
+    ```
+
+3.  **Access the Application**: Once the container is running, you can access the Front Desk Interface by navigating to `http://localhost:3000` in your browser.

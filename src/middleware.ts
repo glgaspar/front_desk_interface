@@ -3,26 +3,28 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-    // const token = request.cookies.get('front_desk_awesome_cookie')?.value; 
-    // if (!token) {
-    //     return NextResponse.redirect(new URL('/login', request.url));
-    // }
-    // Api().get("/validate")
-    //     .then(response => {
-    //         console.log("user is valid:", response.data);
-    //     }).catch(error => {
-    //         if (error.status === 401 || error.status === 403) {
-    //             NextResponse.redirect(new URL('/login', request.url));
-    //             return;
-    //         }
-    //         if (error.status === 404) {
-    //             NextResponse.redirect(new URL('/register', request.url));
-    //             return;
-    //         }
-    //         console.error("API Error:", error);
-    //         alert("An error occurred while validating the user.");
-    //         NextResponse.redirect(new URL('/login', request.url));
-    //     });
+    if (process.env.NEXT_PUBLIC_ENV === "DEV") { return NextResponse.next();} 
+
+    const token = request.cookies.get('front_desk_awesome_cookie')?.value; 
+    if (!token) {
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
+    Api().get("/validate")
+        .then(response => {
+            console.log("user is valid:", response.data);
+        }).catch(error => {
+            if (error.status === 401 || error.status === 403) {
+                NextResponse.redirect(new URL('/login', request.url));
+                return;
+            }
+            if (error.status === 404) {
+                NextResponse.redirect(new URL('/register', request.url));
+                return;
+            }
+            console.error("API Error:", error);
+            alert("An error occurred while validating the user.");
+            NextResponse.redirect(new URL('/login', request.url));
+        });
 	
 
 
