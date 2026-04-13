@@ -16,3 +16,9 @@ export interface State {
   startedAt: string
   finishedAt: string
 }
+
+
+export interface WaitingBuild {
+  topic: string
+  messages: string[]
+}

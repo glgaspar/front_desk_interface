@@ -1,20 +1,14 @@
 "use client";
-import Button from "@/Components/Button";
+import { EventConsumer } from "@/Components/Api";
 import Modal from "@/Components/Modal/Modal";
-import app from "next/app";
 import { useState, useEffect, useRef } from "react";
-import Popup from "reactjs-popup";
-import { PopupActions } from "reactjs-popup/dist/types";
 
 const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
 	const [logs, setLogs] = useState<string[]>([]);
 	const [isConnected, setIsConnected] = useState(false);
 
 	useEffect(() => {
-		const eventSource = new EventSource(
-			process.env.NEXT_PUBLIC_API_URL + "/apps/logs/" + appId,
-            { withCredentials: true }
-		);
+		const eventSource = EventConsumer("/apps/logs/" + appId)
 
 		eventSource.onopen = () => {
 			setIsConnected(true);
@@ -61,7 +55,13 @@ const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
                         {logs.map((log, index) => (
                             <div key={index}>{log}</div>
                         ))}
-                    </pre>
+						<div ref={(el) => {
+							if (el) {
+								el.scrollIntoView({ behavior: "smooth" });
+							}
+						}} />
+                    </pre>					
+
 				</div>
 			</Modal>
 	);

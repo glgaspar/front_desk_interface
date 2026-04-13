@@ -9,7 +9,7 @@ export default function Config() {
     const [cloudflare, setCloudflare] = useState<boolean>(false)
 
     useEffect(()=>{
-        Api().get('/config/cloudflare')
+        Api().get('/cloudflare/config')
             .then(response => {
                 setCloudflare(response?.data?.data);
             })
@@ -58,7 +58,7 @@ export default function Config() {
             zoneId: (form.zoneId as HTMLInputElement).value,
         }; 
         const loading = toast.loading('Setting up cloudflare...');
-        Api().post('/config/cloudflare', data)
+        Api().post('/cloudflare/config', data)
             .then(response => {
                 toast.success('Cloudflare setup successfully!');
                 form.reset();

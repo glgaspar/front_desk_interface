@@ -12,7 +12,7 @@ import Image from "next/image";
 import { PopupActions } from "reactjs-popup/dist/types";
 import App from "../Interfaces/Apps";
 
-export default function AppCreator({onAppUpdate}: {onAppUpdate: (oldAppID: string, updatedApp: App | null) => void;}) {
+export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: string) => void;}) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const ref = useRef<PopupActions>(null);
 	const [cloudflare, setCloudflare] = useState<boolean>(false)
@@ -49,8 +49,8 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (oldAppID: strin
 			.post(`/apps/create`, data)
 			.then((response) => {
 				toast.success("Compose saved and running!");
-				const newApp: App = response?.data?.data;
-				onAppUpdate("", newApp);
+				const newApp = response?.data?.data;
+				onAppUpdate(newApp.topic);
 			})
 			.catch((error) => {
 				toast.error(
@@ -72,22 +72,20 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (oldAppID: strin
 				ref={ref}
 				modal
 				nested
-				trigger={
-					<div className="cursor-pointer h-full" id="add">
-						<div className="h-[2rem] w-full text-center">
-							<p>Add App</p>
-						</div>
-						<div>
-							<Image
-								src={dockerSVG}
-								alt="Add app"
-								className="m-auto h-10 rounded-lg"
-								unoptimized
-							/>
-						</div>
-					</div>
-				}
-			>
+				trigger={<div className="cursor-pointer h-full" id="add">
+							<div className="h-[2rem] w-full text-center">
+								<p>Add App</p>
+							</div>
+							<div>
+								<Image
+									src={dockerSVG}
+									alt="Add app"
+									className="m-auto h-10 rounded-lg"
+									unoptimized
+								/>
+							</div>
+						</div>}
+				>
 				<Modal
 					title="New App"
 					close={() => ref?.current?.close()}
