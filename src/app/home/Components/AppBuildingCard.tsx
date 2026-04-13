@@ -12,12 +12,12 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 	const ref = useRef<PopupActions>(null);
 
 	useEffect(() => {
-		const eventSource = EventConsumer(`/apps/waitingBuilds/${appName}`)
+		const eventSource = EventConsumer("/apps/waitingBuilds/" + appName)
 		eventSource.onmessage = (event) => {
 			const msg = event.data;
 			if (msg) {
 				setMessages((prev) => [...prev, msg]);
-				if (msg.includes("End of events") || msg.includes("Deleting topic")) {
+				if (msg.includes("no active build") || msg.includes("stream closed")) {
 					end();
 				}
 			}
@@ -26,6 +26,7 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 		eventSource.onerror = (err) => {
 			console.error("EventSource failed:", err);
 			eventSource.close();
+			end();
 		};
 
 		return () => {
