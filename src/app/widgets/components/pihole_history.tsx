@@ -63,7 +63,7 @@ export default function PiholeHistory({enabled = false}: {enabled?: boolean}) {
       .catch((err) => {
         console.log(err);
       })
-  }, []);
+  }, [enabled]);
 
   const maxTotal = data?.history.length ? Math.max(1, ...data.history.map(h => h.total)) : 1;
   

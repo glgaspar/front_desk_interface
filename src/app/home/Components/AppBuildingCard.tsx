@@ -32,7 +32,7 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 		return () => {
 			eventSource.close();
 		};
-	}, [appName]);
+	}, [appName, end]);
 
 	return (
 		<Card className="w-36 h-36" key={appName}>

@@ -13,7 +13,7 @@ export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, show
 
     function logout() {
       Api().get("/login/logout")
-        .then(response => {
+        .then(() => {
             toast.success("You have been loged out!")
             router.push('/login'); 
         })

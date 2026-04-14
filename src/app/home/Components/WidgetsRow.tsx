@@ -4,6 +4,7 @@ import Api from "@/Components/Api";
 import AvailableWidgets  from "@/app/widgets/availableWidgets";
 import toast from "react-hot-toast";
 import Wrapper from "@/app/widgets/wrapper";
+import { ServerWidget } from "@/app/widgets/Interfaces";
 
 export default function WidgetsRow() {
   const [selectedWidgets, setSelectedWidgets] = useState<ServerWidget[]|undefined>(undefined);

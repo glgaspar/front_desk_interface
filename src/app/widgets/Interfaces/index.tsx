@@ -1,4 +1,4 @@
-interface ServerWidget {
+export interface ServerWidget {
     id: number
     name: string
     enabled: boolean
@@ -6,7 +6,7 @@ interface ServerWidget {
     selected: boolean
 }
 
-interface TransmissionTorrent {
+export interface TransmissionTorrent {
     id?: number;
     name?: string;
     percentDone?: number;

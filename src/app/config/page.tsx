@@ -51,7 +51,7 @@ export default function Config() {
         }; 
         const loading = toast.loading('Registering user...');
         Api().post('/register', data)
-            .then(response => {
+            .then(() => {
                 toast.success('User registered successfully!');
                 form.reset();
             })
@@ -79,7 +79,7 @@ export default function Config() {
         }; 
         const loading = toast.loading('Setting up cloudflare...');
         Api().post('/cloudflare/config', data)
-            .then(response => {
+            .then(() => {
                 toast.success('Cloudflare setup successfully!');
                 form.reset();
                 setCloudflare(true);
@@ -108,7 +108,7 @@ export default function Config() {
         const loading = toast.loading('Setting up transmission...');
         Api()
             .post('/transmission/config', data)
-            .then(response => {
+            .then(() => {
                 toast.success('Transmission setup successfully!');
                 form.reset();
                 setTransmission(true);
@@ -134,7 +134,7 @@ export default function Config() {
         const loading = toast.loading('Setting up Pi-hole...');
         Api()
             .post('/pihole/config', data)
-            .then(response => {
+            .then(() => {
                 toast.success('Pi-hole setup successfully!');
                 form.reset();
                 setPihole(true);

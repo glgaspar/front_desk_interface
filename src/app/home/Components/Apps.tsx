@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import App, {WaitingBuild} from "../Interfaces/Apps";
+import App from "../Interfaces/Apps";
 import AppCard from "./AppCard";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";

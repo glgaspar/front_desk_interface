@@ -17,7 +17,7 @@ export default function Login() {
         }; 
         const loading = toast.loading('Logging in...');
         Api().post('/login', data)
-            .then(response => {
+            .then(() => {
                 window.location.href = "/home"
             })
             .catch(error => {

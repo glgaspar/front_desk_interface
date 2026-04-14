@@ -18,7 +18,7 @@ export default function Register() {
         }; 
         const loading = toast.loading('Registering user...');
         Api().post('/register', data)
-            .then(response => {
+            .then(() => {
                 window.location.href = "/login"
             })
             .catch(error => {

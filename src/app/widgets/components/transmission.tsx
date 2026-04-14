@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Api from '@/Components/Api'
 import { useClickOutside } from '@/Utils/useClickOutside';
 import Button from '@/Components/Button';
+import { TransmissionTorrent } from '../Interfaces';
 
 function formatSpeed(bytes?: number, decimals = 1) {
   if (!bytes || bytes === 0) return '0 B/s';

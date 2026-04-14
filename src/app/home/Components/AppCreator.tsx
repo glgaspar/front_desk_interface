@@ -3,14 +3,12 @@ import Api from "@/Components/Api";
 import Button from "@/Components/Button";
 import Card from "@/Components/Card";
 import Modal from "@/Components/Modal/Modal";
-import app from "next/app";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 import Image from "next/image";
 import { PopupActions } from "reactjs-popup/dist/types";
-import App from "../Interfaces/Apps";
 
 export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: string) => void;}) {
 	const [loading, setLoading] = useState<boolean>(false);

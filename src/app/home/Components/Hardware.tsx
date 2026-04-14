@@ -5,9 +5,10 @@ import Card from '@/Components/Card';
 import ProgressBar from "@/Components/ProgressBar";
 // import { Badge } from "@/components/ui/badge";
 import Button from "@/Components/Button";
-import { Cpu, HardDrive, MemoryStick } from "lucide-react";
+import { Cpu, MemoryStick } from "lucide-react";
 import Api from "@/Components/Api";
 import Loader from "@/Components/Loader";
+import { SystemData } from "../Interfaces/Monitor";
 
 export default function Hardware() {
 	const [data, setData] = useState<SystemData | null>(null);

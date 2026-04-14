@@ -37,7 +37,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
     function deleteApp() {
         const removing = toast.loading("Removing app...") 
         Api().delete(`/apps/remove/${app.id}`)
-        .then(response => {
+        .then(() => {
             toast.success("Container and files delete!")
             onAppUpdate(app.id, null)
         })

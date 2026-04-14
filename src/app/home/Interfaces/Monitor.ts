@@ -1,11 +1,11 @@
-interface ProcessInfo {
+export interface ProcessInfo {
     pid: number;
     name: string;
     memPercent?: number;
     cpuPercent?: number;
 }
 
-interface SystemData {
+export interface SystemData {
     cpuPercent: number;
     memoryPercent: number;
     procMem: ProcessInfo[];

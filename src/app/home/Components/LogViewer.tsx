@@ -1,7 +1,7 @@
 "use client";
 import { EventConsumer } from "@/Components/Api";
 import Modal from "@/Components/Modal/Modal";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
 	const [logs, setLogs] = useState<string[]>([]);

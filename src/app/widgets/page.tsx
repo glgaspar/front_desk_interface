@@ -4,6 +4,7 @@ import FrontEndWidgets  from "./availableWidgets";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
 import Wrapper from "./wrapper";
+import { ServerWidget } from "./Interfaces";
 
 export default function Widgets() {
   const [availableWidgets, setAvailabledWidgets] = useState<ServerWidget[]|undefined>(undefined);
@@ -55,7 +56,7 @@ export default function Widgets() {
   function updateToggleCallBack(id:number, toggle: "enabled" | "selected") {
     Api()
       .put("/widgets/toggle/" + id + "/"+ toggle)
-      .then((response) => {
+      .then(() => {
         setRefresh(prev => prev + 1);
       })
       .catch((error) => {
