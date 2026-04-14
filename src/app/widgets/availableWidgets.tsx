@@ -1,8 +1,7 @@
-import dynamic from 'next/dynamic';
-import { JSXElementConstructor } from 'react';
+import React from 'react';
 
 const context = (require as any).context('./components', false, /\.tsx$/);
-const AvailableWidgets: Record<string, React.ReactElement<unknown, string | JSXElementConstructor<any>>> = {};
+const AvailableWidgets: Record<string, React.ElementType> = {};
 context.keys().forEach((key: string) => {
   const fileName = key.replace(/^\.\/|\.tsx$/g, '');
   const module = context(key);

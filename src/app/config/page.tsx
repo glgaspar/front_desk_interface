@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 
 export default function Config() {
     const [cloudflare, setCloudflare] = useState<boolean>(false)
+    const [transmission, setTransmission] = useState<boolean>(false)
+    const [pihole, setPihole] = useState<boolean>(false)
 
     useEffect(()=>{
         Api().get('/cloudflare/config')
@@ -16,6 +18,24 @@ export default function Config() {
             .catch(error => {
                 console.error('There was an error!', error);
                 toast.error('Could not retrieve cloudflare configuration. Please try again.')
+            })
+        
+        Api().get('/transmission/config')
+            .then(response => {
+                setTransmission(response?.data?.data);
+            })
+            .catch(error => {
+                console.error('There was an error!', error);
+                toast.error('Could not retrieve transmission configuration. Please try again.')
+            })
+        
+        Api().get('/pihole/config')
+            .then(response => {
+                setPihole(response?.data?.data);
+            })
+            .catch(error => {
+                console.error('There was an error!', error);
+                toast.error('Could not retrieve pihole configuration. Please try again.')
             })
     },[])
 
@@ -74,6 +94,60 @@ export default function Config() {
             });
     }
 
+    function setupTransmission(e:React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        document.getElementById('setupTransmission')?.setAttribute('disabled', 'true');
+        const form = e.target as HTMLFormElement;
+        const data = {
+            protocol: (form.protocol as HTMLInputElement).value,
+            url: (form.url as HTMLInputElement).value,
+            port: (form.port as HTMLInputElement).value,
+            username: (form.username as HTMLInputElement).value,
+            password: (form.password as HTMLInputElement).value
+        }; 
+        const loading = toast.loading('Setting up transmission...');
+        Api()
+            .post('/transmission/config', data)
+            .then(response => {
+                toast.success('Transmission setup successfully!');
+                form.reset();
+                setTransmission(true);
+                })
+            .catch(error => {
+                toast.error(error.response?.data?.message || 'Transmission setup failed. Please try again.');
+                console.error('There was an error!', error);
+            })
+            .finally(() => {
+                toast.dismiss(loading);
+                document.getElementById('setupTransmission')?.removeAttribute('disabled');
+            });
+    }
+
+    function setupPihole(e:React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        document.getElementById('setupPihole')?.setAttribute('disabled', 'true');
+        const form = e.target as HTMLFormElement;
+        const data = {
+            piholeUrl: (form.piholeUrl as HTMLInputElement).value,
+            piholeToken: (form.piholeToken as HTMLInputElement).value,
+        }; 
+        const loading = toast.loading('Setting up Pi-hole...');
+        Api()
+            .post('/pihole/config', data)
+            .then(response => {
+                toast.success('Pi-hole setup successfully!');
+                form.reset();
+                setPihole(true);
+                })
+            .catch(error => {
+                toast.error(error.response?.data?.message || 'Pi-hole setup failed. Please try again.');
+                console.error('There was an error!', error);
+            })
+            .finally(() => {
+                toast.dismiss(loading);
+                document.getElementById('setupPihole')?.removeAttribute('disabled');
+            });
+    }
 
     return (
         <div className='p-5 grid gap-5 md:w-[55vw] mx-auto'>
@@ -89,8 +163,24 @@ export default function Config() {
                 </div>
                 <hr className='mx-10 my-2 border-[#b3078b]'/>
                 <div>
-                    <h4 className='text-center mb-5'>Widgets</h4>
-                    <p>to be implemented</p>
+                    <h4 className='text-center mb-5'>Transmission Integration {transmission ? <span className='text-green-500 text-sm'>(Configured)</span> : <span className='text-red-500 text-sm'>(Not Configured)</span>}</h4>
+                    <form className='grid gap-2' onSubmit={setupTransmission}>
+                        <input id='protocol' type="text" placeholder='Protocol (http or https)' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='url' type="text" placeholder='URL' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='port' type="text" placeholder='Port' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='username' type="text" placeholder='Username' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='password' type="password" placeholder='Password' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <Button type='submit' id='setupTransmission' className='p-2 rounded cursor-pointer bg-[#b3078b]'>Submit</Button>
+                    </form>
+                </div>
+                <hr className='mx-10 my-2 border-[#b3078b]'/>
+                <div>
+                    <h4 className='text-center mb-5'>Pi-hole Integration {pihole ? <span className='text-green-500 text-sm'>(Configured)</span> : <span className='text-red-500 text-sm'>(Not Configured)</span>}</h4>
+                    <form className='grid gap-2' onSubmit={setupPihole}>
+                        <input id='piholeUrl' type="text" placeholder='Pi-hole URL' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='piholeToken' type="text" placeholder='Pi-hole API Token' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <Button type='submit' id='setupPihole' className='p-2 rounded cursor-pointer bg-[#b3078b]'>Submit</Button>
+                    </form>
                 </div>
                 <hr className='mx-10 my-2 border-[#b3078b]'/>
                 <div>

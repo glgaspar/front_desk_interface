@@ -35,9 +35,9 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 	}, [appName]);
 
 	return (
-		<Card className="w-[9rem] h-[9rem]" key={appName}>
+		<Card className="w-36 h-36" key={appName}>
 			<div>
-				<div className="h-[2rem] w-full text-center">
+				<div className="h-8 w-full text-center">
 					<p>{appName}</p>
 				</div>
 				<div>
@@ -55,14 +55,14 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 				</p>
 			</div>
 			<div className="px-5 grid grid-cols-2 gap-3">
-				<div className="w-[2rem] h-[2rem]">
+				<div className="w-8 h-8">
 					<Popup
 						ref={ref}
 						modal
 						nested
 						trigger={
 							<div
-								className="bg-none text-[1.5rem] text-center w-[2rem] h-[2rem] cursor-pointer "
+								className="bg-none text-[1.5rem] text-center w-8 h-8 cursor-pointer "
 								id="building"
 							>
 								&#9881;
@@ -72,10 +72,10 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 						<Modal
 							title={"Logs: " + appName}
 							close={() => ref.current?.close()}
-							className="border border-[#b3078b] bg-black md:w-[55rem]"
+							className="border border-[#b3078b] bg-black md:w-220"
 						>
 							<div>
-								<pre className="bg-black border border-[#b3078b] text-white p-4 h-[60vh] overflow-y-scroll whitespace-pre-wrap break-words">
+								<pre className="bg-black border border-[#b3078b] text-white p-4 h-[60vh] overflow-y-scroll whitespace-pre-wrap wrap-break-word">
 									{messages.map((msg, index) => (
 										<div key={index}>{msg}</div>
 									))}

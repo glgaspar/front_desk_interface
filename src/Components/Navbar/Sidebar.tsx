@@ -27,8 +27,8 @@ export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, show
     }
 
     return (
-        <nav ref={ref} className={`flex flex-col fixed top-[3rem] bg-black border-r border-r-[#b3078b] w-full md:w-[15rem] h-[calc(100vh-4rem)] transition-all ease-in-out duration-500
-            ${sidebar ? "left-0" : "left-[-30rem]"}
+        <nav ref={ref} className={`flex flex-col fixed top-12 bg-black border-r border-r-[#b3078b] w-full md:w-60 h-[calc(100vh-4rem)] transition-all ease-in-out duration-500
+            ${sidebar ? "left-0" : "-left-120"}
         `}>
           <ul className="grid gap-2 p-2 w-full overflow-y-auto text-center">
             <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>

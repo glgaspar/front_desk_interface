@@ -1,21 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import AvailableWidgets  from "./availableWidgets";
+import FrontEndWidgets  from "./availableWidgets";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
-
-interface ServerWidget {
-  id: number
-  name: string
-  enabled: boolean
-  position: number
-  selected: boolean
-}
+import Wrapper from "./wrapper";
 
 export default function Widgets() {
   const [availableWidgets, setAvailabledWidgets] = useState<ServerWidget[]|undefined>(undefined);
   const [showAll, setShowAll] = useState(false);
-  
+  const [refresh, setRefresh] = useState(0);
+
   useEffect(() => {
     Api()
       .get("/widgets")
@@ -28,7 +22,47 @@ export default function Widgets() {
         console.error(error);
         toast.error("Failed to load widgets");
       })
-  }, []);
+  }, [refresh]);
+
+  useEffect(() => {
+    if (!availableWidgets) return;
+    let added = false;
+    for (const widget of Object.keys(FrontEndWidgets) || []) {
+      console.log("Checking widget", widget, "against", availableWidgets);
+      console.log(widget)
+      console.log(availableWidgets?.some(w => w.name === widget));
+      if (!availableWidgets?.some(w => w.name === widget)) {
+        Api()
+          .post("/widgets", {name: widget})
+          .then((response) => {
+            const newWidget = response?.data?.data
+            if (newWidget.name === widget && newWidget.id) {
+              added = true;
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            toast.error("Failed to add widget " + widget);
+          })
+        }
+      }
+    if (added) {
+      setRefresh(prev => prev + 1);
+      toast.success("New widget found. Refreshing list.");
+    }
+  }, [availableWidgets])
+
+  function updateToggleCallBack(id:number, toggle: "enabled" | "selected") {
+    Api()
+      .put("/widgets/toggle/" + id + "/"+ toggle)
+      .then((response) => {
+        setRefresh(prev => prev + 1);
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Failed to update widget " + id);
+      });
+  }
 
   return (
     <div className="w-full p-4">
@@ -42,26 +76,47 @@ export default function Widgets() {
               onChange={(e) => setShowAll(e.target.checked)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </div>
       </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] gap-2">
           {availableWidgets?.map(widgetToRender => {
-            const widget = AvailableWidgets[widgetToRender.name];
-            console.log(widgetToRender, widget, React.isValidElement(widget));
-            return widget && React.isValidElement(widget) ? React.cloneElement(widget) : null;
+            const WidgetComponent = FrontEndWidgets[widgetToRender.name] as React.ElementType;
+            if (!widgetToRender.enabled) return null;
+            return WidgetComponent 
+              ? <Wrapper 
+                  key={widgetToRender.id}
+                  title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
+                  enabled={widgetToRender.enabled}
+                  selected={widgetToRender.selected}
+                  updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}>
+                  <WidgetComponent key={widgetToRender.id}  selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
+                </Wrapper>
+              : null;
           })}
         </div>
         {
           showAll &&
           <>
             <hr className="p-5 border-[#b3078b]" />
-            <h4 className="text-[500]">Not enabled Widgets</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {Object.entries(AvailableWidgets)
-                .filter(([key]) => !availableWidgets?.some(w => w.name === key))
-                .map(([_, widget]) => React.cloneElement(widget))}
+            <h4 className="text-[500] text-center">Not enabled Widgets</h4>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] gap-2">
+                {availableWidgets?.map(widgetToRender => {
+                  const WidgetComponent = FrontEndWidgets[widgetToRender.name] as React.ElementType;
+                  if (widgetToRender.enabled) return null;
+                  return WidgetComponent 
+                    ? <Wrapper
+                        key={widgetToRender.id}
+                        title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
+                        enabled={widgetToRender.enabled}
+                        selected={widgetToRender.selected}
+                        updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}
+                        >
+                        <WidgetComponent key={widgetToRender.id}  selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
+                      </Wrapper>
+                    : null;
+                })}
             </div>
           </>
         }

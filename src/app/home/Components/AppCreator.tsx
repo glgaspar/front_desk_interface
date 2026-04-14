@@ -18,7 +18,7 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 	const [cloudflare, setCloudflare] = useState<boolean>(false)
 
     useEffect(()=>{
-        Api().get('/config/cloudflare')
+        Api().get('/cloudflare/config')
             .then(response => {
                 setCloudflare(response?.data?.data);
             })
@@ -67,13 +67,13 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 	}
 
 	return (
-		<Card className="w-[9rem] h-[9rem]">
+		<Card className="w-36 h-36">
 			<Popup
 				ref={ref}
 				modal
 				nested
 				trigger={<div className="cursor-pointer h-full" id="add">
-							<div className="h-[2rem] w-full text-center">
+							<div className="h-8 w-full text-center">
 								<p>Add App</p>
 							</div>
 							<div>
@@ -89,12 +89,12 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 				<Modal
 					title="New App"
 					close={() => ref?.current?.close()}
-					className="border border-[#b3078b] bg-black md:w-[55rem] "
+					className="border border-[#b3078b] bg-black md:w-220 "
 				>
 					<form onSubmit={handleSubmit}>
 						<div className="px-2">
 							<textarea
-								className="text-sm my-2 p-2 min-h-[20rem] border border-[#b3078b] w-full"
+								className="text-sm my-2 p-2 min-h-80 border border-[#b3078b] w-full"
 								id="compose"
 								placeholder="Paste your compose file here..."
 							/>
