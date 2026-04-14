@@ -3,10 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node generate-widgets.js",
-    "dev": "next dev --turbopack",
-    "prebuild": "node generate-widgets.js",
-    "build": "next build --turbopack",
+    "dev": "node generate-widgets.js && next dev --turbopack",
+    "build": "node generate-widgets.js && next build --turbopack",
     "start": "next start",
     "lint": "eslint"
   },
