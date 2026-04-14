@@ -86,7 +86,7 @@ export default function PiholeHistory({enabled = false}: {enabled?: boolean}) {
   }
 
   return (
-      <div className="flex flex-col justify-between h-full w-full pb-2 px-2">
+      <div className="flex flex-col justify-between h-full w-full pb-3 px-2">
           {data && data.history.length > 0 ? (
             <>
               <svg className="w-full flex-1 min-h-0 mt-2" viewBox="0 0 1000 200" preserveAspectRatio="none">

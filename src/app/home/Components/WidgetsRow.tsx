@@ -27,7 +27,7 @@ export default function WidgetsRow() {
     }
 
 	return (
-    <div className="w-full overflow-x-scroll py-2">
+    <div className="flex w-full overflow-x-scroll py-2">
       {selectedWidgets?.map(widgetToRender => {
         const WidgetComponent = AvailableWidgets[widgetToRender.name] as React.ElementType;
         if (!widgetToRender.enabled) return null;
@@ -39,7 +39,7 @@ export default function WidgetsRow() {
               selected={widgetToRender.selected}
               row={true}
               >
-              <WidgetComponent key={widgetToRender.id} /> 
+              <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled}selected={widgetToRender.selected} /> 
             </Wrapper>
           : null;
       })}
