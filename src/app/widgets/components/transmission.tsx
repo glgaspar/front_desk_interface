@@ -90,6 +90,8 @@ function TorrentItem({ item, updateList }: { item: TransmissionTorrent, updateLi
 
 export default function Transmission({enabled = false, selected = false}: {enabled?: boolean, selected?: boolean}) {
   const [torrents, setTorrents] = useState<TransmissionTorrent[]>([]);
+  const [integrated, setIntegrated] = useState(false);
+  
   const fetchTorrents = () => {
     Api().get('/transmission/torrents')
       .then(res => {
@@ -114,12 +116,26 @@ export default function Transmission({enabled = false, selected = false}: {enabl
       return;
     }
 
+    Api()
+      .get("/transmission/config")
+      .then((res) => {
+        if (!res.data) {
+          setIntegrated(res.data.status)}
+      });
+
     fetchTorrents();
     const interval = setInterval(fetchTorrents, 60000);
     return () => clearInterval(interval);
   }, [enabled]);
 
-  
+  if (!integrated && enabled) {
+    return (
+        <div className="flex flex-col justify-center items-center h-full w-full">
+          <p className="text-sm text-gray-400">Transmission is not integrated. Please check your configuration.</p>
+        </div>
+    )
+  }
+
   return (
     <div className="w-full h-full flex flex-col py-4 b-4">
       <div className="flex flex-col gap-3 overflow-y-scroll">
