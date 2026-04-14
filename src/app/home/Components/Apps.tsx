@@ -72,7 +72,7 @@ export default function Apps() {
 	}
 
 	return (
-		<div className="flex flex-wrap gap-4 justify-center items-center mt-5">
+		<div className="flex flex-wrap gap-4 justify-center items-center mt-2">
 			<AppCreator onAppUpdate={handleNewApp} />
 			{apps?.map((item) => (
 				<AppCard key={item.id} item={item} onAppUpdate={handleAppUpdate} />

@@ -32,9 +32,9 @@ export default function Login() {
     }
 
     return (
-        <div id="loginForm" className="m-auto grid gap-4 mt-[4rem]">
-            <form className="grid gap-4 bg-[#1c1c1c] p-4 rounded-lg max-w-[30rem] md:w-[30rem] m-auto" onSubmit={handleSubmit}>
-                <h4 className="text-center font-[600] text-lg mt-2">Login</h4>
+        <div id="loginForm" className="m-auto grid gap-4 mt-16">
+            <form className="grid gap-4 bg-[#1c1c1c] p-4 rounded-lg max-w-120 md:w-120 m-auto" onSubmit={handleSubmit}>
+                <h4 className="text-center font-semibold text-lg mt-2">Login</h4>
                 <div className="form grid gap-4">
                     <div className="col-span-1 grid">
                         <span className="text-center">Name</span>
