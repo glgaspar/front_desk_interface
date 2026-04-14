@@ -119,16 +119,16 @@ export default function Transmission({enabled = false, selected = false}: {enabl
     return () => clearInterval(interval);
   }, [enabled]);
 
-  if (!selected) {
-    return (
-      <div className="w-full h-full flex flex-col py-4 b-4">
-        <div className="flex flex-col gap-3 overflow-y-scroll">
-          {torrents.length === 0 && (
-            <span className="self-center text-sm font-medium text-gray-400 mt-4">No active torrents</span>
-          )}
-          {torrents.map(t =>  <TorrentItem key={t.id} item={t} updateList={() => fetchTorrents()} />)}
-        </div>
+  
+  return (
+    <div className="w-full h-full flex flex-col py-4 b-4">
+      <div className="flex flex-col gap-3 overflow-y-scroll">
+        {torrents.length === 0 && (
+          <span className="self-center text-sm font-medium text-gray-400 mt-4">No active torrents</span>
+        )}
+        {torrents.map(t =>  <TorrentItem key={t.id} item={t} updateList={() => fetchTorrents()} />)}
       </div>
-    )
-  }
+    </div>
+  )
+  
 }

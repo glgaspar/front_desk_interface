@@ -92,7 +92,7 @@ export default function Widgets() {
                   enabled={widgetToRender.enabled}
                   selected={widgetToRender.selected}
                   updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}>
-                  <WidgetComponent key={widgetToRender.id}  selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
+                  <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled} selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
                 </Wrapper>
               : null;
           })}
@@ -114,7 +114,7 @@ export default function Widgets() {
                         selected={widgetToRender.selected}
                         updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}
                         >
-                        <WidgetComponent key={widgetToRender.id}  selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
+                        <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled} selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
                       </Wrapper>
                     : null;
                 })}
