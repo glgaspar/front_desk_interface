@@ -77,7 +77,7 @@ export default function PiholeHistory({enabled = false}: {enabled?: boolean}) {
       ]))
     : [];
   
-  if (!integrated) {
+  if (!integrated && enabled) {
     return (
         <div className="flex flex-col justify-center items-center h-full w-full">
           <p className="text-sm text-gray-400">Pihole is not integrated. Please check your configuration.</p>
