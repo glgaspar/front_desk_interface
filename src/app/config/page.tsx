@@ -101,7 +101,7 @@ export default function Config() {
         const data = {
             protocol: (form.protocol as HTMLInputElement).value,
             url: (form.url as HTMLInputElement).value,
-            port: (form.port as HTMLInputElement).value,
+            port: Number((form.port as HTMLInputElement).value),
             username: (form.username as HTMLInputElement).value,
             password: (form.password as HTMLInputElement).value
         }; 
@@ -166,7 +166,7 @@ export default function Config() {
                     <h4 className='text-center mb-5'>Transmission Integration {transmission ? <span className='text-green-500 text-sm'>(Configured)</span> : <span className='text-red-500 text-sm'>(Not Configured)</span>}</h4>
                     <form className='grid gap-2' onSubmit={setupTransmission}>
                         <input id='protocol' type="text" placeholder='Protocol (http or https)' className='p-2 rounded bg-black border border-white text-white' required/>
-                        <input id='url' type="text" placeholder='URL' className='p-2 rounded bg-black border border-white text-white' required/>
+                        <input id='url' type="text" placeholder='Address' className='p-2 rounded bg-black border border-white text-white' required/>
                         <input id='port' type="text" placeholder='Port' className='p-2 rounded bg-black border border-white text-white' required/>
                         <input id='username' type="text" placeholder='Username' className='p-2 rounded bg-black border border-white text-white' required/>
                         <input id='password' type="password" placeholder='Password' className='p-2 rounded bg-black border border-white text-white' required/>
