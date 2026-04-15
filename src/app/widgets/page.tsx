@@ -73,19 +73,21 @@ export default function Widgets() {
           </label>
         </div>
       </div>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] gap-2">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(29rem,1fr))] gap-2">
           {availableWidgets?.map(widgetToRender => {
             const WidgetComponent = FrontEndWidgets[widgetToRender.name] as React.ElementType;
             if (!widgetToRender.enabled) return null;
             return WidgetComponent 
-              ? <Wrapper 
-                  key={widgetToRender.id}
-                  title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
-                  enabled={widgetToRender.enabled}
-                  selected={widgetToRender.selected}
-                  updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}>
-                  <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled} selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
-                </Wrapper>
+              ? <div className="flex justify-center">
+                  <Wrapper 
+                    key={widgetToRender.id}
+                    title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
+                    enabled={widgetToRender.enabled}
+                    selected={widgetToRender.selected}
+                    updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}>
+                    <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled} selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
+                  </Wrapper>
+                </div>
               : null;
           })}
         </div>
@@ -94,20 +96,22 @@ export default function Widgets() {
           <>
             <hr className="p-5 border-[#b3078b]" />
             <h4 className="text-[500] text-center">Not enabled Widgets</h4>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] gap-2">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(29rem,1fr))] gap-2">
                 {availableWidgets?.map(widgetToRender => {
                   const WidgetComponent = FrontEndWidgets[widgetToRender.name] as React.ElementType;
                   if (widgetToRender.enabled) return null;
                   return WidgetComponent 
-                    ? <Wrapper
-                        key={widgetToRender.id}
-                        title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
-                        enabled={widgetToRender.enabled}
-                        selected={widgetToRender.selected}
-                        updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}
-                        >
-                        <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled} selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
-                      </Wrapper>
+                    ? <div className="flex justify-center">
+                        <Wrapper
+                          key={widgetToRender.id}
+                          title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
+                          enabled={widgetToRender.enabled}
+                          selected={widgetToRender.selected}
+                          updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}
+                          >
+                          <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled} selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
+                        </Wrapper>
+                      </div>
                     : null;
                 })}
             </div>

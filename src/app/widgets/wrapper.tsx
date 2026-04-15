@@ -19,7 +19,7 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
     return (
         // <Card className={row ? "h-[15rem] w-[25rem]" : ""}>
 			
-		<Card className={'overflow-visible ' + (row ? " h-50 w-88" : " h-72 w-116")}>
+		<Card className={'overflow-visible ' + (row ? " h-50 w-88" : " min-h-72 min-w-116")}>
 				<div className="relative flex justify-center items-center px-5 py-1">
 					{title && (
 						<h5 className="text-xs font-bold text-white text-center">{title}</h5>
