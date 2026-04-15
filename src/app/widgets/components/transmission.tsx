@@ -119,7 +119,7 @@ export default function Transmission({enabled = false, selected = false}: {enabl
     Api()
       .get("/transmission/config")
       .then((res) => {
-        if (!res.data) {
+        if (res?.data) {
           setIntegrated(res.data.status)}
       });
 

@@ -51,7 +51,7 @@ export default function PiholeHistory({enabled = false}: {enabled?: boolean}) {
     Api()
       .get("/cloudflare/config")
       .then((res) => {
-        if (!res.data) {
+        if (res?.data) {
           setIntegrated(res.data.status)}
       });
 
