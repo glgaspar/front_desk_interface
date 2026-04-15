@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import FrontEndWidgets  from "./availableWidgets";
+import FrontEndWidgets  from "./frontEndWidgets";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
 import Wrapper from "./wrapper";
@@ -15,9 +15,7 @@ export default function Widgets() {
     Api()
       .get("/widgets")
       .then((response) => {
-        if (Array.isArray(response?.data?.data)) {
-          setAvailabledWidgets(response.data.data);
-        }
+          setAvailabledWidgets(response?.data?.data || []);
       })
       .catch((error) => {
         console.error(error);
@@ -29,17 +27,11 @@ export default function Widgets() {
     if (!availableWidgets) return;
     let added = false;
     for (const widget of Object.keys(FrontEndWidgets) || []) {
-      console.log("Checking widget", widget, "against", availableWidgets);
-      console.log(widget)
-      console.log(availableWidgets?.some(w => w.name === widget));
       if (!availableWidgets?.some(w => w.name === widget)) {
         Api()
           .post("/widgets", {name: widget})
-          .then((response) => {
-            const newWidget = response?.data?.data
-            if (newWidget.name === widget && newWidget.id) {
+          .then(() => {
               added = true;
-            }
           })
           .catch((error) => {
             console.error(error);
