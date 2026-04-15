@@ -73,12 +73,12 @@ export default function Widgets() {
           </label>
         </div>
       </div>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(29rem,1fr))] gap-2">
+        <div className="columns-[29rem] gap-2">
           {availableWidgets?.map(widgetToRender => {
             const WidgetComponent = FrontEndWidgets[widgetToRender.name] as React.ElementType;
             if (!widgetToRender.enabled) return null;
             return WidgetComponent 
-              ? <div className="flex justify-center">
+              ? <div className="flex justify-center break-inside-avoid mb-2" key={`enabled-widget-${widgetToRender.id}`}>
                   <Wrapper 
                     key={widgetToRender.id}
                     title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
@@ -96,12 +96,12 @@ export default function Widgets() {
           <>
             <hr className="p-5 border-[#b3078b]" />
             <h4 className="text-[500] text-center">Not enabled Widgets</h4>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(29rem,1fr))] gap-2">
+            <div className="columns-[23rem] gap-2">
                 {availableWidgets?.map(widgetToRender => {
                   const WidgetComponent = FrontEndWidgets[widgetToRender.name] as React.ElementType;
                   if (widgetToRender.enabled) return null;
                   return WidgetComponent 
-                    ? <div className="flex justify-center">
+                    ? <div className="flex justify-center break-inside-avoid" key={`disabled-widget-${widgetToRender.id}`}>
                         <Wrapper
                           key={widgetToRender.id}
                           title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
