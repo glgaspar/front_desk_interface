@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Api from "@/Components/Api";
-import AvailableWidgets  from "@/app/widgets/availableWidgets";
+import AvailableWidgets  from "@/app/widgets/frontEndWidgets";
 import toast from "react-hot-toast";
 import Wrapper from "@/app/widgets/wrapper";
 import { ServerWidget } from "@/app/widgets/Interfaces";

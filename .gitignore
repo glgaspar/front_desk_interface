@@ -40,3 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .vscode/
+src/app/widgets/frontEndWidgets.tsx
