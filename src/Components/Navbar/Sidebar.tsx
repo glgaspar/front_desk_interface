@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import toast from "react-hot-toast";
 import Api from "../Api";
+import Button from "@/Components/Button";
 
 export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, showSidebar:()=>void }) {
     const ref = useRef<HTMLDivElement>(null)
@@ -27,31 +28,35 @@ export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, show
     }
 
     return (
-        <nav ref={ref} className={`flex flex-col fixed top-12 bg-black border-r border-r-[#b3078b] w-full md:w-60 h-[calc(100vh-4rem)] transition-all ease-in-out duration-500
-            ${sidebar ? "left-0" : "-left-120"}
-        `}>
-          <ul className="grid gap-2 p-2 w-full overflow-y-auto text-center">
-            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>
-              <Link href="/home" className="grow no-underline text-white h-full items-center rounded px-2 py-3 hover:bg-[#b3078b] focus:bg-[#b3078b]">
+
+        <nav ref={ref} className={`flex flex-col fixed top-12 bottom-0 left-0 z-20 bg-black border-r border-r-[#b3078b] w-64 transition-transform ease-in-out duration-300 transform ${sidebar ? "translate-x-0" : "-translate-x-full"}`}>
+          <ul className="flex-1 grid content-start gap-2 p-2 w-full overflow-y-auto text-center">
+            <li className="list-none" onClick={showSidebar}>
+              <Link href="/home" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
                 Home
               </Link>
             </li>
-            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>
-              <Link href="/widgets" className="grow no-underline text-white h-full items-center rounded px-2 py-3 hover:bg-[#b3078b] focus:bg-[#b3078b]">
+            <li className="list-none" onClick={showSidebar}>
+              <Link href="/widgets" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
                 Widgets
               </Link>
             </li>
-            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>
-              <Link href="/config" className="grow no-underline text-white h-full items-center rounded px-2 py-3 hover:bg-[#b3078b] focus:bg-[#b3078b]">
+            <li className="list-none" onClick={showSidebar}>
+              <Link href="/config" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
                 Config
               </Link>
             </li>
-            <li className="flex justify-start items-center min-h-12 list-none px-2 cursor-pointer" onClick={showSidebar}>
-              <div className="grow no-underline text-white h-full items-center rounded px-2 py-3 hover:bg-[#b3078b] focus:bg-[#b3078b]" onClick={logout}>
-                Logout
-              </div>
-            </li>
           </ul>
+          <div className="p-4 border-t border-t-[#b3078b]">
+            <Button 
+              id="logoutBtn"
+              role="action"
+              className="w-full py-2 rounded"
+              onClick={() => { logout(); showSidebar(); }}
+            >
+              Logout
+            </Button>
+          </div>
         </nav>
     );
 }

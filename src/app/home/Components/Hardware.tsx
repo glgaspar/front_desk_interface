@@ -84,7 +84,7 @@ export default function Hardware() {
 				</div>
 				<div className="space-y-2">
 					<div className="flex items-center justify-between">
-						<span className={`text-lg font-bold bg-[${getUsageColor(data.cpuPercent)}]`}>
+						<span className="text-lg font-bold" style={{ color: getUsageColor(data.cpuPercent) }}>
 							{data.cpuPercent.toFixed(3)}%
 						</span>
 					</div>
@@ -99,7 +99,7 @@ export default function Hardware() {
 				</div>
 				<div className="space-y-2">
 					<div className="flex items-center justify-between">
-						<span className={`text-lg font-bold bg-[${getUsageColor(data.memoryPercent)}]`}>
+						<span className="text-lg font-bold" style={{ color: getUsageColor(data.memoryPercent) }}>
 							{data.memoryPercent.toFixed(3)}%
 						</span>
 					</div>
@@ -114,37 +114,28 @@ export default function Hardware() {
 						<Button type="button" className={`${procs === "procCPU" ? 'border-b' : ''} text-center cursor-pointer py-0.5 mx-3`} onClick={()=>setProcs("procCPU")} id="toggleCPU" > <Cpu className="mx-auto h-4 w-4 text-muted-foreground" /></Button>
 						<Button type="button" className={`${procs === "procMem" ? 'border-b' : ''} text-center cursor-pointer py-0.5 mx-3`} onClick={()=>setProcs("procMem")} id="toggleMem"> <MemoryStick className="mx-auto h-4 w-4 text-muted-foreground" /></Button>
 					</div>
-					<div className="py-1 flex items-center justify-between text-xs text-center">
-						<div className="truncate flex-1 mr-2">
-							<div className="font-medium">
-								Process
-							</div>
+					<div className="py-2 flex items-center justify-between text-xs px-1.5 border-b border-gray-800/50 mb-1">
+						<div className="truncate flex-[2] mr-2 text-left font-medium">
+							Process
 						</div> 
-						<div className="truncate flex-1 mr-2">
-							<div className="font-medium">
-								PID
-							</div>
+						<div className="flex-1 mr-2 text-center font-medium whitespace-nowrap shrink-0">
+							PID
 						</div> 
-						<div className="truncate flex-1 mr-2">
-							<div className="font-medium">
-								Usage
-							</div>
+						<div className="flex-1 text-right font-medium whitespace-nowrap shrink-0">
+							Usage
 						</div> 
 					</div>
 					{procs && data[procs].map((process) => (
-						<div key={`proc-${process.pid}`} className="flex items-center justify-between text-xs px-1.5" >
-							<div className="truncate flex-1 mr-2">
-								<div className="font-medium">
-									{process.name}
-								</div>
+						<div key={`proc-${process.pid}`} className="py-1 flex items-center justify-between text-xs px-1.5" >
+							<div className="truncate flex-[2] mr-2 text-left font-medium" title={process.name}>
+								{process.name}
 							</div> 
-							<div className="truncate flex-1 mr-2">
-								<div className="font-medium">
-									{process.pid}
-								</div>
+							<div className="flex-1 mr-2 text-center font-medium whitespace-nowrap shrink-0">
+								{process.pid}
 							</div> 
 							<div
-								className={`font-bold bg-[${procs == "procCPU" ? getUsageColor(process.cpuPercent || 0) : getUsageColor(process.memPercent || 0)}]`}
+								className="flex-1 text-right font-bold whitespace-nowrap shrink-0"
+								style={{ color: procs == "procCPU" ? getUsageColor(process.cpuPercent || 0) : getUsageColor(process.memPercent || 0) }}
 							>
 								{(procs == "procCPU" ? (process.cpuPercent ?? 0) : (process.memPercent ?? 0)).toFixed(3)}%
 							</div>

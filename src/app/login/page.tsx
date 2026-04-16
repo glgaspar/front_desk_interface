@@ -4,6 +4,7 @@ import React from 'react'
 import Api from '@/Components/Api';
 import User from './Interfaces/User';
 import toast from "react-hot-toast";
+import Button from '@/Components/Button';
 
 export default function Login() {
     const handleSubmit = (e: React.FormEvent) => {
@@ -45,12 +46,12 @@ export default function Login() {
                         <input id="password" name="password"  placeholder="password" type="password" className="text-center w-[2/4] bg-black" required />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <Link className='cursor-pointer border border-[#b3078b] text-center' href={'/register'}>
+                        <Button id="registerBttn" className='w-full' role='option' type="button" onClick={() => window.location.href = "/register"}>
                             Create Account
-                        </Link>
-                        <button id="loginBttn" className="cursor-pointer bg-[#b3078b]" type="submit">
+                        </Button>
+                        <Button id="loginBttn" role='action' type="submit">
                             Login
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </form>

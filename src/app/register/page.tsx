@@ -4,6 +4,7 @@ import React from 'react'
 import Api from '@/Components/Api';
 import User from '../login/Interfaces/User';
 import toast from "react-hot-toast";
+import Button from '@/Components/Button';
 
 
 export default function Register() {
@@ -44,12 +45,12 @@ export default function Register() {
                         <input id="password" name="password"  placeholder="password" type="password" className="text-center w-[2/4] bg-black" required />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <Link className='cursor-pointer border border-[#b3078b] text-center' href={'/login'}>
-                            Login
-                        </Link>
-                        <button id="registerBttn" className="cursor-pointer bg-[#b3078b]" type="submit">
+                        <Button id="loginBttn" className='w-full' role='option' type="button" onClick={() => window.location.href = "/login"}>
+                                Login
+                        </Button>
+                        <Button id="registerBttn" role='action' type="submit">
                             Create
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </form>
