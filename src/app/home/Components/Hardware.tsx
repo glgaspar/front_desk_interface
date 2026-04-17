@@ -55,7 +55,9 @@ export default function Hardware() {
 
 	if (loading	|| !data) {
 		return (
-			<Loader />
+			<div className="h-32">
+				<Loader />
+			</div>
 		);
 	}
 	return (
