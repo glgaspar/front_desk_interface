@@ -19,7 +19,7 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
     return (
         // <Card className={row ? "h-[15rem] w-[25rem]" : ""}>
 			
-		<Card className={'overflow-visible ' + (row ? " h-50 w-88" : " min-h-72 w-full")}>
+		<Card className={'overflow-visible bg-black ' + (row ? " h-50 w-88" : " min-h-72 w-full")}>
 				<div className="relative flex justify-center items-center px-5 py-1">
 					{title && (
 						<h5 className="text-xs font-bold text-white text-center">{title}</h5>
@@ -37,7 +37,7 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
 								</svg>
 							</button>
 							{isMenuOpen && (
-								<div className="absolute right-0 top-full mt-2 w-36 bg-black border border-[#b3078b] rounded-sm overflow-hidden">
+								<div className="absolute right-0 top-full mt-2 w-36 bg-black border border-[#b3078b] rounded-md overflow-hidden">
 									<ul className="py-1">
 										<li>
 											<Button
@@ -66,7 +66,7 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
 					)
 					: (
 						<div className="absolute right-5">
-							<Button id={`enable-widget-${title}`} type="button" onClick={() => updateToggleCallBack?.("enabled")} role='action' >
+							<Button id={`enable-widget-${title}`} type="button" onClick={() => updateToggleCallBack?.("enabled")} className='rounded-md' role='action' >
 								Enable
 							</Button>
 						</div>

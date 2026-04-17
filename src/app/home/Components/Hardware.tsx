@@ -79,7 +79,7 @@ export default function Hardware() {
 					/>
 				</Button>
 			</div> */}
-			<Card>
+			<Card className="bg-black">
 				<div className="flex items-center gap-2 mb-2">
 					<Cpu className="h-4 w-4 text-muted-foreground" />
 					<span className="text-sm font-medium">CPU</span>
@@ -94,7 +94,7 @@ export default function Hardware() {
 				</div>
 			</Card>
 
-			<Card>
+			<Card className="bg-black">
 				<div className="flex items-center gap-2 mb-2">
 					<MemoryStick className="h-4 w-4 text-muted-foreground" />
 					<span className="text-sm font-medium">Memory</span>
@@ -109,7 +109,7 @@ export default function Hardware() {
 				</div>
 			</Card>
 
-			<Card className="hidden md:block">
+			<Card className="bg-black hidden md:block">
 				<div className="text-sm font-medium mb-2">Top Processes</div>
 				<div className="space-y-2 text-center">
 					<div className="grid grid-cols-2">

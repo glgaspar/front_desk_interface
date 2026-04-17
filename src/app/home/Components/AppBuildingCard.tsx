@@ -35,7 +35,7 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 	}, [appName, end]);
 
 	return (
-		<Card className="w-36 h-36" key={appName}>
+		<Card className="w-36 h-36 bg-black" key={appName}>
 			<div>
 				<div className="h-8 w-full text-center">
 					<p>{appName}</p>

@@ -30,7 +30,7 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
     }
 
     return (
-        <Card className='w-[9rem] h-[9rem]' key={item.id}>
+        <Card className='w-[9rem] h-[9rem] bg-black' key={item.id}>
             <a href={item.url} target="_blank" rel="noopener noreferrer">
                 <div className='h-[2rem] w-full text-center'>
                     <p>{item.name}</p>

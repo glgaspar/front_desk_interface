@@ -13,7 +13,7 @@ export default function Navbar() {
 	const pathname = usePathname();
 
 	return (
-			<div className="grid grid-cols-3 border-b border-[#b3078b] text-white w-screen sticky top-0 left-0 z-10 h-[3rem]">
+			<div className="grid grid-cols-3 border-b border-[#b3078b] text-white w-screen sticky top-0 left-0 z-10 h-[3rem] bg-black">
                 <div className="my-auto">
                     {pathname !== "/login" && pathname !== "/register" && (
                         <Button

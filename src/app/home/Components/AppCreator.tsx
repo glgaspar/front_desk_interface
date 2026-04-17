@@ -70,7 +70,7 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 	}
 
 	return (
-		<Card className="w-36 h-36">
+		<Card className="w-36 h-36 bg-black">
 			<Popup
 				ref={ref}
 				modal
