@@ -9,11 +9,16 @@ import Popup from "reactjs-popup";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 import Image from "next/image";
 import { PopupActions } from "reactjs-popup/dist/types";
+import CodeMirror from '@uiw/react-codemirror';
+import { yaml } from '@codemirror/lang-yaml';
+import { EditorView } from '@codemirror/view';
+import { okaidia } from '@uiw/codemirror-theme-okaidia';
 
 export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: string) => void;}) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const ref = useRef<PopupActions>(null);
 	const [cloudflare, setCloudflare] = useState<boolean>(false)
+	const [compose, setCompose] = useState<string>("")
 
     useEffect(()=>{
         Api().get('/cloudflare/config')
@@ -34,12 +39,12 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 		event.preventDefault();
 		setLoading(true);
 		const form = event.target as HTMLFormElement & {
-			compose: { value: string };
+			tunnel?: { checked: boolean };
 		};
 
 		const data = {
-			compose: form.compose.value,
-            tunnel: form.tunnel?.checked,
+			compose: compose,
+			tunnel: form.tunnel?.checked,
 		};
 
 		const saving = toast.loading("Creating container...");
@@ -87,45 +92,49 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 				<Modal
 					title="New App"
 					close={() => ref?.current?.close()}
-					className="border border-[#b3078b] bg-black md:w-220 "
+					className="border border-[#b3078b] bg-[#0a0a0a] w-[95vw] md:w-[48rem] rounded-lg shadow-2xl overflow-hidden"
 				>
 					<form onSubmit={handleSubmit}>
-						<div className="px-2">
-							<textarea
-								className="text-sm my-2 p-2 min-h-80 border border-[#b3078b] w-full"
-								id="compose"
-								placeholder="Paste your compose file here..."
-							/>
-							{cloudflare && <div className="p-2">
-								<div className="flex items-center">
+						<div className="p-4 flex flex-col gap-6 text-gray-200 max-h-[85dvh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+							<div className="flex flex-col gap-3">
+								<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+									<h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
+										<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#b3078b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+										</svg>
+										docker-compose.yml
+									</h3>
+									<div className="flex gap-2 w-full sm:w-auto">
+										<Button role='cancel' type='button' onClick={cancelBttn} id='cancelBttn' className="flex-1 sm:flex-none justify-center">
+											Cancel
+										</Button>
+										<Button id="submitBttn" role='action' type="submit" disabled={loading} className="flex-1 sm:flex-none justify-center">
+											{loading ? 'Creating...' : 'Create App'}
+										</Button>
+									</div>
+								</div>
+								<CodeMirror
+									value={compose}
+									height="min(400px, 50dvh)"
+									extensions={[yaml(), EditorView.lineWrapping]}
+									onChange={(value: string) => setCompose(value)}
+									theme={okaidia}
+									className='w-full text-base border border-[#b3078b]/50 rounded-md overflow-hidden'
+									placeholder="Paste your docker-compose.yml content here..."
+								/>
+							</div>
+							{cloudflare && (
+								<div className="flex items-center gap-2 bg-black border border-gray-800 p-3 rounded-md">
 									<input
 										id="tunnel"
 										type="checkbox"
-										className="w-4 h-4"
+										className="w-4 h-4 accent-[#b3078b] bg-gray-800 border-gray-700 rounded focus:ring-[#b3078b] focus:ring-2 cursor-pointer"
 									/>
-									<label htmlFor="tunnel" className="pl-2 cursor-pointer">
-										Create Clouflare subdomain
+									<label htmlFor="tunnel" className="text-sm text-gray-300 cursor-pointer">
+										Create Cloudflare subdomain
 									</label>
 								</div>
-							</div>}
-							<div className="grid grid-cols-2 gap-4 mt-5">
-								<Button
-									className="cursor-pointer border border-[#b3078b] text-center"
-									type="button"
-									onClick={cancelBttn}
-									id="cancelBttn"
-								>
-									Cancel
-								</Button>
-								<button
-									id="submitBttn"
-									className="cursor-pointer bg-[#b3078b]"
-									type="submit"
-									disabled={loading}
-								>
-									Submit
-								</button>
-							</div>
+							)}
 						</div>
 					</form>
 				</Modal>
