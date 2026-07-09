@@ -27,7 +27,7 @@ export default function WidgetsRow() {
     }
 
 	return (
-    <div className="grid grid-flow-col overflow-x-scroll py-2">
+    <div className="grid grid-flow-col overflow-x-scroll py-2 justify-start gap-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
       {selectedWidgets?.map(widgetToRender => {
         const WidgetComponent = AvailableWidgets[widgetToRender.name] as React.ElementType;
         if (!widgetToRender.enabled) return null;
