@@ -1,3 +1,4 @@
+"use client"
 import Modal from "@/Components/Modal/Modal";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -7,7 +8,7 @@ import Popup from "reactjs-popup";
 import { EventConsumer } from "@/Components/Api";
 import { PopupActions } from "reactjs-popup/dist/types";
 
-export default function AppBuildingCard({appName, end}: {appName: string; end: () => void}) {
+export default function AppBuildingCard({appName,end}: {appName: string;end: () => void}) {
 	const [messages, setMessages] = useState<string[]>([]);
 	const ref = useRef<PopupActions>(null);
 
@@ -33,6 +34,31 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 			eventSource.close();
 		};
 	}, [appName, end]);
+
+	const logModalContent = (
+		<Modal
+			title={"Logs: " + appName}
+			close={() => ref.current?.close()}
+			className="border border-[#b3078b] bg-black md:w-220"
+		>
+			<div>
+				<pre className="bg-black border border-[#b3078b] text-white p-4 h-[60vh] overflow-y-scroll whitespace-pre-wrap wrap-break-word">
+					{messages.map((msg, index) => (
+						<div key={index}>{msg}</div>
+					))}
+					<div
+						ref={(el) => {
+							if (el) {
+								el.scrollIntoView({
+									behavior: "smooth",
+								});
+							}
+						}}
+					/>
+				</pre>
+			</div>
+		</Modal>
+	);
 
 	return (
 		<Card className="w-36 h-36 bg-black" key={appName}>
@@ -69,28 +95,7 @@ export default function AppBuildingCard({appName, end}: {appName: string; end: (
 							</div>
 						}
 					>
-						<Modal
-							title={"Logs: " + appName}
-							close={() => ref.current?.close()}
-							className="border border-[#b3078b] bg-black md:w-220"
-						>
-							<div>
-								<pre className="bg-black border border-[#b3078b] text-white p-4 h-[60vh] overflow-y-scroll whitespace-pre-wrap wrap-break-word">
-									{messages.map((msg, index) => (
-										<div key={index}>{msg}</div>
-									))}
-									<div
-										ref={(el) => {
-											if (el) {
-												el.scrollIntoView({
-													behavior: "smooth",
-												});
-											}
-										}}
-									/>
-								</pre>
-							</div>
-						</Modal>
+						{logModalContent}
 					</Popup>
 				</div>
 			</div>

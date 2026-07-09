@@ -13,8 +13,9 @@ import CodeMirror from '@uiw/react-codemirror';
 import { yaml } from '@codemirror/lang-yaml';
 import { EditorView } from '@codemirror/view';
 import { okaidia } from '@uiw/codemirror-theme-okaidia';
+import { Plus } from "lucide-react";
 
-export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: string) => void;}) {
+export default function AppCreator({onAppUpdate,variant = "card"}: {onAppUpdate: (newBuildTopic: string) => void;variant?: "card" | "button";}) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const ref = useRef<PopupActions>(null);
 	const [cloudflare, setCloudflare] = useState<boolean>(false)
@@ -69,26 +70,36 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 			});
 	}
 
-	return (
+	const triggerElement = variant === "card" ? (
 		<Card className="w-36 h-36 bg-black">
-			<Popup
-				ref={ref}
-				modal
-				nested
-				trigger={<div className="cursor-pointer h-full" id="add">
-							<div className="h-8 w-full text-center">
-								<p>Add App</p>
-							</div>
-							<div>
-								<Image
-									src={dockerSVG}
-									alt="Add app"
-									className="m-auto h-10 rounded-lg"
-									unoptimized
-								/>
-							</div>
-						</div>}
-				>
+			<div className="cursor-pointer h-full" id="add">
+				<div className="h-8 w-full text-center">
+					<p>Add App</p>
+				</div>
+				<div>
+					<Image
+						src={dockerSVG}
+						alt="Add app"
+						className="m-auto h-10 rounded-lg"
+						unoptimized
+					/>
+				</div>
+			</div>
+		</Card>
+	) : (
+		<Button id="addAppBtn" role="action" className="flex items-center gap-2 h-10 py-0 px-4 rounded-md">
+			<Plus className="h-4 w-4" />
+			<span>Add App</span>
+		</Button>
+	);
+
+	return (
+		<Popup
+			ref={ref}
+			modal
+			nested
+			trigger={triggerElement}
+		>
 				<Modal
 					title="New App"
 					close={() => ref?.current?.close()}
@@ -139,6 +150,5 @@ export default function AppCreator({onAppUpdate}: {onAppUpdate: (newBuildTopic: 
 					</form>
 				</Modal>
 			</Popup>
-		</Card>
 	);
 }
