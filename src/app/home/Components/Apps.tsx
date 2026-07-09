@@ -113,9 +113,7 @@ export default function Apps() {
 				</div>
 
 				<div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-					{viewMode === "list" && (
-						<AppCreator onAppUpdate={handleNewApp} variant="button" />
-					)}
+					<AppCreator onAppUpdate={handleNewApp} variant="button" />
 
 					<div className="flex items-center bg-black border border-zinc-800 p-0.5 rounded-lg">
 						<button
@@ -147,7 +145,6 @@ export default function Apps() {
 			{/* Views Content */}
 			{viewMode === "card" ? (
 				<div className="flex flex-wrap gap-4 justify-center items-center">
-					<AppCreator onAppUpdate={handleNewApp} variant="card" />
 					{filteredWaitingBuilds?.map((item) => (
 						<AppBuildingCard key={item} appName={item} end={() => handleEndBuild(item)}/>
 					))}
