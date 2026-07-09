@@ -8,7 +8,7 @@ import Button from "@/Components/Button";
 import { Cpu, MemoryStick } from "lucide-react";
 import Api from "@/Components/Api";
 import Loader from "@/Components/Loader";
-import { SystemData } from "../Interfaces/Monitor";
+import { SystemData } from "../../Interfaces/Monitor";
 
 export default function Hardware() {
 	const [data, setData] = useState<SystemData | null>(null);

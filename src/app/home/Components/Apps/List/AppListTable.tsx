@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import App from "../Interfaces/Apps";
+import App from "../../../Interfaces/Apps";
 import AppBuildingRow from "./AppBuildingRow";
 import AppRow from "./AppRow";
 

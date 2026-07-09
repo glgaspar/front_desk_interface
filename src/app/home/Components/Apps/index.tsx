@@ -1,13 +1,13 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import App from "../Interfaces/Apps";
-import AppCard from "./AppCard";
+import App from "../../Interfaces/Apps";
+import AppCard from "./Card/AppCard";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
 import AppCreator from "./AppCreator";
-import AppBuildingCard from "./AppBuildingCard";
+import AppBuildingCard from "./Card/AppBuildingCard";
 import { LayoutGrid, List, Search } from "lucide-react";
-import AppListTable from "./AppListTable";
+import AppListTable from "./List/AppListTable";
 
 export default function Apps() {
 	const [apps, setApps] = useState<Array<App>>([])

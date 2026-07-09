@@ -1,10 +1,10 @@
 import React from 'react'
-import App from '../Interfaces/Apps'
+import App from '../../../Interfaces/Apps'
 import dockerSVG from '@/Components/Static/docker-svgrepo-com.svg'
 import Image from 'next/image';
 import Card from '@/Components/Card';
 import Api from '@/Components/Api';
-import AppConfig from './AppConfig';
+import AppConfig from '../AppConfig';
 
 export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     let running: boolean = false

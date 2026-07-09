@@ -2,9 +2,9 @@
 import React from "react";
 import Image from "next/image";
 import { Power } from "lucide-react";
-import App from "../Interfaces/Apps";
+import App from "../../../Interfaces/Apps";
 import Api from "@/Components/Api";
-import AppConfig from "./AppConfig";
+import AppConfig from "../AppConfig";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 
 interface AppRowProps {
