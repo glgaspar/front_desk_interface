@@ -13,7 +13,7 @@ interface AppRowProps {
 }
 
 export default function AppRow({ item, onAppUpdate }: AppRowProps) {
-	const running = item.state.status === "running";
+	const running = item.state?.status === "running";
 
 	const turnOnOff = () => {
 		const toggle = running ? "stop" : "start";
@@ -50,7 +50,7 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 						: 'bg-red-500/10 text-red-400 border border-red-500/20'
 				}`}>
 					<span className={`h-1.5 w-1.5 rounded-full ${running ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
-					{item.state.status.toUpperCase()}
+					{(item.state?.status || "").toUpperCase()}
 				</span>
 			</td>
 			<td className="py-3 px-4">

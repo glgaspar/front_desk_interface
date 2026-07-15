@@ -13,7 +13,7 @@ export default function WidgetsRow() {
     Api()
       .get("/widgets?homeOnly=true")
       .then((response) => {
-        setSelectedWidgets(response.data.data);
+        setSelectedWidgets(Array.isArray(response.data?.data) ? response.data.data : []);
       })
       .catch((error) => {
         console.error(error);

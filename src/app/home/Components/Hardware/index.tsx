@@ -127,7 +127,7 @@ export default function Hardware() {
 							Usage
 						</div> 
 					</div>
-					{procs && data[procs].map((process) => (
+					{procs && (data[procs] || []).map((process) => (
 						<div key={`proc-${process.pid}`} className="py-1 flex items-center justify-between text-xs px-1.5" >
 							<div className="truncate flex-[2] mr-2 text-left font-medium" title={process.name}>
 								{process.name}

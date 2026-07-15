@@ -20,7 +20,7 @@ export default function Apps() {
 		Api()
 			.get("/apps")
 			.then((response) => {
-				setApps(response.data.data);
+				setApps(Array.isArray(response.data?.data) ? response.data.data : []);
 			})
 			.catch((error) => {
 				toast.error(
@@ -35,7 +35,7 @@ export default function Apps() {
 		Api()
 			.get("/apps/waitingBuilds")
 			.then((response) => {
-				setWaitingBuilds(response.data.data);
+				setWaitingBuilds(Array.isArray(response.data?.data) ? response.data.data : []);
 			})
 			.catch((error) => {
 				toast.error(
@@ -87,14 +87,14 @@ export default function Apps() {
 		setUpdate(prev => prev + 1)
 	}
 
-	const filteredWaitingBuilds = waitingBuilds.filter((item) =>
-		item.toLowerCase().includes(searchQuery.toLowerCase())
+	const filteredWaitingBuilds = (waitingBuilds || []).filter((item) =>
+		item?.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
-	const filteredApps = apps.filter((item) =>
-		item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-		item.image.toLowerCase().includes(searchQuery.toLowerCase()) ||
-		item.state.status.toLowerCase().includes(searchQuery.toLowerCase())
+	const filteredApps = (apps || []).filter((item) =>
+		(item?.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+		(item?.image || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+		(item?.state?.status || "").toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
 	return (
@@ -144,13 +144,18 @@ export default function Apps() {
 
 			{/* Views Content */}
 			{viewMode === "card" ? (
-				<div className="flex flex-wrap gap-4 justify-center items-center">
+				<div className="flex flex-wrap gap-4 justify-center items-center w-full">
 					{filteredWaitingBuilds?.map((item) => (
 						<AppBuildingCard key={item} appName={item} end={() => handleEndBuild(item)}/>
 					))}
 					{filteredApps?.map((item) => (
 						<AppCard key={item.id} item={item} onAppUpdate={handleAppUpdate} />
 					))}
+					{filteredWaitingBuilds.length === 0 && filteredApps.length === 0 && (
+						<div className="py-8 text-center text-gray-500 w-full">
+							No apps found matching your search.
+						</div>
+					)}
 				</div>
 			) : (
 				<AppListTable

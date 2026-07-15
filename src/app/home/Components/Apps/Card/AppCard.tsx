@@ -8,7 +8,7 @@ import AppConfig from '../AppConfig';
 
 export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     let running: boolean = false
-    if (item.state.status == "running") {
+    if (item.state?.status == "running") {
         running = true
     } 
     function turnOnOff() {
@@ -38,7 +38,7 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
                 <div >
                     <Image src={item.logo||dockerSVG} alt={item.name} className="m-auto h-10 w-10 rounded-lg" width={40} height={40} unoptimized />
                 </div>
-                <p className='mt-2 text-center text-xs'>{item.state.status.toUpperCase()}</p>
+                <p className='mt-2 text-center text-xs'>{(item.state?.status || "").toUpperCase()}</p>
             </a>
             <div className='px-5 grid grid-cols-2 gap-3'>
                 <div className='w-[2rem] h-[2rem]'>
