@@ -70,3 +70,8 @@ This application is configured for easy deployment using Docker.
     ```
 
 3.  **Access the Application**: Once the container is running, you can access the Front Desk Interface by navigating to `http://localhost:3000` in your browser.
+
+## License
+
+This project is licensed under the PessimaIdeia "Atrocious Idea" Public License - see the [LICENSE](LICENSE) file for details.
+
