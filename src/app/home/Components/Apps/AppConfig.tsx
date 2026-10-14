@@ -270,7 +270,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                             View Logs
                                         </Button>
                                     }>
-                                        <LogViewer appId={app.id} close={() => refLog?.current?.close()} />
+                                        <LogViewer appId={app.id} appName={app.name} close={() => refLog?.current?.close()} />
                                     </Popup>
 
                                     {isAdmin && <>

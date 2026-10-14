@@ -1,5 +1,5 @@
 "use client"
-import Modal from "@/Components/Modal/Modal";
+import Terminal, { appendLine } from "@/Components/Terminal";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Card from "@/Components/Card";
@@ -20,7 +20,7 @@ export default function AppBuildingCard({appName,end}: {appName: string;end: () 
 		eventSource.onmessage = (event) => {
 			const msg = event.data;
 			if (msg) {
-				setMessages((prev) => [...prev, msg]);
+				setMessages((prev) => appendLine(prev, msg));
 				if (msg.includes("no active build") || msg.includes("stream closed")) {
 					endRef.current();
 				}
@@ -38,29 +38,14 @@ export default function AppBuildingCard({appName,end}: {appName: string;end: () 
 		};
 	}, [appName]);
 
-	const logModalContent = (
-		<Modal
-			title={"Logs: " + appName}
+	const logTerminal = (
+		<Terminal
+			title={"build " + appName}
+			lines={messages}
+			live
+			status="building"
 			close={() => ref.current?.close()}
-			className="border border-[#b3078b] bg-black md:w-220"
-		>
-			<div>
-				<pre className="bg-black border border-[#b3078b] text-white p-4 h-[60vh] overflow-y-scroll whitespace-pre-wrap wrap-break-word">
-					{messages.map((msg, index) => (
-						<div key={index}>{msg}</div>
-					))}
-					<div
-						ref={(el) => {
-							if (el) {
-								el.scrollIntoView({
-									behavior: "smooth",
-								});
-							}
-						}}
-					/>
-				</pre>
-			</div>
-		</Modal>
+		/>
 	);
 
 	return (
@@ -101,7 +86,7 @@ export default function AppBuildingCard({appName,end}: {appName: string;end: () 
 						</div>
 					}
 				>
-					{logModalContent}
+					{logTerminal}
 				</Popup>
 			</div>
 		</Card>

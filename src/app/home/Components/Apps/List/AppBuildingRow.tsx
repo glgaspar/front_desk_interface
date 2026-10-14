@@ -4,7 +4,7 @@ import Image from "next/image";
 import Popup from "reactjs-popup";
 import { PopupActions } from "reactjs-popup/dist/types";
 import { Settings } from "lucide-react";
-import Modal from "@/Components/Modal/Modal";
+import Terminal, { appendLine } from "@/Components/Terminal";
 import { EventConsumer, track } from "@/Components/Api";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 
@@ -25,7 +25,7 @@ export default function AppBuildingRow({ appName, end }: AppBuildingRowProps) {
 		eventSource.onmessage = (event) => {
 			const msg = event.data;
 			if (msg) {
-				setMessages((prev) => [...prev, msg]);
+				setMessages((prev) => appendLine(prev, msg));
 				if (msg.includes("no active build") || msg.includes("stream closed")) {
 					endRef.current();
 				}
@@ -84,28 +84,13 @@ export default function AppBuildingRow({ appName, end }: AppBuildingRowProps) {
 							</button>
 						}
 					>
-						<Modal
-							title={"Logs: " + appName}
+						<Terminal
+							title={"build " + appName}
+							lines={messages}
+							live
+							status="building"
 							close={() => ref.current?.close()}
-							className="border border-[#b3078b] bg-black md:w-220"
-						>
-							<div>
-								<pre className="bg-black border border-[#b3078b] text-white p-4 h-[60vh] overflow-y-scroll whitespace-pre-wrap wrap-break-word">
-									{messages.map((msg, index) => (
-										<div key={index}>{msg}</div>
-									))}
-									<div
-										ref={(el) => {
-											if (el) {
-												el.scrollIntoView({
-													behavior: "smooth",
-												});
-											}
-										}}
-									/>
-								</pre>
-							</div>
-						</Modal>
+						/>
 					</Popup>
 				</div>
 			</td>

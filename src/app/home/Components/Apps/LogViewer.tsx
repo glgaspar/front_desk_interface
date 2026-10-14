@@ -1,9 +1,9 @@
 "use client";
 import { EventConsumer } from "@/Components/Api";
-import Modal from "@/Components/Modal/Modal";
+import Terminal, { appendLine, systemLine } from "@/Components/Terminal";
 import { useState, useEffect } from "react";
 
-const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
+const LogViewer = ({ appId, appName, close }: { appId: string, appName?: string, close:()=>void }) => {
 	const [logs, setLogs] = useState<string[]>([]);
 	const [isConnected, setIsConnected] = useState(false);
 
@@ -13,14 +13,11 @@ const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
 		eventSource.onopen = () => {
 			setIsConnected(true);
 			console.log("SSE connection established.");
-			setLogs((prev) => [
-				...prev,
-				"Connection to log stream established...",
-			]);
+			setLogs((prev) => appendLine(prev, systemLine("Connection to log stream established...")));
 		};
 
 		eventSource.onmessage = (event) => {
-			setLogs((prevLogs) => [...prevLogs, event.data]);
+			setLogs((prevLogs) => appendLine(prevLogs, event.data));
 		};
 
 		eventSource.onerror = (err) => {
@@ -36,34 +33,13 @@ const LogViewer = ({ appId,close }: { appId: string,close:()=>void }) => {
 	}, [appId]);
 
 	return (
-		
-			<Modal
-				title="Logs"
-				close={() => close()}
-				className="border border-[#b3078b] bg-black md:w-[55rem]"
-			>
-				<div>
-					<div>
-						Connection Status:
-                        <span
-                            className={`font-bold ml-1 ${isConnected ? "text-green-500" : "text-red-500"}`}
-                        >
-							{isConnected ? "Connected" : "Disconnected"}
-						</span>
-					</div>
-                    <pre className="bg-black border border-[#b3078b] text-white p-4 h-[60vh] overflow-y-scroll whitespace-pre-wrap break-words">
-                        {logs.map((log, index) => (
-                            <div key={index}>{log}</div>
-                        ))}
-						<div ref={(el) => {
-							if (el) {
-								el.scrollIntoView({ behavior: "smooth" });
-							}
-						}} />
-                    </pre>					
-
-				</div>
-			</Modal>
+		<Terminal
+			title={"docker logs -f " + (appName || appId.slice(0, 12))}
+			lines={logs}
+			live={isConnected}
+			status={isConnected ? "connected" : "disconnected"}
+			close={close}
+		/>
 	);
 };
 
