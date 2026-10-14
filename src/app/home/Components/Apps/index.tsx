@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import App, { AppStats, UpdateStatus } from "../../Interfaces/Apps";
 import { AppsContext } from "./AppsContext";
 import { Uptime } from "@/app/monitoring/Interfaces";
@@ -20,34 +20,49 @@ export default function Apps() {
 	const [stats, setStats] = useState<AppStats[]>([])
 	const [updates, setUpdates] = useState<Record<string, UpdateStatus>>({})
 	const [uptime, setUptime] = useState<Uptime[]>([])
+	const failing = useRef(false)
 
-	useEffect(() => {
+	function loadApps() {
 		Api()
 			.get("/apps")
 			.then((response) => {
 				setApps(Array.isArray(response.data?.data) ? response.data.data : []);
+				failing.current = false;
 			})
 			.catch((error) => {
+				// only yell once, not every 10 seconds
+				if (failing.current) return;
+				failing.current = true;
 				toast.error(
 					error?.response?.data?.message ||
 						"Unknow error fetching apps. Better luck next time..."
 				);
 			});
-	}, [update]);
+	}
 
-
-	useEffect(() => {
+	function loadBuilds() {
 		Api()
 			.get("/apps/waitingBuilds")
 			.then((response) => {
-				setWaitingBuilds(Array.isArray(response.data?.data) ? response.data.data : []);
+				const builds: string[] = Array.isArray(response.data?.data) ? response.data.data : [];
+				// the ones that finished leave on their own when the stream closes
+				setWaitingBuilds(prev => [...prev, ...builds.filter(b => !prev.includes(b))]);
 			})
-			.catch((error) => {
-				toast.error(
-					error?.response?.data?.message ||
-						"Unknow error fetching builds. Better luck next time..."
-				);
-			});
+			.catch((error) => console.error(error));
+	}
+
+	useEffect(() => {
+		loadApps();
+	}, [update]);
+
+	useEffect(() => {
+		loadBuilds();
+		const interval = setInterval(() => {
+			if (document.hidden) return;
+			loadApps();
+			loadBuilds();
+		}, 10000); // same as the system usage
+		return () => clearInterval(interval);
 	}, [])
 
 	useEffect(() => {
@@ -124,7 +139,7 @@ export default function Apps() {
 	};
 
 	function handleNewApp(newBuildTopic: string) {
-		setWaitingBuilds((prev) => [
+		setWaitingBuilds((prev) => prev.includes(newBuildTopic) ? prev : [
 			...prev,
 			newBuildTopic,
 		]);

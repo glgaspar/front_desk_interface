@@ -11,6 +11,9 @@ import { PopupActions } from "reactjs-popup/dist/types";
 export default function AppBuildingCard({appName,end}: {appName: string;end: () => void}) {
 	const [messages, setMessages] = useState<string[]>([]);
 	const ref = useRef<PopupActions>(null);
+	// end changes on every render of the parent, if it goes in the deps the stream reconnects and repeats the whole log
+	const endRef = useRef(end);
+	endRef.current = end;
 
 	useEffect(() => {
 		const eventSource = EventConsumer("/apps/waitingBuilds/" + appName)
@@ -19,7 +22,7 @@ export default function AppBuildingCard({appName,end}: {appName: string;end: () 
 			if (msg) {
 				setMessages((prev) => [...prev, msg]);
 				if (msg.includes("no active build") || msg.includes("stream closed")) {
-					end();
+					endRef.current();
 				}
 			}
 		};
@@ -27,13 +30,13 @@ export default function AppBuildingCard({appName,end}: {appName: string;end: () 
 		eventSource.onerror = (err) => {
 			console.error("EventSource failed:", err);
 			eventSource.close();
-			end();
+			endRef.current();
 		};
 
 		return () => {
 			eventSource.close();
 		};
-	}, [appName, end]);
+	}, [appName]);
 
 	const logModalContent = (
 		<Modal
