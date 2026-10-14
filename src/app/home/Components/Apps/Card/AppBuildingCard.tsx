@@ -64,43 +64,44 @@ export default function AppBuildingCard({appName,end}: {appName: string;end: () 
 	);
 
 	return (
-		<Card className="w-36 h-36 bg-black" key={appName}>
-			<div>
-				<div className="h-8 w-full text-center">
-					<p>{appName}</p>
-				</div>
-				<div>
-					<Image
-						src={dockerSVG}
-						alt={appName}
-						className="m-auto h-10 w-10 rounded-lg"
-						width={40}
-						height={40}
-						unoptimized
-					/>
-				</div>
-				<p className="mt-2 text-center text-xs">
-					{appName.toUpperCase()}
-				</p>
+		<Card className="bg-black w-full min-h-[11rem] flex flex-col gap-2 overflow-hidden animate-pulse" key={appName}>
+			<div className="flex items-center gap-2 min-w-0" title={appName}>
+				<Image
+					src={dockerSVG}
+					alt={appName}
+					className="h-8 w-8 shrink-0 rounded-lg"
+					width={32}
+					height={32}
+					unoptimized
+				/>
+				<p className="truncate font-medium">{appName}</p>
 			</div>
-			<div className="px-5 grid grid-cols-2 gap-3">
-				<div className="w-8 h-8">
-					<Popup
-						ref={ref}
-						modal
-						nested
-						trigger={
-							<div
-								className="bg-none text-[1.5rem] text-center w-8 h-8 cursor-pointer "
-								id="building"
-							>
-								&#9881;
-							</div>
-						}
-					>
-						{logModalContent}
-					</Popup>
-				</div>
+			<div className="flex flex-wrap items-center gap-1 text-[10px] font-medium">
+				<span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20">
+					<span className="h-1.5 w-1.5 rounded-full bg-pink-400 animate-ping" />
+					BUILDING
+				</span>
+			</div>
+			<p className="flex-1 flex items-end text-[10px] font-mono text-gray-500 break-all line-clamp-3">
+				{messages[messages.length - 1] || "waiting for logs..."}
+			</p>
+			<div className="flex justify-between items-center border-t border-zinc-800 pt-2">
+				<Popup
+					ref={ref}
+					modal
+					nested
+					trigger={
+						<div
+							className="bg-none text-[1.5rem] flex justify-center items-center w-[2rem] h-[2rem] cursor-pointer hover:text-[#b3078b] transition-colors"
+							id="building"
+							title="See the build logs"
+						>
+							&#9881;
+						</div>
+					}
+				>
+					{logModalContent}
+				</Popup>
 			</div>
 		</Card>
 	);

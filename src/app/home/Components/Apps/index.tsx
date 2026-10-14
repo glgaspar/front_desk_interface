@@ -208,7 +208,7 @@ export default function Apps() {
 
 			{/* Views Content */}
 			{viewMode === "card" ? (
-				<div className="flex flex-wrap gap-4 justify-center items-center w-full">
+				<div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-2 w-full">
 					{filteredWaitingBuilds?.map((item) => (
 						<AppBuildingCard key={item} appName={item} end={() => handleEndBuild(item)}/>
 					))}
