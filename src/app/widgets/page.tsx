@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FrontEndWidgets  from "./frontEndWidgets";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
@@ -10,6 +10,7 @@ export default function Widgets() {
   const [availableWidgets, setAvailabledWidgets] = useState<ServerWidget[]|undefined>(undefined);
   const [showAll, setShowAll] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const checkedNewWidgets = useRef(false);
 
   useEffect(() => {
     Api()
@@ -24,25 +25,26 @@ export default function Widgets() {
   }, [refresh]);
 
   useEffect(() => {
-    if (!availableWidgets) return;
-    let added = false;
-    for (const widget of Object.keys(FrontEndWidgets) || []) {
-      if (!availableWidgets?.some(w => w.name === widget)) {
-        Api()
-          .post("/widgets", {name: widget})
-          .then(() => {
-              added = true;
-          })
-          .catch((error) => {
-            console.error(error);
-            toast.error("Failed to add widget " + widget);
-          })
+    if (!availableWidgets || checkedNewWidgets.current) return;
+    checkedNewWidgets.current = true;
+
+    const missing = Object.keys(FrontEndWidgets).filter(widget => !availableWidgets.some(w => w.name === widget));
+    if (missing.length === 0) return;
+
+    // the .then was running after the if, so it never refreshed. waiting for all of them now
+    Promise.allSettled(missing.map(widget => Api().post("/widgets", {name: widget})))
+      .then(results => {
+        results.forEach((result, i) => {
+          if (result.status === "rejected") {
+            console.error(result.reason);
+            toast.error("Failed to add widget " + missing[i]);
+          }
+        });
+        if (results.some(result => result.status === "fulfilled")) {
+          setRefresh(prev => prev + 1);
+          toast.success("New widget found. Refreshing list.");
         }
-      }
-    if (added) {
-      setRefresh(prev => prev + 1);
-      toast.success("New widget found. Refreshing list.");
-    }
+      });
   }, [availableWidgets])
 
   function updateToggleCallBack(id:number, toggle: "enabled" | "selected") {
