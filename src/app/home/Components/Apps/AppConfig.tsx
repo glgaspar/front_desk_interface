@@ -1,5 +1,5 @@
 "use client"
-import React, { FormEvent, useRef, useState } from 'react'
+import React, { FormEvent, useContext, useRef, useState } from 'react'
 import Modal from '@/Components/Modal/Modal'
 import Popup from 'reactjs-popup'
 import Button from '@/Components/Button'
@@ -13,12 +13,48 @@ import CodeMirror from '@uiw/react-codemirror';
 import { yaml } from '@codemirror/lang-yaml';
 import { EditorView } from '@codemirror/view';
 import { okaidia } from '@uiw/codemirror-theme-okaidia';
+import { AppsContext, useAppUpdate } from './AppsContext'
 
 export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     const [loading, setLoading] = useState<boolean>(false)
     const [compose, setCompose] = useState<string|unknown>(null)
     const ref = useRef<PopupActions>(null);
     const refLog = useRef<PopupActions>(null);
+    const { onBuildStart, refreshUpdates } = useContext(AppsContext)
+    const update = useAppUpdate(app)
+
+    function restartApp() {
+        const restarting = toast.loading("Restarting...")
+        Api().put(`/apps/restart/${app.id}`)
+        .then(response => {
+            toast.success("Restarted!")
+            onAppUpdate(app.id, response?.data?.data)
+        })
+        .catch((error) => {
+                toast.error(
+                    error?.response?.data?.message ||
+                        "Unknow error. Better luck next time..."
+                );
+            })
+        .finally(()=>{
+            toast.dismiss(restarting)
+        })
+    }
+
+    function updateApp() {
+        Api().post(`/apps/update/${app.id}`)
+        .then(response => {
+            toast.success("Updating, follow the build")
+            onBuildStart(response?.data?.data?.topic)
+            ref?.current?.close();
+        })
+        .catch((error) => {
+                toast.error(
+                    error?.response?.data?.message ||
+                        "Unknow error. Better luck next time..."
+                );
+            })
+    }
 
     function editCompose() {
         setLoading(true)
@@ -113,6 +149,17 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                     <span className='font-semibold text-gray-400'>Directory:</span> 
                                     <span className='font-mono bg-black border border-gray-800 px-2 py-0.5 rounded text-xs break-all'>{app?.dir}</span>
                                 </p>
+                                <p className='flex flex-col items-start gap-0'>
+                                    <span className='font-semibold text-gray-400'>Image:</span> 
+                                    <span className='font-mono bg-black border border-gray-800 px-2 py-0.5 rounded text-xs break-all'>{app?.imageRef || '-'}</span>
+                                    <span className='text-xs mt-1 flex gap-2 items-center'>
+                                        {update?.status === "update_available" && <span className='text-amber-400'>Update available</span>}
+                                        {update?.status === "up_to_date" && <span className='text-emerald-400'>Up to date</span>}
+                                        {update?.status === "unsupported" && <span className='text-gray-500'>Built locally, cant check for updates</span>}
+                                        {update?.status === "error" && <span className='text-red-400' title={update.error}>Could not check for updates</span>}
+                                        <span className='text-gray-500 hover:text-[#b3078b] cursor-pointer underline' onClick={() => refreshUpdates(true)}>check again</span>
+                                    </span>
+                                </p>
                             </div>
                             <Button 
                                 id="delete" 
@@ -172,6 +219,14 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
 
                                     <Button id='composeEdit' role='option' onClick={editCompose} type="button" disabled={loading} className="w-full sm:w-auto">
                                         Edit Compose
+                                    </Button>
+
+                                    <Button id='restart' role='option' onClick={restartApp} type="button" className="w-full sm:w-auto">
+                                        Restart
+                                    </Button>
+
+                                    <Button id='update' role='option' onClick={updateApp} type="button" className={`w-full sm:w-auto ${update?.status === "update_available" ? "text-amber-400" : ""}`}>
+                                        Update
                                     </Button>
                                 </div>
                             ) : (

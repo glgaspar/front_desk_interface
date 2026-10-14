@@ -19,6 +19,8 @@ export default function AppListTable({apps,waitingBuilds,onAppUpdate,onEndBuild}
 					<tr>
 						<th className="py-3 px-4">App</th>
 						<th className="py-3 px-4">Status</th>
+						<th className="py-3 px-4">CPU</th>
+						<th className="py-3 px-4">Mem</th>
 						<th className="py-3 px-4">URL</th>
 						<th className="py-3 px-4 text-right">Actions</th>
 					</tr>
@@ -33,7 +35,7 @@ export default function AppListTable({apps,waitingBuilds,onAppUpdate,onEndBuild}
 					))}
 					{apps.length === 0 && waitingBuilds.length === 0 ? (
 						<tr>
-							<td colSpan={4} className="py-8 text-center text-gray-500">
+							<td colSpan={6} className="py-8 text-center text-gray-500">
 								No apps found matching your search.
 							</td>
 						</tr>

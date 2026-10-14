@@ -6,6 +6,8 @@ import { Power } from "lucide-react";
 import App from "../../../Interfaces/Apps";
 import Api from "@/Components/Api";
 import AppConfig from "../AppConfig";
+import { useAppStats, useAppUpdate } from "../AppsContext";
+import { getUsageColor } from "@/Utils/usageColor";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 
 interface AppRowProps {
@@ -16,6 +18,8 @@ interface AppRowProps {
 export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 	const running = item.state?.status === "running";
 	const [toggling, setToggling] = useState(false);
+	const stats = useAppStats(item);
+	const update = useAppUpdate(item);
 
 	const turnOnOff = () => {
 		if (toggling) return;
@@ -47,6 +51,9 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 					unoptimized
 				/>
 				<span className="font-medium text-white">{item.name}</span>
+				{update?.status === "update_available" && (
+					<span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20">update</span>
+				)}
 			</td>
 			<td className="py-3 px-4">
 				<span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -57,6 +64,12 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 					<span className={`h-1.5 w-1.5 rounded-full ${running ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
 					{(item.state?.status || "").toUpperCase()}
 				</span>
+			</td>
+			<td className="py-3 px-4 font-mono text-xs" style={{ color: stats ? getUsageColor(stats.cpuPercent) : undefined }}>
+				{stats ? `${stats.cpuPercent.toFixed(1)}%` : "-"}
+			</td>
+			<td className="py-3 px-4 font-mono text-xs" title={stats?.memUsage} style={{ color: stats ? getUsageColor(stats.memPercent) : undefined }}>
+				{stats ? `${stats.memPercent.toFixed(1)}%` : "-"}
 			</td>
 			<td className="py-3 px-4">
 				<a

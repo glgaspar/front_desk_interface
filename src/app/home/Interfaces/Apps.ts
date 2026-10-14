@@ -3,6 +3,8 @@ export default interface App {
   created: string
   state: State
   image: string
+  imageRef: string
+  cloudflarePort?: string
   name: string
   url: string
   dir: string
@@ -17,6 +19,26 @@ export interface State {
   finishedAt: string
 }
 
+
+export interface AppStats {
+  id: string
+  name: string
+  cpuPercent: number
+  memPercent: number
+  memUsage: string
+  netIO: string
+  blockIO: string
+  pids: string
+}
+
+export interface UpdateStatus {
+  imageRef: string
+  localDigest: string
+  remoteDigest: string
+  status: "up_to_date" | "update_available" | "unsupported" | "error"
+  error: string
+  checkedAt: string
+}
 
 export interface WaitingBuild {
   topic: string

@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import App from "../../Interfaces/Apps";
+import App, { AppStats, UpdateStatus } from "../../Interfaces/Apps";
+import { AppsContext } from "./AppsContext";
 import AppCard from "./Card/AppCard";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
@@ -15,6 +16,8 @@ export default function Apps() {
 	const [update, setUpdate] = useState(0)
 	const [viewMode, setViewMode] = useState<"card" | "list">("card")
 	const [searchQuery, setSearchQuery] = useState("")
+	const [stats, setStats] = useState<AppStats[]>([])
+	const [updates, setUpdates] = useState<Record<string, UpdateStatus>>({})
 
 	useEffect(() => {
 		Api()
@@ -44,6 +47,34 @@ export default function Apps() {
 				);
 			});
 	}, [])
+
+	useEffect(() => {
+		function loadStats() {
+			if (document.hidden) return;
+			Api()
+				.get("/apps/stats")
+				.then((response) => {
+					setStats(Array.isArray(response.data?.data) ? response.data.data : []);
+				})
+				.catch((error) => console.error(error));
+		}
+		loadStats();
+		const interval = setInterval(loadStats, 15000);
+		return () => clearInterval(interval);
+	}, []);
+
+	useEffect(() => {
+		refreshUpdates();
+	}, []);
+
+	function refreshUpdates(force = false) {
+		Api()
+			.get(`/apps/updates${force ? "?force=true" : ""}`)
+			.then((response) => {
+				setUpdates(response.data?.data || {});
+			})
+			.catch((error) => console.error(error));
+	}
 
 	useEffect(() => {
 		const savedMode = localStorage.getItem("front_desk_view_mode");
@@ -98,6 +129,7 @@ export default function Apps() {
 	);
 
 	return (
+		<AppsContext.Provider value={{ stats, updates, onBuildStart: handleNewApp, refreshUpdates }}>
 		<div className="mt-4">
 			{/* Controls Bar */}
 			<div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#141414] border border-[#b3078b]/30 p-3 rounded-xl mb-4 w-full">
@@ -166,5 +198,6 @@ export default function Apps() {
 				/>
 			)}
 		</div>
+		</AppsContext.Provider>
 	);
 }

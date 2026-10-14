@@ -9,6 +9,7 @@ import { Cpu, MemoryStick } from "lucide-react";
 import Api from "@/Components/Api";
 import Loader from "@/Components/Loader";
 import { SystemData } from "../../Interfaces/Monitor";
+import { getUsageColor } from "@/Utils/usageColor";
 
 export default function Hardware() {
 	const [data, setData] = useState<SystemData | null>(null);
@@ -46,12 +47,6 @@ export default function Hardware() {
 
 		return () => clearInterval(interval);
 	}, [isPolling]);
-
-	const getUsageColor = (percentage: number) => {
-		if (percentage < 30) return "#48b53c";
-		if (percentage < 70) return "#b5a13c";
-		return "#b53c3c";
-	};
 
 	if (loading	|| !data) {
 		return (
