@@ -4,9 +4,11 @@ import Card from '@/Components/Card'
 import Button from '@/Components/Button'
 import React, { useState, useRef } from 'react'
 import { useClickOutside } from '@/Utils/useClickOutside'
+import { useUser } from '@/Components/User'
 
 export default function Wrapper({title, enabled, selected, row=false, children, updateToggleCallBack}:{title?:string, enabled:boolean, selected:boolean, row?:boolean, children:React.ReactNode, updateToggleCallBack?:(toggle: "enabled" | "selected") => void}) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { isAdmin } = useUser();
     const menuRef = useRef<HTMLDivElement>(null);
     
     useClickOutside(menuRef, () => setIsMenuOpen(false), isMenuOpen);
@@ -24,7 +26,7 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
 					{title && (
 						<h5 className="text-xs font-bold text-white text-center">{title}</h5>
 					)}
-					{!row && (enabled 
+					{!row && isAdmin && (enabled 
 					? (
 						<div className="absolute right-5 z-20" ref={menuRef}>
 							<button

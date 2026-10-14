@@ -10,6 +10,7 @@ import AppCreator from "./AppCreator";
 import AppBuildingCard from "./Card/AppBuildingCard";
 import { LayoutGrid, List, Search } from "lucide-react";
 import AppListTable from "./List/AppListTable";
+import { useUser } from "@/Components/User";
 
 export default function Apps() {
 	const [apps, setApps] = useState<Array<App>>([])
@@ -21,6 +22,7 @@ export default function Apps() {
 	const [updates, setUpdates] = useState<Record<string, UpdateStatus>>({})
 	const [uptime, setUptime] = useState<Uptime[]>([])
 	const failing = useRef(false)
+	const { isAdmin } = useUser()
 
 	function loadApps() {
 		Api()
@@ -177,7 +179,7 @@ export default function Apps() {
 				</div>
 
 				<div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-					<AppCreator onAppUpdate={handleNewApp} variant="button" />
+					{isAdmin && <AppCreator onAppUpdate={handleNewApp} variant="button" />}
 
 					<div className="flex items-center bg-black border border-zinc-800 p-0.5 rounded-lg">
 						<button

@@ -7,6 +7,7 @@ import Loader from '@/Components/Loader'
 import App from '../home/Interfaces/Apps'
 import { CloudflareRoute, DNSRecord } from './Interfaces'
 import { Trash2 } from 'lucide-react'
+import { useUser } from '@/Components/User'
 
 const inputClass = 'w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all'
 
@@ -19,6 +20,7 @@ export default function Cloudflare() {
     const [refresh, setRefresh] = useState(0)
     const [removeDNS, setRemoveDNS] = useState(true)
     const [selectedApp, setSelectedApp] = useState("")
+    const { isAdmin } = useUser()
 
     useEffect(() => {
         Api().get('/cloudflare/config')
@@ -135,9 +137,11 @@ export default function Cloudflare() {
                                 <td className='py-2 px-4'>{route.appName || <span className='text-gray-600'>-</span>}</td>
                                 <td className='py-2 px-4'>{route.dnsRecord ? <span className='text-emerald-400'>✓</span> : <span className='text-red-400' title='No CNAME for this hostname'>✗</span>}</td>
                                 <td className='py-2 px-4 text-right'>
+                                    {isAdmin && <>
                                     <Button id={'remove_' + route.hostname} role='generic' type='button' onClick={() => removeHostname(route.hostname)} className='p-1 text-red-500 hover:text-red-400' title='Remove'>
                                         <Trash2 className='h-4 w-4' />
                                     </Button>
+                                    </>}
                                 </td>
                             </tr>
                         ))}
@@ -145,6 +149,7 @@ export default function Cloudflare() {
                 </table>
             </div>
 
+            {isAdmin && (
             <div className='p-6 border border-[#960675] rounded-md bg-black'>
                 <h2 className='text-lg text-center font-semibold mb-4 text-gray-100'>Add hostname</h2>
                 <form className='grid gap-4' onSubmit={addHostname}>
@@ -157,8 +162,9 @@ export default function Cloudflare() {
                     <Button type='submit' id='addHostname' role='action' className='p-2.5 mt-2 rounded-md font-medium'>Create</Button>
                 </form>
             </div>
+            )}
 
-            {orphans.length > 0 && (
+            {isAdmin && orphans.length > 0 && (
                 <div className='p-6 border border-amber-500/40 rounded-md bg-black'>
                     <h2 className='text-lg font-semibold mb-2 text-amber-400'>Orphan DNS records</h2>
                     <p className='text-xs text-gray-400 mb-4'>These point to your tunnel but the tunnel has no route for them anymore</p>

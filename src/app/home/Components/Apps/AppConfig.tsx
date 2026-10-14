@@ -14,6 +14,7 @@ import { yaml } from '@codemirror/lang-yaml';
 import { EditorView } from '@codemirror/view';
 import { okaidia } from '@uiw/codemirror-theme-okaidia';
 import { AppsContext, useAppUpdate } from './AppsContext'
+import { useUser } from '@/Components/User'
 
 export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     const [loading, setLoading] = useState<boolean>(false)
@@ -22,6 +23,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
     const refLog = useRef<PopupActions>(null);
     const { onBuildStart, refreshUpdates } = useContext(AppsContext)
     const update = useAppUpdate(app)
+    const { isAdmin } = useUser()
 
     function restartApp() {
         const restarting = toast.loading("Restarting...")
@@ -209,6 +211,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                     </span>
                                 </p>
                             </div>
+                            {isAdmin && <>
                             <Button 
                                 id="delete" 
                                 role='generic'
@@ -222,6 +225,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                 </svg>
                                 <span>Delete App</span>
                             </Button>
+                            </>}
                         </div>
                         
                         <hr className='border-gray-800'/>
@@ -265,6 +269,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                         <LogViewer appId={app.id} close={() => refLog?.current?.close()} />
                                     </Popup>
 
+                                    {isAdmin && <>
                                     <Button id='composeEdit' role='option' onClick={editCompose} type="button" disabled={loading} className="w-full sm:w-auto">
                                         Edit Compose
                                     </Button>
@@ -288,6 +293,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                             Add proxy host
                                         </Button>
                                     }
+                                    </>}
                                 </div>
                             ) : (
                                 <div className="flex flex-col gap-3">

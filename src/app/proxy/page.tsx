@@ -7,6 +7,7 @@ import Loader from '@/Components/Loader'
 import App from '../home/Interfaces/Apps'
 import { NPMCertificate, NPMHost, certificateLabel } from './Interfaces'
 import { Lock, LockOpen, Trash2 } from 'lucide-react'
+import { useUser } from '@/Components/User'
 
 const inputClass = 'w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all'
 const smallSelect = 'max-w-[14rem] p-1 rounded bg-black border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#b3078b]'
@@ -21,6 +22,7 @@ export default function Proxy() {
     const [refresh, setRefresh] = useState(0)
     const [selectedApp, setSelectedApp] = useState("")
     const [newCert, setNewCert] = useState(0)
+    const { isAdmin } = useUser()
 
     useEffect(() => {
         Api().get('/npm/config')
@@ -150,16 +152,18 @@ export default function Proxy() {
                                         {host.certificate_id
                                             ? <Lock className='h-3.5 w-3.5 text-emerald-400 shrink-0' />
                                             : <LockOpen className='h-3.5 w-3.5 text-gray-500 shrink-0' />}
-                                        <select className={smallSelect} value={host.certificate_id || 0} onChange={e => changeCertificate(host, Number(e.target.value))}>
+                                        <select className={smallSelect} disabled={!isAdmin} value={host.certificate_id || 0} onChange={e => changeCertificate(host, Number(e.target.value))}>
                                             <option value={0}>None</option>
                                             {certificates.map(cert => <option key={cert.id} value={cert.id}>{certificateLabel(cert)}</option>)}
                                         </select>
                                     </span>
                                 </td>
                                 <td className='py-2 px-4 text-right'>
+                                    {isAdmin && <>
                                     <Button id={'remove_' + host.id} role='generic' type='button' onClick={() => removeHost(host)} className='p-1 text-red-500 hover:text-red-400' title='Remove'>
                                         <Trash2 className='h-4 w-4' />
                                     </Button>
+                                    </>}
                                 </td>
                             </tr>
                         ))}
@@ -167,6 +171,7 @@ export default function Proxy() {
                 </table>
             </div>
 
+            {isAdmin && (
             <div className='p-6 border border-[#960675] rounded-md bg-black'>
                 <h2 className='text-lg text-center font-semibold mb-4 text-gray-100'>Add proxy host</h2>
                 <form className='grid gap-4' onSubmit={addHost}>
@@ -183,6 +188,7 @@ export default function Proxy() {
                     <Button type='submit' id='addProxyHost' role='action' className='p-2.5 mt-2 rounded-md font-medium'>Create</Button>
                 </form>
             </div>
+            )}
         </div>
     )
 }

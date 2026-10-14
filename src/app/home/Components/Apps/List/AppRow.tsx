@@ -6,6 +6,7 @@ import { Power } from "lucide-react";
 import App from "../../../Interfaces/Apps";
 import Api from "@/Components/Api";
 import AppConfig from "../AppConfig";
+import { useUser } from "@/Components/User";
 import { useAppStats, useAppUpdate, useAppUptime } from "../AppsContext";
 import { getUsageColor } from "@/Utils/usageColor";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
@@ -18,6 +19,7 @@ interface AppRowProps {
 export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 	const running = item.state?.status === "running";
 	const [toggling, setToggling] = useState(false);
+	const { isAdmin } = useUser();
 	const stats = useAppStats(item);
 	const update = useAppUpdate(item);
 	const uptime = useAppUptime(item);
@@ -92,13 +94,13 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 					</div>
 					<button
 						onClick={turnOnOff}
-						disabled={toggling}
-						className={`p-1.5 rounded-full border transition-all cursor-pointer disabled:opacity-50 disabled:animate-pulse ${
+						disabled={toggling || !isAdmin}
+						className={`p-1.5 rounded-full border transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${toggling ? 'animate-pulse' : ''} ${
 							running
 								? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
 								: 'border-zinc-700 bg-zinc-800/40 text-zinc-400 hover:bg-zinc-800'
 						}`}
-						title={running ? "Stop App" : "Start App"}
+						title={!isAdmin ? "Only admins can do that" : running ? "Stop App" : "Start App"}
 					>
 						<Power className="h-4 w-4" />
 					</button>

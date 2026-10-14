@@ -3,10 +3,13 @@ import Button from '@/Components/Button'
 import React, { useEffect, useState } from 'react'
 import Api from '@/Components/Api';
 import toast from 'react-hot-toast';
+import { useUser } from '@/Components/User';
+import Loader from '@/Components/Loader';
 import Notifications from './Components/Notifications';
 import NginxProxyManager from './Components/NginxProxyManager';
 
 export default function Config() {
+    const { user, isAdmin } = useUser()
     const [cloudflare, setCloudflare] = useState<boolean>(false)
     const [transmission, setTransmission] = useState<boolean>(false)
     const [pihole, setPihole] = useState<boolean>(false)
@@ -126,6 +129,16 @@ export default function Config() {
                 toast.dismiss(loading);
                 document.getElementById('setupPihole')?.removeAttribute('disabled');
             });
+    }
+
+    if (!user) return <Loader />
+
+    if (!isAdmin) {
+        return (
+            <div className='p-8 text-center text-gray-400'>
+                Only admins can change settings. You can still change your own name and password on <a href='/users' className='text-[#b3078b] underline'>Users</a>.
+            </div>
+        )
     }
 
     return (

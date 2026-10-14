@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Api from '@/Components/Api'
 import toast from 'react-hot-toast';
+import { useUser } from '@/Components/User';
 import { useClickOutside } from '@/Utils/useClickOutside';
 import Button from '@/Components/Button';
 import { TransmissionTorrent } from '../Interfaces';
@@ -33,6 +34,7 @@ function TorrentItem({ item, updateList, mock = false }: { item: TransmissionTor
   const progress = (item.percentDone || 0) * 100;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [processingAction, setProcessingAction] = useState(false)
+  const { isAdmin } = useUser();
   const menuRef = useRef<HTMLDivElement>(null);
 
   useClickOutside(menuRef, () => setIsMenuOpen(false), isMenuOpen);
@@ -59,7 +61,7 @@ function TorrentItem({ item, updateList, mock = false }: { item: TransmissionTor
   };
   
   return (
-    <div className="flex flex-col text-xs text-gray-300 my-1 p-1 hover:bg-gray-800 rounded m-2 cursor-pointer" onClick={()=>setIsMenuOpen(prev => !prev)}>
+    <div className="flex flex-col text-xs text-gray-300 my-1 p-1 hover:bg-gray-800 rounded m-2 cursor-pointer" onClick={()=> isAdmin && setIsMenuOpen(prev => !prev)}>
       <div className="flex justify-between truncate mb-1">
         <span className="truncate mr-2">{item.name || 'Unknown'}</span>
         <span className="shrink-0">{Math.round(progress)}%</span>

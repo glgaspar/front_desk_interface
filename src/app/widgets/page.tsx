@@ -4,11 +4,13 @@ import FrontEndWidgets  from "./frontEndWidgets";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
 import Wrapper from "./wrapper";
+import { useUser } from "@/Components/User";
 import { ServerWidget } from "./Interfaces";
 
 export default function Widgets() {
   const [availableWidgets, setAvailabledWidgets] = useState<ServerWidget[]|undefined>(undefined);
   const [showAll, setShowAll] = useState(false);
+  const { isAdmin } = useUser();
   const [refresh, setRefresh] = useState(0);
   const checkedNewWidgets = useRef(false);
 
@@ -61,7 +63,7 @@ export default function Widgets() {
 
   return (
     <div className="w-full p-4">
-      <div className="flex justify-end items-center mb-6">
+      <div className={`flex justify-end items-center mb-6 ${isAdmin ? "" : "hidden"}`}>
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium">Edit Mode</span>
           <label className="relative inline-flex items-center cursor-pointer">
