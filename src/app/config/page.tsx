@@ -1,7 +1,6 @@
 "use client"
 import Button from '@/Components/Button'
 import React, { useEffect, useState } from 'react'
-import User from '../login/Interfaces/User';
 import Api from '@/Components/Api';
 import toast from 'react-hot-toast';
 import Notifications from './Components/Notifications';
@@ -42,32 +41,6 @@ export default function Config() {
                 toast.error('Could not retrieve pihole configuration. Please try again.')
             })
     },[])
-
-    function createUser(e:React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        document.getElementById('createUser')?.setAttribute('disabled', 'true');
-
-        const form = e.target as HTMLFormElement;
-        const data:User = {
-            id: 0,
-            userName: (form.userName as HTMLInputElement).value,
-            password: (form.password as HTMLInputElement).value
-        }; 
-        const loading = toast.loading('Registering user...');
-        Api().post('/register', data)
-            .then(() => {
-                toast.success('User registered successfully!');
-                form.reset();
-            })
-            .catch(error => {
-                toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
-                console.error('There was an error!', error);
-            })
-            .finally(() => {
-                toast.dismiss(loading);
-                document.getElementById('createUser')?.removeAttribute('disabled');
-            });
-    }
 
     function setupCloudFlare(e:React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -159,15 +132,6 @@ export default function Config() {
         <div className='p-4 md:p-8 grid gap-8 max-w-2xl mx-auto w-full'>
             <h1 className='text-3xl font-bold text-center mb-2 tracking-tight'>Configuration</h1>
             <div className='grid gap-6'>
-                <div className='p-6 border border-[#960675] rounded-md bg-black shadow-sm backdrop-blur-sm'>
-                    <h2 className='text-lg text-center font-semibold mb-4 text-gray-100'>Create New User</h2>
-                    <form className='grid gap-4' onSubmit={createUser}>
-                        <input id='userName' type="text" placeholder='Username' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
-                        <input id='password' type="password" placeholder='Password' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
-                        <Button type='submit' id='createUser' role='action' className='p-2.5 mt-2 rounded-md font-medium'>Create User</Button>
-                    </form>
-                </div>
-
                 <div className='p-6 border border-[#960675] rounded-md bg-black shadow-sm backdrop-blur-sm'>
                     <div className='flex items-center justify-center mb-4'>
                         <h2 className='text-lg font-semibold text-gray-100'>Transmission Integration</h2>

@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 import toast from "react-hot-toast";
 import Api from "../Api";
 import Button from "@/Components/Button";
+import { useUser } from "@/Components/User";
 
 export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, showSidebar:()=>void }) {
     const ref = useRef<HTMLDivElement>(null)
     const router = useRouter();
+    const { user } = useUser();
     useClickOutside(ref, showSidebar, sidebar, "menuLogo");
 
     function logout() {
@@ -57,12 +59,22 @@ export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, show
               </Link>
             </li>
             <li className="list-none" onClick={showSidebar}>
+              <Link href="/users" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
+                Users
+              </Link>
+            </li>
+            <li className="list-none" onClick={showSidebar}>
               <Link href="/config" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
                 Config
               </Link>
             </li>
           </ul>
           <div className="p-4 border-t border-t-[#b3078b]">
+            {user && (
+              <p className="mb-3 text-center text-sm text-gray-400 truncate" title={user.userName}>
+                {user.userName} <span className="text-xs text-[#e04fbf]">{user.isAdmin ? "· admin" : ""}</span>
+              </p>
+            )}
             <Button 
               id="logoutBtn"
               role="action"

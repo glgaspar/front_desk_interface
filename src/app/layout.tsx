@@ -4,6 +4,7 @@ import "./globals.css";
 import React from "react";
 import { Toaster } from 'react-hot-toast';
 import Navbar from "@/Components/Navbar";
+import { UserProvider } from "@/Components/User";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -24,10 +25,12 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
-				<header>
-					<Navbar />
-				</header>
-				{children}
+				<UserProvider>
+					<header>
+						<Navbar />
+					</header>
+					{children}
+				</UserProvider>
 				<Toaster position="top-right" reverseOrder={false} />
 			</body>
 		</html>
