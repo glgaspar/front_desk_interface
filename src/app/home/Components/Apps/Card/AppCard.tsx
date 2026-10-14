@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import toast from 'react-hot-toast';
 import App from '../../../Interfaces/Apps'
 import dockerSVG from '@/Components/Static/docker-svgrepo-com.svg'
 import Image from 'next/image';
@@ -11,7 +12,11 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
     if (item.state?.status == "running") {
         running = true
     } 
+    const [toggling, setToggling] = useState(false)
+
     function turnOnOff() {
+        if (toggling) return
+        setToggling(true)
         let toggle = "start"
         if (running) {
             toggle = "stop"
@@ -22,11 +27,12 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
                 onAppUpdate(item.id, response?.data?.data)
             })
             .catch((error) => {
-                console.error(
+                toast.error(
                     error?.response?.data?.message ||
-                        "Unknow error fetching apps. Better luck next time..."
+                        "Unknow error toggling app. Better luck next time..."
                 );
             })
+            .finally(() => setToggling(false))
     }
 
     return (
@@ -44,7 +50,7 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
                 <div className='w-[2rem] h-[2rem]'>
                     <AppConfig  app={item} onAppUpdate={onAppUpdate} />
                 </div>
-                <div onClick={turnOnOff} className={`w-[2rem] h-[2rem] relative grid place-items-center rounded-[50%] border-solid border-[#ddd] before:content-[""] before:w-6/12 before:h-3/6 before:absolute before:rounded-[50%] before:border-[10px] before:border-solid before:border-[#eee] hover:cursor-pointer ${running ? 'before:border-[green]' : ''}`} />
+                <div onClick={turnOnOff} className={`w-[2rem] h-[2rem] relative grid place-items-center rounded-[50%] border-solid border-[#ddd] before:content-[""] before:w-6/12 before:h-3/6 before:absolute before:rounded-[50%] before:border-[10px] before:border-solid before:border-[#eee] hover:cursor-pointer ${running ? 'before:border-[green]' : ''} ${toggling ? 'animate-pulse opacity-50' : ''}`} />
             </div>
         </Card>
     )

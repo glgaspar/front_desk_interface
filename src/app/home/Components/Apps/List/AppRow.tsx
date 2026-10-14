@@ -1,5 +1,6 @@
 "use client"
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import { Power } from "lucide-react";
 import App from "../../../Interfaces/Apps";
@@ -14,8 +15,11 @@ interface AppRowProps {
 
 export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 	const running = item.state?.status === "running";
+	const [toggling, setToggling] = useState(false);
 
 	const turnOnOff = () => {
+		if (toggling) return;
+		setToggling(true);
 		const toggle = running ? "stop" : "start";
 		Api()
 			.put(`/apps/toggleOnOff/${item.id}/${toggle}`)
@@ -23,11 +27,12 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 				onAppUpdate(item.id, response?.data?.data);
 			})
 			.catch((error) => {
-				console.error(
+				toast.error(
 					error?.response?.data?.message ||
 						"Unknown error toggling app. Better luck next time..."
 				);
-			});
+			})
+			.finally(() => setToggling(false));
 	};
 
 	return (
@@ -70,7 +75,8 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 					</div>
 					<button
 						onClick={turnOnOff}
-						className={`p-1.5 rounded-full border transition-all cursor-pointer ${
+						disabled={toggling}
+						className={`p-1.5 rounded-full border transition-all cursor-pointer disabled:opacity-50 disabled:animate-pulse ${
 							running
 								? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
 								: 'border-zinc-700 bg-zinc-800/40 text-zinc-400 hover:bg-zinc-800'
