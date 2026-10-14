@@ -1,8 +1,8 @@
 export default function Modal ({ children, title, close, className } : { children: React.ReactNode, title?: string, close: ()=>void, className?: string }) {
     return(
         <div className="fixed top-0 left-0 w-full h-full bg-black/20 px-2 z-20">
-            <div className={`relative rounded-xl p-5 mx-auto mt-[2rem] min-w-[10rem] md:min-w-[25rem] w-fit min-h-[10rem] max-h-[80vh] h-fit border border-[#b3078b] bg-black overflow-y-auto ${className}`}>
-                <div className="mb-4">
+            <div className={`relative rounded-xl p-5 mx-auto mt-[2rem] min-w-[10rem] md:min-w-[25rem] w-fit min-h-[10rem] max-h-[90dvh] h-fit border border-[#b3078b] bg-black flex flex-col overflow-hidden ${className}`}>
+                <div className="mb-4 shrink-0">
                     <p className="text-center font-[600] text-lg mt-2 mx-2">{title}</p>
                     { close &&
                         <button 
@@ -12,7 +12,10 @@ export default function Modal ({ children, title, close, className } : { childre
                         >&times;</button>
                     }
                 </div>
-                { children }
+                {/* the only thing that scrolls in a modal, no more scroll inside scroll */}
+                <div className="flex-1 min-h-0 overflow-y-auto">
+                    { children }
+                </div>
             </div>
         </div>
     );

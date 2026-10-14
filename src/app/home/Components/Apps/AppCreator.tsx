@@ -117,7 +117,7 @@ export default function AppCreator({onAppUpdate,variant = "card"}: {onAppUpdate:
 					className="border border-[#b3078b] bg-[#0a0a0a] w-[95vw] md:w-[48rem] rounded-lg shadow-2xl overflow-hidden"
 				>
 					<form onSubmit={handleSubmit}>
-						<div className="p-4 flex flex-col gap-6 text-gray-200 max-h-[85dvh] overflow-y-auto">
+						<div className="p-4 flex flex-col gap-6 text-gray-200">
 							<div className="flex flex-col gap-3">
 								<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
 									<h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
