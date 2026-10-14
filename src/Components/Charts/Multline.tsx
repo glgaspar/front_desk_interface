@@ -1,10 +1,10 @@
 import { Line } from 'react-chartjs-2';
-import {Chart as ChartJS,CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend, ChartData, ChartOptions,} from 'chart.js';
+import {Chart as ChartJS,CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend,Filler, ChartData, ChartOptions,} from 'chart.js';
 
-ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend);
+ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend,Filler);
 
-const MultiLineChart = ({ chartData, title }: {chartData:ChartData<'line'>, title:string}) => {
-    const options: ChartOptions<'line'> = {
+const MultiLineChart = ({ chartData, title, options = {} }: {chartData:ChartData<'line'>, title:string, options?: ChartOptions<'line'>}) => {
+    const defaultOptions: ChartOptions<'line'> = {
         responsive: true,
         plugins: {
         legend: {
@@ -22,7 +22,7 @@ const MultiLineChart = ({ chartData, title }: {chartData:ChartData<'line'>, titl
         },
     };
 
-    return <Line data={chartData} options={options} />;
+    return <Line data={chartData} options={{...defaultOptions, ...options, plugins: {...defaultOptions.plugins, ...options.plugins}}} />;
 };
 
 export default MultiLineChart;

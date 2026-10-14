@@ -42,6 +42,11 @@ export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, show
               </Link>
             </li>
             <li className="list-none" onClick={showSidebar}>
+              <Link href="/monitoring" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
+                Monitoring
+              </Link>
+            </li>
+            <li className="list-none" onClick={showSidebar}>
               <Link href="/cloudflare" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
                 Cloudflare
               </Link>

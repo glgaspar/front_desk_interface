@@ -6,7 +6,7 @@ import { Power } from "lucide-react";
 import App from "../../../Interfaces/Apps";
 import Api from "@/Components/Api";
 import AppConfig from "../AppConfig";
-import { useAppStats, useAppUpdate } from "../AppsContext";
+import { useAppStats, useAppUpdate, useAppUptime } from "../AppsContext";
 import { getUsageColor } from "@/Utils/usageColor";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 
@@ -20,6 +20,7 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 	const [toggling, setToggling] = useState(false);
 	const stats = useAppStats(item);
 	const update = useAppUpdate(item);
+	const uptime = useAppUptime(item);
 
 	const turnOnOff = () => {
 		if (toggling) return;
@@ -64,6 +65,11 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 					<span className={`h-1.5 w-1.5 rounded-full ${running ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
 					{(item.state?.status || "").toUpperCase()}
 				</span>
+				{uptime && (
+					<span className="ml-2 font-mono text-[11px]" style={{ color: getUsageColor(100 - uptime.uptimePercent) }} title="Uptime last 24h">
+						{uptime.uptimePercent.toFixed(1)}%
+					</span>
+				)}
 			</td>
 			<td className="py-3 px-4 font-mono text-xs" style={{ color: stats ? getUsageColor(stats.cpuPercent) : undefined }}>
 				{stats ? `${stats.cpuPercent.toFixed(1)}%` : "-"}

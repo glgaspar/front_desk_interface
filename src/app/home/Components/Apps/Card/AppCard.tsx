@@ -8,7 +8,7 @@ import Api from '@/Components/Api';
 import AppConfig from '../AppConfig';
 import ProgressBar from '@/Components/ProgressBar';
 import { getUsageColor } from '@/Utils/usageColor';
-import { useAppStats, useAppUpdate } from '../AppsContext';
+import { useAppStats, useAppUpdate, useAppUptime } from '../AppsContext';
 
 export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     let running: boolean = false
@@ -18,6 +18,7 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
     const [toggling, setToggling] = useState(false)
     const stats = useAppStats(item)
     const update = useAppUpdate(item)
+    const uptime = useAppUptime(item)
 
     function turnOnOff() {
         if (toggling) return
@@ -42,6 +43,11 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
 
     return (
         <Card className='w-[9rem] h-[9rem] bg-black relative' key={item.id}>
+            {uptime &&
+                <span className='absolute top-1 left-1 text-[9px] font-mono' style={{ color: getUsageColor(100 - uptime.uptimePercent) }} title='Uptime last 24h'>
+                    {uptime.uptimePercent.toFixed(1)}%
+                </span>
+            }
             {update?.status === "update_available" &&
                 <span className='absolute top-1 right-1 h-2 w-2 rounded-full bg-amber-400' title='Update available' />
             }
