@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import Api from '@/Components/Api'
+import toast from 'react-hot-toast';
 import { useClickOutside } from '@/Utils/useClickOutside';
 import Button from '@/Components/Button';
 import { TransmissionTorrent } from '../Interfaces';
@@ -28,7 +29,7 @@ function getStatusColor(status?: number) {
   }
 }
 
-function TorrentItem({ item, updateList }: { item: TransmissionTorrent, updateList?: () => void }) {
+function TorrentItem({ item, updateList, mock = false }: { item: TransmissionTorrent, updateList?: () => void, mock?: boolean }) {
   const progress = (item.percentDone || 0) * 100;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [processingAction, setProcessingAction] = useState(false)
@@ -39,6 +40,12 @@ function TorrentItem({ item, updateList }: { item: TransmissionTorrent, updateLi
   const handleAction = (e: React.MouseEvent, action: string) => {
     e.stopPropagation();
     if (processingAction) return; 
+    if (mock) {
+      // fake torrents, nothing to start or stop
+      setIsMenuOpen(false);
+      toast("This is just demo data");
+      return;
+    }
     setProcessingAction(true);
     Api()
       .post(`/transmission/toggle/${item.id}/${action}`)
@@ -142,7 +149,7 @@ export default function Transmission({enabled = false, selected = false}: {enabl
         {torrents.length === 0 && (
           <span className="self-center text-sm font-medium text-gray-400 mt-4">No active torrents</span>
         )}
-        {torrents.map(t =>  <TorrentItem key={t.id} item={t} updateList={() => fetchTorrents()} />)}
+        {torrents.map(t =>  <TorrentItem key={t.id} item={t} mock={!enabled} updateList={() => fetchTorrents()} />)}
       </div>
     </div>
   )
