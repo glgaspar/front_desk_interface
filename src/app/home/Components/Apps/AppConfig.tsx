@@ -210,6 +210,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                         {update?.status === "up_to_date" && <span className='text-emerald-400'>Up to date</span>}
                                         {update?.status === "unsupported" && <span className='text-gray-500'>Built locally, cant check for updates</span>}
                                         {update?.status === "error" && <span className='text-red-400' title={update.error}>Could not check for updates</span>}
+                                        {update?.status === "rate_limited" && <span className='text-amber-400' title={update.error}>Registry is rate limiting, try later</span>}
                                         <span className='text-gray-500 hover:text-[#b3078b] cursor-pointer underline' onClick={() => refreshUpdates(true)}>check again</span>
                                     </span>
                                 </p>

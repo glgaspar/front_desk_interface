@@ -36,7 +36,7 @@ export interface UpdateStatus {
   imageRef: string
   localDigest: string
   remoteDigest: string
-  status: "up_to_date" | "update_available" | "unsupported" | "error"
+  status: "up_to_date" | "update_available" | "unsupported" | "rate_limited" | "error"
   error: string
   checkedAt: string
 }
