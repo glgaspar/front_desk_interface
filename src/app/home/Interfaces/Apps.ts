@@ -4,6 +4,7 @@ export default interface App {
   state: State
   image: string
   imageRef: string
+  port?: string
   cloudflarePort?: string
   name: string
   url: string

@@ -5,6 +5,7 @@ import User from '../login/Interfaces/User';
 import Api from '@/Components/Api';
 import toast from 'react-hot-toast';
 import Notifications from './Components/Notifications';
+import NginxProxyManager from './Components/NginxProxyManager';
 
 export default function Config() {
     const [cloudflare, setCloudflare] = useState<boolean>(false)
@@ -206,6 +207,8 @@ export default function Config() {
                         <Button type='submit' id='setupCloudflare' role='action' className='p-2.5 mt-2 rounded-md font-medium'>Submit</Button>
                     </form>
                 </div>
+
+                <NginxProxyManager />
 
                 <Notifications />
             </div>
