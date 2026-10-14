@@ -24,7 +24,7 @@ export default function AppCreator({onAppUpdate,variant = "card"}: {onAppUpdate:
     useEffect(()=>{
         Api().get('/cloudflare/config')
             .then(response => {
-                setCloudflare(response?.data?.data);
+                setCloudflare(response?.data?.status === true);
             })
             .catch(error => {
                 console.error('There was an error!', error);
