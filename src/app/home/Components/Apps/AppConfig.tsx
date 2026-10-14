@@ -41,6 +41,30 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
         })
     }
 
+    function exposeApp() {
+        let hostname = ''
+        try {
+            hostname = new URL(app.url.includes('://') ? app.url : 'https://' + app.url).hostname
+        } catch {}
+        hostname = prompt('Public hostname for ' + app.name, hostname) || ''
+        if (!hostname) return
+
+        const creating = toast.loading('Creating ' + hostname + '...')
+        Api().post('/cloudflare/hostname', { hostname, appId: app.id })
+        .then(() => {
+            toast.success(hostname + ' is live (give the dns a minute)')
+        })
+        .catch((error) => {
+                toast.error(
+                    error?.response?.data?.message ||
+                        "Unknow error. Better luck next time..."
+                );
+            })
+        .finally(()=>{
+            toast.dismiss(creating)
+        })
+    }
+
     function updateApp() {
         Api().post(`/apps/update/${app.id}`)
         .then(response => {
@@ -228,6 +252,12 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                     <Button id='update' role='option' onClick={updateApp} type="button" className={`w-full sm:w-auto ${update?.status === "update_available" ? "text-amber-400" : ""}`}>
                                         Update
                                     </Button>
+
+                                    {app.cloudflarePort &&
+                                        <Button id='expose' role='option' onClick={exposeApp} type="button" className="w-full sm:w-auto">
+                                            Expose on Cloudflare
+                                        </Button>
+                                    }
                                 </div>
                             ) : (
                                 <div className="flex flex-col gap-3">
