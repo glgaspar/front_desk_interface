@@ -5,7 +5,7 @@ import Popup from 'reactjs-popup'
 import Button from '@/Components/Button'
 import App from '../../Interfaces/Apps'
 import { PopupActions } from 'reactjs-popup/dist/types'
-import Api from '@/Components/Api'
+import Api, { track } from '@/Components/Api'
 import toast from 'react-hot-toast'
 import { maskDateTime } from '@/Utils/maskDatetime'
 import LogViewer from './LogViewer'
@@ -179,6 +179,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
         ref={ref}
         modal
         nested
+        onOpen={() => track("opened app config", app.name)}
         trigger={
             <div className='bg-none text-[1.5rem] flex justify-center items-center w-[2rem] h-[2rem] cursor-pointer hover:text-[#b3078b] transition-colors' id="config">
                 &#9881;

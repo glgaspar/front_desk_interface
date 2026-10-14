@@ -59,6 +59,11 @@ export default function Sidebar({ sidebar, showSidebar }:{ sidebar:boolean, show
               </Link>
             </li>
             <li className="list-none" onClick={showSidebar}>
+              <Link href="/activity" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
+                Activity
+              </Link>
+            </li>
+            <li className="list-none" onClick={showSidebar}>
               <Link href="/users" className="block w-full text-white no-underline rounded p-3 hover:bg-[#b3078b] focus:bg-[#b3078b] transition-colors">
                 Users
               </Link>

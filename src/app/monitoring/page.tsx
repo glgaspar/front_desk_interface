@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import Api from '@/Components/Api'
+import Api, { track } from '@/Components/Api'
 import toast from 'react-hot-toast'
 import Loader from '@/Components/Loader'
 import MultiLineChart from '@/Components/Charts/Multline'
@@ -82,7 +82,7 @@ export default function Monitoring() {
                 <h1 className='text-3xl font-bold tracking-tight'>Monitoring</h1>
                 <div className='flex items-center bg-black border border-zinc-800 p-0.5 rounded-lg'>
                     {ranges.map(r => (
-                        <button key={r} onClick={() => setRange(r)} className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${range === r ? 'bg-[#b3078b] text-white' : 'text-gray-400 hover:text-white'}`}>
+                        <button key={r} onClick={() => { setRange(r); track("changed monitoring range", r) }} className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${range === r ? 'bg-[#b3078b] text-white' : 'text-gray-400 hover:text-white'}`}>
                             {r}
                         </button>
                     ))}

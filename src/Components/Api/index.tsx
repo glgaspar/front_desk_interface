@@ -38,6 +38,13 @@ export default function Api() {
 	return api;
 }
 
+// for things that only happen on the screen (opening a page, a modal...). never breaks anything if it fails
+export function track(action: string, target = "") {
+	Api()
+		.post("/activity", { action, target })
+		.catch(() => {});
+}
+
 export function EventConsumer(endPoint: string) {
 	let credentials = true;
 	if (process.env.NEXT_PUBLIC_ENV == "DEV") {

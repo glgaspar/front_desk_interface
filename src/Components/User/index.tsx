@@ -1,7 +1,7 @@
 "use client"
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Api from "@/Components/Api";
+import Api, { track } from "@/Components/Api";
 
 export interface CurrentUser {
 	id: number
@@ -38,6 +38,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 			.then((response) => setUser(response?.data?.data || null))
 			.catch((error) => console.error(error));
 	}, [onPublicPage, refreshCount]);
+
+	// every page someone opens goes to the activity log
+	useEffect(() => {
+		if (onPublicPage || !pathname) return;
+		track("opened page", pathname);
+	}, [pathname, onPublicPage]);
 
 	return (
 		<UserContext.Provider value={{ user, isAdmin: user?.isAdmin === true, refresh: () => setRefreshCount(prev => prev + 1) }}>

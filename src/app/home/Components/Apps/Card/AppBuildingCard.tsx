@@ -5,7 +5,7 @@ import Image from "next/image";
 import Card from "@/Components/Card";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 import Popup from "reactjs-popup";
-import { EventConsumer } from "@/Components/Api";
+import { EventConsumer, track } from "@/Components/Api";
 import { PopupActions } from "reactjs-popup/dist/types";
 
 export default function AppBuildingCard({appName,end}: {appName: string;end: () => void}) {
@@ -88,6 +88,7 @@ export default function AppBuildingCard({appName,end}: {appName: string;end: () 
 			<div className="flex justify-between items-center border-t border-zinc-800 pt-2">
 				<Popup
 					ref={ref}
+					onOpen={() => track("opened build logs", appName)}
 					modal
 					nested
 					trigger={

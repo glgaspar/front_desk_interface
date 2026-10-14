@@ -4,7 +4,7 @@ import App, { AppStats, UpdateStatus } from "../../Interfaces/Apps";
 import { AppsContext } from "./AppsContext";
 import { Uptime } from "@/app/monitoring/Interfaces";
 import AppCard from "./Card/AppCard";
-import Api from "@/Components/Api";
+import Api, { track } from "@/Components/Api";
 import toast from "react-hot-toast";
 import AppCreator from "./AppCreator";
 import AppBuildingCard from "./Card/AppBuildingCard";
@@ -120,6 +120,7 @@ export default function Apps() {
 	const handleViewModeChange = (mode: "card" | "list") => {
 		setViewMode(mode);
 		localStorage.setItem("front_desk_view_mode", mode);
+		track("switched apps view", mode);
 	};
 
 	function handleAppUpdate(oldAppID:string, updatedApp: App|null) {

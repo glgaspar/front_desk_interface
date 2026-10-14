@@ -5,7 +5,7 @@ import Popup from "reactjs-popup";
 import { PopupActions } from "reactjs-popup/dist/types";
 import { Settings } from "lucide-react";
 import Modal from "@/Components/Modal/Modal";
-import { EventConsumer } from "@/Components/Api";
+import { EventConsumer, track } from "@/Components/Api";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 
 interface AppBuildingRowProps {
@@ -72,6 +72,7 @@ export default function AppBuildingRow({ appName, end }: AppBuildingRowProps) {
 				<div className="inline-flex items-center gap-3">
 					<Popup
 						ref={ref}
+						onOpen={() => track("opened build logs", appName)}
 						modal
 						nested
 						trigger={
