@@ -9,11 +9,13 @@ export default function Config() {
     const [cloudflare, setCloudflare] = useState<boolean>(false)
     const [transmission, setTransmission] = useState<boolean>(false)
     const [pihole, setPihole] = useState<boolean>(false)
+    const [cloudflareConfig, setCloudflareConfig] = useState<{accountId: string, tunnelId: string, localAddress: string, zoneId: string, tokenSet: boolean}|null>(null)
 
     useEffect(()=>{
         Api().get('/cloudflare/config')
             .then(response => {
                 setCloudflare(response?.data?.status || false);
+                setCloudflareConfig(response?.data?.data || null);
             })
             .catch(error => {
                 console.error('There was an error!', error);
@@ -81,8 +83,8 @@ export default function Config() {
         Api().post('/cloudflare/config', data)
             .then(() => {
                 toast.success('Cloudflare setup successfully!');
-                form.reset();
                 setCloudflare(true);
+                setCloudflareConfig({...data, tokenSet: true});
                 })
             .catch(error => {
                 toast.error(error.response?.data?.message || 'Cloudflare setup failed. Please try again.');
@@ -194,12 +196,12 @@ export default function Config() {
                         <h2 className='text-lg font-semibold text-gray-100'>Cloudflare Integration</h2>
                         {cloudflare ? <span className='absolute right-8 text-green-400 text-xs font-medium px-2.5 py-1 bg-green-500/10 rounded-md border border-green-500'>Configured</span> : <span className='absolute right-8 text-red-400 text-xs font-medium px-2.5 py-1 bg-red-500/10 rounded-md border border-red-500'>Not Configured</span>}
                     </div>
-                    <form className='grid gap-4' onSubmit={setupCloudFlare}>
-                        <input id='accountId' type="text" placeholder='Account ID' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
-                        <input id='tunnelId' type="text" placeholder='Tunnel ID' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
-                        <input id='cloudflareAPIToken' type="text" placeholder='Cloudflare API Token' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
-                        <input id='localAddress' type="text" placeholder='Local address (192.168.0.10)' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
-                        <input id='zoneId' type="text" placeholder='Zone Id' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
+                    <form className='grid gap-4' onSubmit={setupCloudFlare} key={cloudflareConfig ? 'loaded' : 'empty'}>
+                        <input id='accountId' type="text" placeholder='Account ID' defaultValue={cloudflareConfig?.accountId} className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
+                        <input id='tunnelId' type="text" placeholder='Tunnel ID' defaultValue={cloudflareConfig?.tunnelId} className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
+                        <input id='cloudflareAPIToken' type="password" placeholder={cloudflareConfig?.tokenSet ? 'Cloudflare API Token (unchanged)' : 'Cloudflare API Token'} className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required={!cloudflareConfig?.tokenSet}/>
+                        <input id='localAddress' type="text" placeholder='Local address (192.168.0.10)' defaultValue={cloudflareConfig?.localAddress} className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
+                        <input id='zoneId' type="text" placeholder='Zone Id' defaultValue={cloudflareConfig?.zoneId} className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
                         <Button type='submit' id='setupCloudflare' role='action' className='p-2.5 mt-2 rounded-md font-medium'>Submit</Button>
                     </form>
                 </div>
