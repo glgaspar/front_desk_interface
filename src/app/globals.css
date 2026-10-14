@@ -24,3 +24,40 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+html {
+  color-scheme: dark;
+}
+
+/* clip instead of hidden so the sticky navbar keeps working */
+body {
+  overflow-x: clip;
+}
+
+/* chrome, brave, edge, safari */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b3078b80;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b3078b;
+}
+
+/* only firefox gets the standard properties, chrome ignores the webkit ones above when these are set */
+@supports (-moz-appearance: none) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #b3078b80 transparent;
+  }
+}

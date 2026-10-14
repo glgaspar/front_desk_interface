@@ -187,7 +187,7 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
         }>
             <Modal title={app?.name} close={()=>ref?.current?.close()} className='border border-[#b3078b] bg-[#0a0a0a] w-[95vw] md:w-[48rem] rounded-lg shadow-2xl overflow-hidden'>
                 <form onSubmit={handleSubmit}>
-                    <div className='p-4 flex flex-col gap-6 text-gray-200 max-h-[85vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent'>
+                    <div className='p-4 flex flex-col gap-6 text-gray-200 max-h-[85vh] overflow-y-auto'>
                         <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-4'>
                             <div className='flex flex-col gap-3 min-w-0 w-full'>
                                 <p className='flex flex-col items-start gap-0'>
