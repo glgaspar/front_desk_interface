@@ -19,6 +19,7 @@ export default function AppCreator({onAppUpdate,variant = "card"}: {onAppUpdate:
 	const [loading, setLoading] = useState<boolean>(false);
 	const ref = useRef<PopupActions>(null);
 	const [cloudflare, setCloudflare] = useState<boolean>(false)
+	const [proxy, setProxy] = useState<boolean>(false)
 	const [compose, setCompose] = useState<string>("")
 
     useEffect(()=>{
@@ -29,6 +30,14 @@ export default function AppCreator({onAppUpdate,variant = "card"}: {onAppUpdate:
             .catch(error => {
                 console.error('There was an error!', error);
                 toast.error('Could not retrieve cloudflare configuration. Please try again.')
+            })
+
+        Api().get('/npm/config')
+            .then(response => {
+                setProxy(response?.data?.status === true);
+            })
+            .catch(error => {
+                console.error('There was an error!', error);
             })
     },[])
 
@@ -41,11 +50,13 @@ export default function AppCreator({onAppUpdate,variant = "card"}: {onAppUpdate:
 		setLoading(true);
 		const form = event.target as HTMLFormElement & {
 			tunnel?: { checked: boolean };
+			proxy?: { checked: boolean };
 		};
 
 		const data = {
 			compose: compose,
 			tunnel: form.tunnel?.checked,
+			proxy: form.proxy?.checked,
 		};
 
 		const saving = toast.loading("Creating container...");
@@ -143,6 +154,18 @@ export default function AppCreator({onAppUpdate,variant = "card"}: {onAppUpdate:
 									/>
 									<label htmlFor="tunnel" className="text-sm text-gray-300 cursor-pointer">
 										Create Cloudflare subdomain
+									</label>
+								</div>
+							)}
+							{proxy && (
+								<div className="flex items-center gap-2 bg-black border border-gray-800 p-3 rounded-md">
+									<input
+										id="proxy"
+										type="checkbox"
+										className="w-4 h-4 accent-[#b3078b] bg-gray-800 border-gray-700 rounded focus:ring-[#b3078b] focus:ring-2 cursor-pointer"
+									/>
+									<label htmlFor="proxy" className="text-sm text-gray-300 cursor-pointer">
+										Create Nginx Proxy Manager host
 									</label>
 								</div>
 							)}

@@ -41,12 +41,36 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
         })
     }
 
-    function exposeApp() {
+    function appHostname(question: string) {
         let hostname = ''
         try {
             hostname = new URL(app.url.includes('://') ? app.url : 'https://' + app.url).hostname
         } catch {}
-        hostname = prompt('Public hostname for ' + app.name, hostname) || ''
+        return prompt(question + ' ' + app.name, hostname) || ''
+    }
+
+    function addProxyHost() {
+        const hostname = appHostname('Proxy hostname for')
+        if (!hostname) return
+
+        const creating = toast.loading('Creating ' + hostname + '...')
+        Api().post('/npm/hosts', { hostname, appId: app.id })
+        .then(() => {
+            toast.success(hostname + ' is on nginx proxy manager now')
+        })
+        .catch((error) => {
+                toast.error(
+                    error?.response?.data?.message ||
+                        "Unknow error. Better luck next time..."
+                );
+            })
+        .finally(()=>{
+            toast.dismiss(creating)
+        })
+    }
+
+    function exposeApp() {
+        const hostname = appHostname('Public hostname for')
         if (!hostname) return
 
         const creating = toast.loading('Creating ' + hostname + '...')
@@ -253,9 +277,15 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
                                         Update
                                     </Button>
 
-                                    {app.cloudflarePort &&
+                                    {(app.port || app.cloudflarePort) &&
                                         <Button id='expose' role='option' onClick={exposeApp} type="button" className="w-full sm:w-auto">
                                             Expose on Cloudflare
+                                        </Button>
+                                    }
+
+                                    {(app.port || app.cloudflarePort) &&
+                                        <Button id='proxyHost' role='option' onClick={addProxyHost} type="button" className="w-full sm:w-auto">
+                                            Add proxy host
                                         </Button>
                                     }
                                 </div>
