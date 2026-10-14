@@ -64,6 +64,7 @@ export default function AppBuildingRow({ appName, end }: AppBuildingRowProps) {
 			</td>
 			<td className="py-3 px-4 text-zinc-500">-</td>
 			<td className="py-3 px-4 text-zinc-500">-</td>
+			<td className="py-3 px-4 text-zinc-500">-</td>
 			<td className="py-3 px-4 text-zinc-500">
 				Deploying container...
 			</td>

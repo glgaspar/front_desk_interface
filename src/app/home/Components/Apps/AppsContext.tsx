@@ -20,9 +20,20 @@ export const AppsContext = createContext<AppsContextData>({
 	refreshUpdates: () => {},
 });
 
+// the plain versions are for the table sorting, hooks cant be called inside a sort
+export function findStats(stats: AppStats[], app: App) {
+	return stats.find(s => s.id && app.id.startsWith(s.id));
+}
+
+// same key the backend uses, dir + name because container ids change on every rebuild
+export function findUptime(uptime: Uptime[], app: App) {
+	const key = app.dir ? `${app.dir}|${app.name}` : app.name;
+	return uptime.find(u => u.appKey === key);
+}
+
 export function useAppStats(app: App) {
 	const { stats } = useContext(AppsContext);
-	return stats.find(s => s.id && app.id.startsWith(s.id));
+	return findStats(stats, app);
 }
 
 export function useAppUpdate(app: App) {
@@ -30,9 +41,7 @@ export function useAppUpdate(app: App) {
 	return app.imageRef ? updates[app.imageRef] : undefined;
 }
 
-// same key the backend uses, dir + name because container ids change on every rebuild
 export function useAppUptime(app: App) {
 	const { uptime } = useContext(AppsContext);
-	const key = app.dir ? `${app.dir}|${app.name}` : app.name;
-	return uptime.find(u => u.appKey === key);
+	return findUptime(uptime, app);
 }
