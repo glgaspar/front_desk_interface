@@ -20,8 +20,8 @@ export interface MetricPoint {
     time: string
     cpuPercent: number
     memPercent: number
-    diskPercent: number | null
     load1: number | null
+    disks: Record<string, number>
 }
 
 export interface NotificationChannel {

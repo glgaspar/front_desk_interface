@@ -5,11 +5,21 @@ import Card from '@/Components/Card';
 import ProgressBar from "@/Components/ProgressBar";
 // import { Badge } from "@/components/ui/badge";
 import Button from "@/Components/Button";
-import { Cpu, MemoryStick } from "lucide-react";
+import { Cpu, HardDrive, MemoryStick } from "lucide-react";
 import Api from "@/Components/Api";
 import Loader from "@/Components/Loader";
 import { SystemData } from "../../Interfaces/Monitor";
 import { getUsageColor } from "@/Utils/usageColor";
+
+function formatBytes(bytes: number) {
+	const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+	let i = 0;
+	while (bytes >= 1024 && i < units.length - 1) {
+		bytes /= 1024;
+		i++;
+	}
+	return `${bytes.toFixed(i < 3 ? 0 : 1)} ${units[i]}`;
+}
 
 export default function Hardware() {
 	const [data, setData] = useState<SystemData | null>(null);
@@ -103,6 +113,26 @@ export default function Hardware() {
 					<ProgressBar color={getUsageColor(data.memoryPercent)} percentage={data.memoryPercent} />
 				</div>
 			</Card>
+
+			{(data.disks || []).map((disk) => (
+				<Card key={disk.path} className="bg-black">
+					<div className="flex items-center gap-2 mb-2">
+						<HardDrive className="h-4 w-4 text-muted-foreground" />
+						<span className="text-sm font-medium truncate" title={disk.path}>{disk.path}</span>
+					</div>
+					<div className="space-y-2">
+						<div className="flex items-center justify-between gap-2">
+							<span className="text-lg font-bold" style={{ color: getUsageColor(disk.usedPercent) }}>
+								{disk.usedPercent.toFixed(1)}%
+							</span>
+							<span className="text-xs text-muted-foreground whitespace-nowrap">
+								{formatBytes(disk.used)} / {formatBytes(disk.total)}
+							</span>
+						</div>
+						<ProgressBar color={getUsageColor(disk.usedPercent)} percentage={disk.usedPercent} />
+					</div>
+				</Card>
+			))}
 
 			<Card className="bg-black hidden md:block">
 				<div className="text-sm font-medium mb-2">Top Processes</div>

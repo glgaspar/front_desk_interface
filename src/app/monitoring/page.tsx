@@ -8,6 +8,7 @@ import { getUsageColor } from '@/Utils/usageColor'
 import { MetricPoint, Range, Uptime, UptimePoint } from './Interfaces'
 
 const ranges: Range[] = ["1h", "24h", "7d", "30d"]
+const diskColors = ['#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16']
 
 function label(time: string, range: Range) {
     const date = new Date(time)
@@ -51,6 +52,11 @@ function History({ appKey, range }: { appKey: string, range: Range }) {
             />
         </div>
     )
+}
+
+// every disk that shows up anywhere in the range gets its own line
+function diskPaths(metrics: MetricPoint[]) {
+    return [...new Set(metrics.flatMap(m => Object.keys(m.disks || {})))].sort()
 }
 
 export default function Monitoring() {
@@ -100,7 +106,13 @@ export default function Monitoring() {
                             datasets: [
                                 { label: 'CPU', data: metrics.map(m => m.cpuPercent), borderColor: '#3b82f6', pointRadius: 0, tension: 0.3 },
                                 { label: 'Memory', data: metrics.map(m => m.memPercent), borderColor: '#10b981', pointRadius: 0, tension: 0.3 },
-                                { label: 'Disk', data: metrics.map(m => m.diskPercent), borderColor: '#f59e0b', pointRadius: 0, tension: 0.3 },
+                                ...diskPaths(metrics).map((path, i) => ({
+                                    label: `Disk ${path}`,
+                                    data: metrics.map(m => m.disks?.[path] ?? null),
+                                    borderColor: diskColors[i % diskColors.length],
+                                    pointRadius: 0,
+                                    tension: 0.3,
+                                })),
                             ],
                         }}
                         options={{ scales: { y: { beginAtZero: true, max: 100 } } }}
