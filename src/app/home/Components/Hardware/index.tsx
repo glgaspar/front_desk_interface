@@ -114,25 +114,42 @@ export default function Hardware() {
 				</div>
 			</Card>
 
-			{(data.disks || []).map((disk) => (
-				<Card key={disk.path} className="bg-black">
+			{data.disks?.length > 0 && (
+				<Card className={`bg-black ${data.disks.length > 1 ? "col-span-2 md:col-span-1" : ""}`}>
 					<div className="flex items-center gap-2 mb-2">
 						<HardDrive className="h-4 w-4 text-muted-foreground" />
-						<span className="text-sm font-medium truncate" title={disk.path}>{disk.path}</span>
+						<span className="text-sm font-medium">Disks</span>
 					</div>
 					<div className="space-y-2">
 						<div className="flex items-center justify-between gap-2">
-							<span className="text-lg font-bold" style={{ color: getUsageColor(disk.usedPercent) }}>
-								{disk.usedPercent.toFixed(1)}%
+							<span className="text-lg font-bold" style={{ color: getUsageColor(data.disks[0].usedPercent) }}>
+								{data.disks[0].usedPercent.toFixed(1)}%
 							</span>
 							<span className="text-xs text-muted-foreground whitespace-nowrap">
-								{formatBytes(disk.used)} / {formatBytes(disk.total)}
+								{formatBytes(data.disks[0].used)} / {formatBytes(data.disks[0].total)}
 							</span>
 						</div>
-						<ProgressBar color={getUsageColor(disk.usedPercent)} percentage={disk.usedPercent} />
+						<ProgressBar color={getUsageColor(data.disks[0].usedPercent)} percentage={data.disks[0].usedPercent} />
+						<div className="text-xs text-muted-foreground truncate" title={data.disks[0].path}>{data.disks[0].path}</div>
 					</div>
+					{data.disks.length > 1 && (
+						<div className="mt-3 pt-2 border-t border-gray-800/50 space-y-1.5">
+							{data.disks.slice(1).map((disk) => (
+								<div key={disk.path} className="flex items-center gap-2 text-xs" title={`${disk.path} - ${formatBytes(disk.used)} / ${formatBytes(disk.total)}`}>
+									<span className="w-16 truncate shrink-0">{disk.path.split("/").filter(Boolean).pop() || "/"}</span>
+									<ProgressBar color={getUsageColor(disk.usedPercent)} percentage={disk.usedPercent} className="h-1.5 flex-1" />
+									<span className="w-9 text-right font-bold shrink-0" style={{ color: getUsageColor(disk.usedPercent) }}>
+										{disk.usedPercent.toFixed(0)}%
+									</span>
+									<span className="w-12 text-right text-muted-foreground shrink-0 whitespace-nowrap">
+										{formatBytes(disk.total - disk.used)}
+									</span>
+								</div>
+							))}
+						</div>
+					)}
 				</Card>
-			))}
+			)}
 
 			<Card className="bg-black hidden md:block">
 				<div className="text-sm font-medium mb-2">Top Processes</div>
