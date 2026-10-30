@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import FrontEndWidgets  from "./frontEndWidgets";
+import FrontEndWidgets, { widgetConfigs } from "./frontEndWidgets";
+import { WidgetProvider } from "./sdk";
 import Api from "@/Components/Api";
 import toast from "react-hot-toast";
 import Wrapper from "./wrapper";
@@ -83,6 +84,7 @@ export default function Widgets() {
             if (!widgetToRender.enabled) return null;
             return WidgetComponent 
               ? <div className="flex justify-center break-inside-avoid mb-2" key={`enabled-widget-${widgetToRender.id}`}>
+                  <WidgetProvider name={widgetToRender.name} manifest={widgetConfigs[widgetToRender.name]} enabled={widgetToRender.enabled}>
                   <Wrapper 
                     key={widgetToRender.id}
                     title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
@@ -91,6 +93,7 @@ export default function Widgets() {
                     updateToggleCallBack={(toggle: "enabled" | "selected") => updateToggleCallBack(widgetToRender.id, toggle)}>
                     <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled} selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
                   </Wrapper>
+                  </WidgetProvider>
                 </div>
               : null;
           })}
@@ -106,6 +109,7 @@ export default function Widgets() {
                   if (widgetToRender.enabled) return null;
                   return WidgetComponent 
                     ? <div className="flex justify-center break-inside-avoid" key={`disabled-widget-${widgetToRender.id}`}>
+                        <WidgetProvider name={widgetToRender.name} manifest={widgetConfigs[widgetToRender.name]} enabled={widgetToRender.enabled}>
                         <Wrapper
                           key={widgetToRender.id}
                           title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
@@ -115,6 +119,7 @@ export default function Widgets() {
                           >
                           <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled} selected={widgetToRender.selected} refreshCallBack={() => setRefresh(prev => prev + 1)}/> 
                         </Wrapper>
+                        </WidgetProvider>
                       </div>
                     : null;
                 })}

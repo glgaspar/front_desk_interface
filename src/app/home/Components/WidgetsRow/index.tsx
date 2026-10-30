@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Api from "@/Components/Api";
-import AvailableWidgets  from "@/app/widgets/frontEndWidgets";
+import AvailableWidgets, { widgetConfigs } from "@/app/widgets/frontEndWidgets";
+import { WidgetProvider } from "@/app/widgets/sdk";
 import toast from "react-hot-toast";
 import Wrapper from "@/app/widgets/wrapper";
 import { ServerWidget } from "@/app/widgets/Interfaces";
@@ -32,15 +33,16 @@ export default function WidgetsRow() {
         const WidgetComponent = AvailableWidgets[widgetToRender.name] as React.ElementType;
         if (!widgetToRender.enabled) return null;
         return WidgetComponent 
-          ? <Wrapper 
+          ? <WidgetProvider key={widgetToRender.id} name={widgetToRender.name} manifest={widgetConfigs[widgetToRender.name]} enabled={widgetToRender.enabled}>
+            <Wrapper 
               title={widgetToRender.name.toUpperCase().replaceAll("_", " ")} 
-              key={widgetToRender.id}
               enabled={widgetToRender.enabled}
               selected={widgetToRender.selected}
               row={true}
               >
               <WidgetComponent key={widgetToRender.id} enabled={widgetToRender.enabled}selected={widgetToRender.selected} /> 
             </Wrapper>
+            </WidgetProvider>
           : null;
       })}
     </div>

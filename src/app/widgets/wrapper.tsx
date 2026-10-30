@@ -5,10 +5,14 @@ import Button from '@/Components/Button'
 import React, { useState, useRef } from 'react'
 import { useClickOutside } from '@/Utils/useClickOutside'
 import { useUser } from '@/Components/User'
+import { useWidget } from './sdk'
+import WidgetConfig from './WidgetConfig'
 
 export default function Wrapper({title, enabled, selected, row=false, children, updateToggleCallBack}:{title?:string, enabled:boolean, selected:boolean, row?:boolean, children:React.ReactNode, updateToggleCallBack?:(toggle: "enabled" | "selected") => void}) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [configuring, setConfiguring] = useState(false);
     const { isAdmin } = useUser();
+    const { manifest } = useWidget();
     const menuRef = useRef<HTMLDivElement>(null);
     
     useClickOutside(menuRef, () => setIsMenuOpen(false), isMenuOpen);
@@ -61,6 +65,18 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
 												{ selected ? "Detach from home" : "Attach to home"}
 											</Button>
 										</li>
+										{manifest && (
+											<li>
+												<Button
+													id={`configure-widget-${title}`}
+													type="button"
+													role='menuitem'
+													onClick={() => { setConfiguring(true); setIsMenuOpen(false); }}
+												>
+												Configure
+												</Button>
+											</li>
+										)}
 									</ul>
 								</div>
 							)}
@@ -75,6 +91,7 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
 					))}
 				</div>
 			{children}
+			{configuring && <WidgetConfig close={() => setConfiguring(false)} />}
 		</Card>
 	);
 }
