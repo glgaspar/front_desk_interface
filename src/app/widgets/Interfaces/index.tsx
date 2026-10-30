@@ -92,3 +92,15 @@ export interface SeerrPending {
     requestedBy: string
     createdAt: string
 }
+
+export interface CalendarItem {
+    title: string
+    date: string
+    source: string
+    hasFile: boolean
+}
+
+export interface MediaCalendar {
+    items: CalendarItem[]
+    errors: string[]
+}
