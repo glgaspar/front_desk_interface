@@ -67,6 +67,15 @@ export interface MediaPipeline {
     errors: string[]
 }
 
+export interface DiskForecast {
+    path: string
+    usedPercent: number
+    usedBytes: number
+    totalBytes: number
+    growthPerDay: number
+    daysToFull: number | null
+}
+
 export interface ActivityEntry {
     id: number
     userName: string
