@@ -63,7 +63,8 @@ function stripAnsi(raw: string) {
 	return parseAnsi(raw).map(s => s.text).join("");
 }
 
-export default function Terminal({ title, lines, live, status, close }: { title: string, lines: string[], live: boolean, status?: string, close: () => void }) {
+// actions go next to the header buttons, footer sits under the output (the ollama answer uses both)
+export default function Terminal({ title, lines, live, status, close, actions, footer }: { title: string, lines: string[], live: boolean, status?: string, close: () => void, actions?: React.ReactNode, footer?: React.ReactNode }) {
 	const windowRef = useRef<HTMLDivElement>(null);
 	const bodyRef = useRef<HTMLDivElement>(null);
 	const [following, setFollowing] = useState(true);
@@ -145,6 +146,7 @@ export default function Terminal({ title, lines, live, status, close }: { title:
 						{status || (live ? "live" : "ended")}
 					</span>
 					<div className="flex items-center gap-1 shrink-0">
+						{actions}
 						<button type="button" onClick={() => setWrap(prev => !prev)} className={`${iconButton} ${wrap ? "text-[#e04fbf]" : ""}`} title={wrap ? "Stop wrapping lines" : "Wrap lines"}>
 							<WrapText className="h-4 w-4" />
 						</button>
@@ -182,6 +184,7 @@ export default function Terminal({ title, lines, live, status, close }: { title:
 						</button>
 					)}
 				</div>
+				{footer}
 			</div>
 		</div>
 	);
