@@ -14,6 +14,15 @@ export interface TransmissionTorrent {
     rateUpload?: number;
     status?: number
 }
+export interface QbitTorrent {
+    hash: string
+    name: string
+    progress: number
+    dlspeed: number
+    upspeed: number
+    state: string
+}
+
 export interface JellyfinStream {
     user: string
     device: string

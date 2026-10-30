@@ -145,6 +145,7 @@ export default function Config() {
 
                 <NginxProxyManager />
 
+                <ServiceConfig name='qbittorrent' title='qBittorrent' fields={{ url: 'Url (http://192.168.0.10:8080)', username: 'Username', secret: 'Password' }} />
                 <ServiceConfig name='jellyfin' title='Jellyfin' fields={{ url: 'Url (http://192.168.0.10:8096)', secret: 'API key (Dashboard > API Keys)' }} />
                 <ServiceConfig name='seerr' title='Seerr' fields={{ url: 'Url (http://192.168.0.10:5055)', secret: 'API key (Settings > General)' }} />
                 <ServiceConfig name='sonarr' title='Sonarr' fields={{ url: 'Url with the base path (http://192.168.0.10:8989/sonarr)', secret: 'API key (Settings > General)' }} />
