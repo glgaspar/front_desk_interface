@@ -121,3 +121,10 @@ export interface PiholeTop {
     domains: { domain: string, count: number }[]
     clients: { ip: string, name: string, count: number }[]
 }
+
+export interface DailySummary {
+    text: string
+    generatedAt: string
+    generating: boolean
+    error: string
+}
