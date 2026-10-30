@@ -23,6 +23,15 @@ export interface QbitTorrent {
     state: string
 }
 
+export interface TailscaleDevice {
+    name: string
+    os: string
+    address: string
+    online: boolean
+    lastSeen: string
+    updateAvailable: boolean
+}
+
 export interface TdarrStats {
     queue: number
     processed: number
