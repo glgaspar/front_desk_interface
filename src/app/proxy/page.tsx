@@ -5,8 +5,8 @@ import toast from 'react-hot-toast'
 import Button from '@/Components/Button'
 import Loader from '@/Components/Loader'
 import App from '../home/Interfaces/Apps'
-import { NPMCertificate, NPMHost, certificateLabel } from './Interfaces'
-import { Lock, LockOpen, Trash2 } from 'lucide-react'
+import { NPMCertificate, NPMHost, PiholeDns, certificateLabel } from './Interfaces'
+import { Lock, LockOpen, Plus, Trash2 } from 'lucide-react'
 import { useUser } from '@/Components/User'
 
 const inputClass = 'w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all'
@@ -22,6 +22,7 @@ export default function Proxy() {
     const [refresh, setRefresh] = useState(0)
     const [selectedApp, setSelectedApp] = useState("")
     const [newCert, setNewCert] = useState(0)
+    const [dns, setDns] = useState<PiholeDns | null>(null)
     const { isAdmin } = useUser()
 
     useEffect(() => {
@@ -44,6 +45,14 @@ export default function Proxy() {
             return
         }
         setLoading(true)
+        // pihole is optional here, the page works the same without it
+        Api().get('/services/pihole/config')
+            .then(response => {
+                if (response?.data?.status !== true) return setDns(null)
+                return Api().get('/pihole/dns').then(res => setDns(res?.data?.data || null))
+            })
+            .catch(error => toast.error(error?.response?.data?.message || 'Could not talk to pihole'))
+
         Promise.all([Api().get('/npm/hosts'), Api().get('/npm/certificates')])
             .then(([hostsResponse, certsResponse]) => {
                 setHosts(hostsResponse?.data?.data || [])
@@ -78,6 +87,29 @@ export default function Proxy() {
             .finally(() => toast.dismiss(removing))
     }
 
+    function addDns(hostname: string) {
+        const adding = toast.loading('Adding ' + hostname + ' to pihole...')
+        Api().post('/pihole/dns', { hostname })
+            .then(() => {
+                toast.success(hostname + ' resolves to ' + dns?.lanIp + ' on the LAN now')
+                setRefresh(prev => prev + 1)
+            })
+            .catch(error => toast.error(error?.response?.data?.message || 'Could not add it. Better luck next time...'))
+            .finally(() => toast.dismiss(adding))
+    }
+
+    function removeDns(hostname: string) {
+        if (!confirm(`Remove ${hostname} from pihole local dns?`)) return
+        const removing = toast.loading('Removing...')
+        Api().delete(`/pihole/dns/${encodeURIComponent(hostname)}`)
+            .then(() => {
+                toast.success(hostname + ' removed from pihole')
+                setRefresh(prev => prev + 1)
+            })
+            .catch(error => toast.error(error?.response?.data?.message || 'Could not remove it. Better luck next time...'))
+            .finally(() => toast.dismiss(removing))
+    }
+
     function addHost(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         const form = e.target as HTMLFormElement
@@ -98,6 +130,22 @@ export default function Proxy() {
             })
             .catch(error => toast.error(error?.response?.data?.message || 'Could not create it. Better luck next time...'))
             .finally(() => toast.dismiss(adding))
+    }
+
+    // records pointing to the npm box that no proxy host uses anymore
+    const domains = new Set(hosts.flatMap(h => h.domain_names.map(d => d.toLowerCase())))
+    const staleDns = dns?.records.filter(r => r.ip === dns.lanIp && !domains.has(r.hostname.toLowerCase())) || []
+
+    function dnsCell(domain: string) {
+        const record = dns?.records.find(r => r.hostname.toLowerCase() === domain.toLowerCase())
+        if (record?.ip === dns?.lanIp) return <span key={domain} className='block text-emerald-400'>{record?.ip}</span>
+        if (record) return <span key={domain} className='block text-amber-400' title='Points somewhere else than the LAN ip from the config'>{record.ip}</span>
+        if (!isAdmin) return <span key={domain} className='block text-gray-600'>-</span>
+        return (
+            <Button key={domain} id={'dns_' + domain} role='generic' type='button' onClick={() => addDns(domain)} className='flex items-center gap-1 text-xs text-gray-400 hover:text-[#e04fbf]' title={'Point ' + domain + ' to ' + dns?.lanIp}>
+                <Plus className='h-3 w-3' /> add
+            </Button>
+        )
     }
 
     const app = apps.find(a => a.id === selectedApp)
@@ -130,12 +178,13 @@ export default function Proxy() {
                             <th className='py-2 px-4'>Forward</th>
                             <th className='py-2 px-4'>App</th>
                             <th className='py-2 px-4'>Certificate</th>
+                            {dns && <th className='py-2 px-4'>LAN DNS</th>}
                             <th className='py-2 px-4'></th>
                         </tr>
                     </thead>
                     <tbody className='divide-y divide-zinc-800/40'>
                         {hosts.length === 0 && (
-                            <tr><td colSpan={5} className='py-6 text-center text-gray-500'>No proxy hosts yet</td></tr>
+                            <tr><td colSpan={dns ? 6 : 5} className='py-6 text-center text-gray-500'>No proxy hosts yet</td></tr>
                         )}
                         {hosts.map(host => (
                             <tr key={host.id} className='hover:bg-zinc-900/30 transition-colors'>
@@ -158,6 +207,7 @@ export default function Proxy() {
                                         </select>
                                     </span>
                                 </td>
+                                {dns && <td className='py-2 px-4 font-mono text-xs'>{host.domain_names.map(dnsCell)}</td>}
                                 <td className='py-2 px-4 text-right'>
                                     {isAdmin && <>
                                     <Button id={'remove_' + host.id} role='generic' type='button' onClick={() => removeHost(host)} className='p-1 text-red-500 hover:text-red-400' title='Remove'>
@@ -170,6 +220,26 @@ export default function Proxy() {
                     </tbody>
                 </table>
             </div>
+
+            {staleDns.length > 0 && (
+                <div className='w-full rounded-xl border border-zinc-800 bg-[#0d0d0d]'>
+                    <div className='p-3 bg-[#141414] border-b border-[#b3078b]/30'>
+                        <h2 className='text-sm font-semibold uppercase tracking-wider text-gray-400'>Pi-hole records with no proxy host</h2>
+                    </div>
+                    <ul className='divide-y divide-zinc-800/40 text-sm text-zinc-300'>
+                        {staleDns.map(r => (
+                            <li key={r.hostname} className='flex justify-between items-center py-2 px-4'>
+                                <span className='break-all'>{r.hostname} <span className='font-mono text-xs text-gray-500'>{r.ip}</span></span>
+                                {isAdmin && (
+                                    <Button id={'remove_dns_' + r.hostname} role='generic' type='button' onClick={() => removeDns(r.hostname)} className='p-1 text-red-500 hover:text-red-400' title='Remove from pihole'>
+                                        <Trash2 className='h-4 w-4' />
+                                    </Button>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             {isAdmin && (
             <div className='p-6 border border-[#960675] rounded-md bg-black'>

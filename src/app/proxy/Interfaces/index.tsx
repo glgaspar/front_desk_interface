@@ -29,6 +29,11 @@ export interface NPMHost {
     managed: boolean
 }
 
+export interface PiholeDns {
+    lanIp: string
+    records: { ip: string, hostname: string }[]
+}
+
 export function certificateLabel(cert: NPMCertificate) {
     const name = cert.nice_name || cert.domain_names?.join(", ") || `#${cert.id}`
     const expires = cert.expires_on ? ` (until ${new Date(cert.expires_on).toLocaleDateString()})` : ""
