@@ -7,12 +7,12 @@ import { useUser } from '@/Components/User';
 import Loader from '@/Components/Loader';
 import Notifications from './Components/Notifications';
 import NginxProxyManager from './Components/NginxProxyManager';
+import ServiceConfig from './Components/ServiceConfig';
 
 export default function Config() {
     const { user, isAdmin } = useUser()
     const [cloudflare, setCloudflare] = useState<boolean>(false)
     const [transmission, setTransmission] = useState<boolean>(false)
-    const [pihole, setPihole] = useState<boolean>(false)
     const [cloudflareConfig, setCloudflareConfig] = useState<{localAddress: string, accountIdSet: boolean, tunnelIdSet: boolean, zoneIdSet: boolean, tokenSet: boolean}|null>(null)
 
     useEffect(()=>{
@@ -34,15 +34,7 @@ export default function Config() {
                 console.error('There was an error!', error);
                 toast.error('Could not retrieve transmission configuration. Please try again.')
             })
-        
-        Api().get('/pihole/config')
-            .then(response => {
-                setPihole(response?.data?.status || false);
-            })
-            .catch(error => {
-                console.error('There was an error!', error);
-                toast.error('Could not retrieve pihole configuration. Please try again.')
-            })
+
     },[])
 
     function setupCloudFlare(e:React.FormEvent<HTMLFormElement>) {
@@ -105,32 +97,6 @@ export default function Config() {
             });
     }
 
-    function setupPihole(e:React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        document.getElementById('setupPihole')?.setAttribute('disabled', 'true');
-        const form = e.target as HTMLFormElement;
-        const data = {
-            piholeUrl: (form.piholeUrl as HTMLInputElement).value,
-            piholeToken: (form.piholeToken as HTMLInputElement).value,
-        }; 
-        const loading = toast.loading('Setting up Pi-hole...');
-        Api()
-            .post('/pihole/config', data)
-            .then(() => {
-                toast.success('Pi-hole setup successfully!');
-                form.reset();
-                setPihole(true);
-                })
-            .catch(error => {
-                toast.error(error.response?.data?.message || 'Pi-hole setup failed. Please try again.');
-                console.error('There was an error!', error);
-            })
-            .finally(() => {
-                toast.dismiss(loading);
-                document.getElementById('setupPihole')?.removeAttribute('disabled');
-            });
-    }
-
     if (!user) return <Loader />
 
     if (!isAdmin) {
@@ -160,17 +126,7 @@ export default function Config() {
                     </form>
                 </div>
 
-                <div className='p-6 border border-[#960675] rounded-md bg-black shadow-sm backdrop-blur-sm'>
-                    <div className='flex items-center justify-center mb-4'>
-                        <h2 className='text-lg font-semibold text-gray-100'>Pi-hole Integration</h2>
-                        {pihole ? <span className='absolute right-8 text-green-400 text-xs font-medium px-2.5 py-1 bg-green-500/10 rounded-md border border-green-500'>Configured</span> : <span className='absolute right-8 text-red-400 text-xs font-medium px-2.5 py-1 bg-red-500/10 rounded-md border border-red-500'>Not Configured</span>}
-                    </div>
-                    <form className='grid gap-4' onSubmit={setupPihole}>
-                        <input id='piholeUrl' type="text" placeholder='Pi-hole URL' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
-                        <input id='piholeToken' type="text" placeholder='Pi-hole API Token' className='w-full p-2.5 rounded-lg bg-black/50 border border-[#960675] rounded-md text-white placeholder-neutral-400 focus:outline-none focus:border-[#b3078b] focus:ring-1 focus:ring-[#b3078b] transition-all' required/>
-                        <Button type='submit' id='setupPihole' role='action' className='p-2.5 mt-2 rounded-md font-medium'>Submit</Button>
-                    </form>
-                </div>
+                <ServiceConfig name='pihole' title='Pi-hole' fields={{ url: 'Url (http://192.168.0.10:8053)', secret: 'Password or app password', extra: 'LAN ip your hostnames should point to (where npm runs)' }} />
 
                 <div className='p-6 border border-[#960675] rounded-md bg-black shadow-sm backdrop-blur-sm'>
                     <div className='flex items-center justify-center mb-4'>
