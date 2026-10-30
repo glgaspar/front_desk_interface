@@ -14,3 +14,13 @@ export interface TransmissionTorrent {
     rateUpload?: number;
     status?: number
 }
+export interface JellyfinStream {
+    user: string
+    device: string
+    client: string
+    title: string
+    series: string
+    type: string
+    paused: boolean
+    progress: number
+}

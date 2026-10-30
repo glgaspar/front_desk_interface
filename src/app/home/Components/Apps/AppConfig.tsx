@@ -15,6 +15,7 @@ import { EditorView } from '@codemirror/view';
 import { okaidia } from '@uiw/codemirror-theme-okaidia';
 import { AppsContext, useAppUpdate } from './AppsContext'
 import { useUser } from '@/Components/User'
+import { confirmStreams } from './confirmStreams'
 
 export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     const [loading, setLoading] = useState<boolean>(false)
@@ -25,7 +26,8 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
     const update = useAppUpdate(app)
     const { isAdmin } = useUser()
 
-    function restartApp() {
+    async function restartApp() {
+        if (!await confirmStreams(app, "Restart")) return
         const restarting = toast.loading("Restarting...")
         Api().put(`/apps/restart/${app.id}`)
         .then(response => {
@@ -91,7 +93,8 @@ export default function AppConfig({app,onAppUpdate}:{app:App,onAppUpdate:(oldApp
         })
     }
 
-    function updateApp() {
+    async function updateApp() {
+        if (!await confirmStreams(app, "Update")) return
         Api().post(`/apps/update/${app.id}`)
         .then(response => {
             toast.success("Updating, follow the build")

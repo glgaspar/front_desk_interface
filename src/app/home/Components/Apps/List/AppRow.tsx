@@ -8,6 +8,7 @@ import Api from "@/Components/Api";
 import AppConfig from "../AppConfig";
 import { useUser } from "@/Components/User";
 import { useAppStats, useAppUpdate, useAppUptime } from "../AppsContext";
+import { confirmStreams } from "../confirmStreams";
 import { getUsageColor } from "@/Utils/usageColor";
 import dockerSVG from "@/Components/Static/docker-svgrepo-com.svg";
 
@@ -24,10 +25,11 @@ export default function AppRow({ item, onAppUpdate }: AppRowProps) {
 	const update = useAppUpdate(item);
 	const uptime = useAppUptime(item);
 
-	const turnOnOff = () => {
+	const turnOnOff = async () => {
 		if (toggling) return;
-		setToggling(true);
 		const toggle = running ? "stop" : "start";
+		if (running && !await confirmStreams(item, "Stop")) return;
+		setToggling(true);
 		Api()
 			.put(`/apps/toggleOnOff/${item.id}/${toggle}`)
 			.then((response) => {

@@ -145,6 +145,8 @@ export default function Config() {
 
                 <NginxProxyManager />
 
+                <ServiceConfig name='jellyfin' title='Jellyfin' fields={{ url: 'Url (http://192.168.0.10:8096)', secret: 'API key (Dashboard > API Keys)' }} />
+
                 <Notifications />
             </div>
         </div>

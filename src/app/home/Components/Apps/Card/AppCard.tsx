@@ -11,6 +11,7 @@ import { useUser } from '@/Components/User';
 import ProgressBar from '@/Components/ProgressBar';
 import { getUsageColor } from '@/Utils/usageColor';
 import { useAppStats, useAppUpdate, useAppUptime } from '../AppsContext';
+import { confirmStreams } from '../confirmStreams';
 
 export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldAppID:string, updatedApp: App|null)=>void}) {
     const running = item.state?.status == "running"
@@ -20,13 +21,14 @@ export default function AppCard({item, onAppUpdate}:{item:App, onAppUpdate:(oldA
     const update = useAppUpdate(item)
     const uptime = useAppUptime(item)
 
-    function turnOnOff() {
+    async function turnOnOff() {
         if (toggling) return
-        setToggling(true)
         let toggle = "start"
         if (running) {
             toggle = "stop"
+            if (!await confirmStreams(item, "Stop")) return
         }
+        setToggling(true)
         Api()
             .put(`/apps/toggleOnOff/${item.id}/${toggle}`)
             .then((response) => {
