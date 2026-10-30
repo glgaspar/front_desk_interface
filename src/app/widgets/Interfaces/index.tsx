@@ -68,6 +68,14 @@ export interface MediaPipeline {
     errors: string[]
 }
 
+export interface AttentionItem {
+    severity: "critical" | "warning"
+    kind: string
+    title: string
+    detail: string
+    link: string
+}
+
 export interface DiskForecast {
     path: string
     usedPercent: number
