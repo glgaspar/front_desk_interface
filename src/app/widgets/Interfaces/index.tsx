@@ -23,6 +23,14 @@ export interface QbitTorrent {
     state: string
 }
 
+export interface TdarrStats {
+    queue: number
+    processed: number
+    errored: number
+    savedGB: number
+    files: number
+}
+
 export interface JellyfinStream {
     user: string
     device: string

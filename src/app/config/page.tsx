@@ -150,6 +150,7 @@ export default function Config() {
                 <ServiceConfig name='seerr' title='Seerr' fields={{ url: 'Url (http://192.168.0.10:5055)', secret: 'API key (Settings > General)' }} />
                 <ServiceConfig name='sonarr' title='Sonarr' fields={{ url: 'Url with the base path (http://192.168.0.10:8989/sonarr)', secret: 'API key (Settings > General)' }} />
                 <ServiceConfig name='radarr' title='Radarr' fields={{ url: 'Url with the base path (http://192.168.0.10:7878/radarr)', secret: 'API key (Settings > General)' }} />
+                <ServiceConfig name='tdarr' title='Tdarr' fields={{ url: 'Url (http://192.168.0.10:8265)', secret: 'API key, only if auth is on', secretOptional: true }} />
 
                 <Notifications />
             </div>
