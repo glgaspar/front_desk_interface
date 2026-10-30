@@ -2,14 +2,23 @@
 
 import React from 'react'
 import { TailscaleDevice } from '../Interfaces';
-import { NotIntegrated, useIntegrated, usePolling } from '../service';
+import { NotIntegrated, daysUntil, useIntegrated, usePolling } from '../service';
 import { maskDateTime } from '@/Utils/maskDatetime';
 
 const demo: TailscaleDevice[] = [
-  { name: 'homeserver', os: 'linux', address: '100.64.0.1', online: true, lastSeen: new Date().toISOString(), updateAvailable: false },
-  { name: 'phone', os: 'android', address: '100.64.0.2', online: true, lastSeen: new Date().toISOString(), updateAvailable: true },
-  { name: 'old-laptop', os: 'windows', address: '100.64.0.3', online: false, lastSeen: '2026-09-01T12:00:00Z', updateAvailable: false },
+  { name: 'homeserver', os: 'linux', address: '100.64.0.1', online: true, lastSeen: new Date().toISOString(), updateAvailable: false, expires: '0001-01-01T00:00:00Z' },
+  { name: 'phone', os: 'android', address: '100.64.0.2', online: true, lastSeen: new Date().toISOString(), updateAvailable: true, expires: new Date(Date.now() + 5 * 86400000).toISOString() },
+  { name: 'old-laptop', os: 'windows', address: '100.64.0.3', online: false, lastSeen: '2026-09-01T12:00:00Z', updateAvailable: false, expires: '0001-01-01T00:00:00Z' },
 ];
+
+// the api sends year 1 when the key never expires
+function keyExpiry(expires: string) {
+  if (!expires || expires.startsWith('0001')) return null;
+  const days = daysUntil(expires);
+  if (days > 14) return null;
+  const label = days < 0 ? 'key expired' : `key ${Math.ceil(days)}d`;
+  return <span className={`px-1 rounded text-[10px] border shrink-0 ${days < 3 ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'}`} title={'Key expires ' + new Date(expires).toLocaleString()}>{label}</span>
+}
 
 export default function Tailscale({enabled = false}: {enabled?: boolean}) {
   const integrated = useIntegrated('tailscale', enabled);
@@ -32,6 +41,7 @@ export default function Tailscale({enabled = false}: {enabled?: boolean}) {
               <span className="truncate">{d.name}</span>
               <span className="text-gray-500 shrink-0">{d.os}</span>
               {d.updateAvailable && <span className="px-1 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">update</span>}
+              {keyExpiry(d.expires)}
             </span>
             <span className="font-mono text-gray-400 shrink-0" title={d.online ? '' : 'last seen ' + maskDateTime(d.lastSeen)}>
               {d.online ? d.address : maskDateTime(d.lastSeen)}

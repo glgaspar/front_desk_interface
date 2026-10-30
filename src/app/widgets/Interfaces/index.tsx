@@ -30,6 +30,7 @@ export interface TailscaleDevice {
     online: boolean
     lastSeen: string
     updateAvailable: boolean
+    expires: string
 }
 
 export interface TdarrStats {
