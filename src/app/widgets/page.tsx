@@ -14,6 +14,8 @@ export default function Widgets() {
   const { isAdmin } = useUser();
   const [refresh, setRefresh] = useState(0);
   const checkedNewWidgets = useRef(false);
+  const dragged = useRef<number | null>(null);
+  const [dropTarget, setDropTarget] = useState<number | null>(null);
 
   useEffect(() => {
     Api()
@@ -62,10 +64,32 @@ export default function Widgets() {
       });
   }
 
+  // moves the dragged widget to where the target is and saves the whole order
+  function drop(targetId: number) {
+    setDropTarget(null);
+    const from = availableWidgets?.findIndex(w => w.id === dragged.current) ?? -1;
+    const to = availableWidgets?.findIndex(w => w.id === targetId) ?? -1;
+    dragged.current = null;
+    if (!availableWidgets || from < 0 || to < 0 || from === to) return;
+
+    const ordered = [...availableWidgets];
+    ordered.splice(to, 0, ordered.splice(from, 1)[0]);
+    setAvailabledWidgets(ordered);
+
+    Api()
+      .put("/widgets/order", {ids: ordered.map(w => w.id)})
+      .catch((error) => {
+        console.error(error);
+        toast.error("Failed to save the widget order");
+        setRefresh(prev => prev + 1);
+      });
+  }
+
   return (
     <div className="w-full p-4">
       <div className={`flex justify-end items-center mb-6 ${isAdmin ? "" : "hidden"}`}>
         <div className="flex items-center gap-3">
+          {showAll && <span className="text-xs text-gray-400">drag widgets to reorder</span>}
           <span className="text-sm font-medium">Edit Mode</span>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -83,7 +107,15 @@ export default function Widgets() {
             const WidgetComponent = FrontEndWidgets[widgetToRender.name] as React.ElementType;
             if (!widgetToRender.enabled) return null;
             return WidgetComponent 
-              ? <div className="flex justify-center break-inside-avoid mb-2" key={`enabled-widget-${widgetToRender.id}`}>
+              ? <div
+                  className={`flex justify-center break-inside-avoid mb-2 rounded-xl ${showAll ? "cursor-grab outline-1 outline-dashed outline-gray-600" : ""} ${dropTarget === widgetToRender.id ? "outline-2 outline-solid outline-[#b3078b]" : ""}`}
+                  key={`enabled-widget-${widgetToRender.id}`}
+                  draggable={showAll}
+                  onDragStart={() => { dragged.current = widgetToRender.id; }}
+                  onDragOver={(e) => { if (!showAll || dragged.current === null) return; e.preventDefault(); setDropTarget(widgetToRender.id); }}
+                  onDragLeave={() => setDropTarget(prev => prev === widgetToRender.id ? null : prev)}
+                  onDrop={(e) => { e.preventDefault(); drop(widgetToRender.id); }}
+                  onDragEnd={() => { dragged.current = null; setDropTarget(null); }}>
                   <WidgetProvider name={widgetToRender.name} manifest={widgetConfigs[widgetToRender.name]} enabled={widgetToRender.enabled}>
                   <Wrapper 
                     key={widgetToRender.id}

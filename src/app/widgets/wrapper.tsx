@@ -25,7 +25,7 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
     return (
         // <Card className={row ? "h-[15rem] w-[25rem]" : ""}>
 			
-		<Card className={'overflow-visible bg-black ' + (row ? " h-50 w-88" : " min-h-72 w-full")}>
+		<Card className={'overflow-visible bg-black ' + (row ? " h-50 w-88 flex flex-col" : " min-h-72 w-full")}>
 				<div className="relative flex justify-center items-center px-5 py-1">
 					{title && (
 						<h5 className="text-xs font-bold text-white text-center">{title}</h5>
@@ -90,7 +90,7 @@ export default function Wrapper({title, enabled, selected, row=false, children, 
 						</div>
 					))}
 				</div>
-			{children}
+			{row ? <div className="flex-1 min-h-0 overflow-y-auto">{children}</div> : children}
 			{configuring && <WidgetConfig close={() => setConfiguring(false)} />}
 		</Card>
 	);

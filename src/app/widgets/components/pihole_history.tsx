@@ -1,149 +1,143 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
-import Api from '@/Components/Api';
+import React, { useState } from 'react'
+import { NotIntegrated, useIntegrated, usePolling } from '../service';
 
 interface HistoryWrapper {
 	history: History[]
-	took:    number  
+	took:    number
 }
 
 interface History {
-	timestamp:  number 
-	total:      number 
-	cached:     number 
-	blocked:    number 
-	forwarded:  number 
+	timestamp:  number
+	total:      number
+	cached:     number
+	blocked:    number
+	forwarded:  number
 }
 
-const colors = {
-  total: "#3b82f6",     // blue
-  cached: "#10b981",    // emerald
-  blocked: "#ef4444",   // red
-  forwarded: "#f59e0b", // amber
-} as const;
+// stacked from the bottom up, the top of the stack is the total so it doesnt need its own line
+const layers = [
+  { key: 'blocked', color: '#ef4444' },
+  { key: 'cached', color: '#10b981' },
+  { key: 'forwarded', color: '#3b82f6' },
+] as const;
+
+const demo: History[] = Array.from({ length: 48 }, (_, i) => {
+  const wave = Math.sin(i / 7) * 20 + 40 + (i % 5) * 3;
+  const blocked = Math.round(wave * 0.25);
+  const cached = Math.round(wave * 0.2);
+  const forwarded = Math.round(wave * 0.55);
+  return { timestamp: Date.now() - (47 - i) * 600000, total: blocked + cached + forwarded, cached, blocked, forwarded };
+});
+
+const W = 300;
+const H = 100;
+
+function time(ts: number) {
+  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
 
 export default function PiholeHistory({enabled = false}: {enabled?: boolean}) {
-  const [data, setData] = useState<HistoryWrapper | null>(null);
-  const [integrated, setIntegrated] = useState(false);
+  const integrated = useIntegrated('pihole', enabled);
+  const { data, error } = usePolling<HistoryWrapper>('/pihole/history', enabled);
+  const [hover, setHover] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (!enabled) {
-      const now = Date.now();
-      setData({
-        took: 0,
-        history: [
-          { timestamp: now - 900000, total: 10, cached: 3, blocked: 2, forwarded: 5 },
-          { timestamp: now - 800000, total: 25, cached: 5, blocked: 10, forwarded: 10 },
-          { timestamp: now - 700000, total: 15, cached: 3, blocked: 5, forwarded: 7 },
-          { timestamp: now - 600000, total: 40, cached: 2, blocked: 18, forwarded: 20 },
-          { timestamp: now - 500000, total: 30, cached: 10, blocked: 5, forwarded: 15 },
-          { timestamp: now - 400000, total: 55, cached: 8, blocked: 12, forwarded: 35 },
-          { timestamp: now - 300000, total: 45, cached: 7, blocked: 8, forwarded: 30 },
-          { timestamp: now - 200000, total: 70, cached: 9, blocked: 21, forwarded: 40 },
-          { timestamp: now - 100000, total: 60, cached: 7, blocked: 13, forwarded: 40 },
-          { timestamp: now, total: 85, cached: 15, blocked: 20, forwarded: 50 },
-        ]
-      });
-      return;
-    }
+  if (!integrated) return <NotIntegrated name="Pihole" />
+  if (error) return <p className="text-center text-sm text-red-400 p-4">{error}</p>
 
-    Api()
-      .get("/services/pihole/config")
-      .then((res) => {
-        if (res?.data) {
-          setIntegrated(res.data.status)}
-      });
+  const history = enabled ? data?.history : demo;
+  if (!history) return null;
+  if (history.length < 2) return <p className="text-center text-sm text-gray-400 p-4">No data yet</p>
 
-    Api()
-      .get("/pihole/history")
-      .then((res) => {
-        setData(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }, [enabled]);
+  const max = Math.max(1, ...history.map(h => h.blocked + h.cached + h.forwarded));
+  const x = (i: number) => (i / (history.length - 1)) * W;
+  const y = (v: number) => H - (v / max) * H;
 
-  const maxTotal = data?.history.length ? Math.max(1, ...data.history.map(h => h.total)) : 1;
-  
-  const labelIndices = data?.history.length 
-    ? Array.from(new Set([
-        0,
-        Math.floor(data.history.length / 4),
-        Math.floor(data.history.length / 2),
-        Math.floor((data.history.length * 3) / 4),
-        data.history.length - 1
-      ]))
-    : [];
-  
-  if (!integrated && enabled) {
-    return (
-        <div className="flex flex-col justify-center items-center h-full w-full">
-          <p className="text-sm text-gray-400">Pihole is not integrated. Please check your configuration.</p>
-        </div>
-    )
+  // cumulative heights, one row per layer
+  const stacks = layers.map((_, l) => history.map(h => layers.slice(0, l + 1).reduce((sum, layer) => sum + h[layer.key], 0)));
+
+  const total = history.reduce((sum, h) => sum + h.total, 0);
+  const blocked = history.reduce((sum, h) => sum + h.blocked, 0);
+  const point = hover !== null ? history[hover] : null;
+  const labels = [0, 0.25, 0.5, 0.75, 1].map(f => history[Math.round(f * (history.length - 1))]);
+
+  function onMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setHover(Math.round(((e.clientX - rect.left) / rect.width) * (history!.length - 1)));
   }
 
   return (
-      <div className="flex flex-col justify-between h-full w-full pb-3 px-2">
-          {data && data.history.length > 0 ? (
-            <>
-              <svg className="w-full flex-1 min-h-0 mt-2" viewBox="0 0 1000 200" preserveAspectRatio="none">
-                {/* Draw data lines */}
-                {(Object.keys(colors) as Array<keyof typeof colors>).map((key) => (
-                  <polyline
-                    key={key}
-                    points={data.history.map((item, idx) => {
-                      const x = (idx / (data.history.length - 1)) * 930 + 45;
-                      const y = 150 - (item[key] / maxTotal) * 120;
-                      return `${x},${y}`;
-                    }).join(' ')}
-                    fill="none"
-                    stroke={colors[key]}
-                    strokeWidth="2"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                ))}
-                
-                {/* Y Axis Grid Lines */}
-                <line x1="45" y1="30" x2="975" y2="30" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4 4" opacity="0.3" vectorEffect="non-scaling-stroke" />
-                <line x1="45" y1="90" x2="975" y2="90" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4 4" opacity="0.3" vectorEffect="non-scaling-stroke" />
-
-                {/* X Axis Line */}
-                <line x1="45" y1="150" x2="975" y2="150" stroke="#e5e7eb" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-                
-                {/* Y Axis Labels */}
-                <text x="35" y="34" fill="#9ca3af" fontSize="12" textAnchor="end">{Math.round(maxTotal)}</text>
-                <text x="35" y="94" fill="#9ca3af" fontSize="12" textAnchor="end">{Math.round(maxTotal / 2)}</text>
-                <text x="35" y="154" fill="#9ca3af" fontSize="12" textAnchor="end">0</text>
-
-                {/* X Axis Time Labels */}
-                {labelIndices.map((idx) => {
-                  const item = data.history[idx];
-                  const x = (idx / (data.history.length - 1)) * 930 + 45;
-                  const time = new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                  
-                  return (
-                    <text key={idx} x={x} y="175" fill="#9ca3af" fontSize="13" textAnchor="middle">
-                      {time}
-                    </text>
-                  );
-                })}
-              </svg>
-              
-              <div className="flex flex-wrap gap-4 justify-center mt-1">
-                {Object.entries(colors).map(([key, color]) => (
-                  <div key={key} className="flex items-center gap-1.5">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
-                    <span className="text-xs text-gray-300 capitalize">{key}</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-             <p className="text-gray-400 text-sm">No data available...</p>
-          )}
+    <div className="flex flex-col h-full w-full px-3 pb-2 text-xs">
+      <div className="flex justify-between text-gray-400 mb-1">
+        <span><span className="text-gray-100 font-semibold">{total.toLocaleString()}</span> queries</span>
+        <span><span className="text-red-400 font-semibold">{total ? ((blocked / total) * 100).toFixed(1) : 0}%</span> blocked</span>
       </div>
+
+      <div className="relative flex-[1_1_10rem] min-h-16" onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
+        <svg className="absolute inset-0 w-full h-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+          <defs>
+            {layers.map(layer => (
+              <linearGradient key={layer.key} id={`pihole-${layer.key}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={layer.color} stopOpacity="0.55" />
+                <stop offset="100%" stopColor={layer.color} stopOpacity="0.15" />
+              </linearGradient>
+            ))}
+          </defs>
+
+          {[0, 0.5].map(f => (
+            <line key={f} x1="0" x2={W} y1={H * f} y2={H * f} stroke="#3f3f46" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+          ))}
+
+          {/* drawn top layer first so the lower ones sit on top of it */}
+          {[...layers].reverse().map((layer, r) => {
+            const l = layers.length - 1 - r;
+            const top = stacks[l].map((v, i) => `${x(i)},${y(v)}`);
+            const bottom = l === 0 ? [`${W},${H}`, `0,${H}`] : stacks[l - 1].map((v, i) => `${x(i)},${y(v)}`).reverse();
+            return (
+              <g key={layer.key}>
+                <polygon points={[...top, ...bottom].join(' ')} fill={`url(#pihole-${layer.key})`} />
+                <polyline points={top.join(' ')} fill="none" stroke={layer.color} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+              </g>
+            )
+          })}
+
+          {hover !== null && (
+            <line x1={x(hover)} x2={x(hover)} y1="0" y2={H} stroke="#e5e7eb" strokeOpacity="0.5" vectorEffect="non-scaling-stroke" />
+          )}
+        </svg>
+
+        <span className="absolute top-0 left-0 text-[10px] text-gray-500 -translate-y-1/2 bg-black pr-1">{max}</span>
+
+        {point && hover !== null && (
+          <div
+            className="absolute top-1 z-10 pointer-events-none rounded border border-zinc-700 bg-black/90 px-2 py-1 whitespace-nowrap"
+            style={hover > history.length / 2 ? { right: `${100 - (hover / (history.length - 1)) * 100}%`, marginRight: 6 } : { left: `${(hover / (history.length - 1)) * 100}%`, marginLeft: 6 }}
+          >
+            <div className="text-gray-400">{time(point.timestamp)}</div>
+            {[...layers].reverse().map(layer => (
+              <div key={layer.key} className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: layer.color }} />
+                <span className="capitalize text-gray-300">{layer.key}</span>
+                <span className="ml-auto pl-2 text-gray-100">{point[layer.key]}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="flex justify-between text-[10px] text-gray-500 mt-1">
+        {labels.map((h, i) => <span key={i}>{time(h.timestamp)}</span>)}
+      </div>
+
+      <div className="flex justify-center gap-3 mt-1">
+        {layers.map(layer => (
+          <span key={layer.key} className="flex items-center gap-1 text-gray-400 capitalize">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: layer.color }} />
+            {layer.key}
+          </span>
+        ))}
+      </div>
+    </div>
   )
 }
