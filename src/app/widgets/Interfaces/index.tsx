@@ -24,3 +24,19 @@ export interface JellyfinStream {
     paused: boolean
     progress: number
 }
+
+export interface PipelineItem {
+    title: string
+    source: string
+    status: string
+    progress: number
+    timeLeft: string
+    date: string
+}
+
+export interface MediaPipeline {
+    requests: PipelineItem[]
+    downloads: PipelineItem[]
+    recent: PipelineItem[]
+    errors: string[]
+}
