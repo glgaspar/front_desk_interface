@@ -12,6 +12,7 @@ Front Desk Interface is the web frontend for the **Front Desk** system—a power
   * **Pi-hole**: View DNS query history and configurations.
   * **Transmission**: Manage active torrents and update configurations.
 * **Secure Access**: Login interface backed by secure cookie-based session management.
+* **Your own widgets**: a widget is one `.tsx` file. It can talk to any service with an HTTP API without touching the backend, see [WIDGETS.md](WIDGETS.md).
 
 ## Getting Started
 
