@@ -104,3 +104,11 @@ export interface MediaCalendar {
     items: CalendarItem[]
     errors: string[]
 }
+
+export interface PiholeTop {
+    total: number
+    blocked: number
+    percentBlocked: number
+    domains: { domain: string, count: number }[]
+    clients: { ip: string, name: string, count: number }[]
+}
