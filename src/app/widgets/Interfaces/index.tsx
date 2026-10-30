@@ -84,3 +84,11 @@ export interface ActivityEntry {
     status: number | null
     createdAt: string
 }
+
+export interface SeerrPending {
+    id: number
+    title: string
+    type: string
+    requestedBy: string
+    createdAt: string
+}
