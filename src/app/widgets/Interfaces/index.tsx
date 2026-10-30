@@ -66,3 +66,12 @@ export interface MediaPipeline {
     recent: PipelineItem[]
     errors: string[]
 }
+
+export interface ActivityEntry {
+    id: number
+    userName: string
+    action: string
+    target: string
+    status: number | null
+    createdAt: string
+}
