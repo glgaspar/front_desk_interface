@@ -58,6 +58,10 @@ export function timeAgo(date: string) {
   return `${Math.floor(minutes / 1440)}d ago`;
 }
 
+export function daysUntil(date: string) {
+  return (new Date(date).getTime() - Date.now()) / 86400000;
+}
+
 // small red/amber dot the "needs a human" widgets share
 export function Dot({ critical }: { critical: boolean }) {
   return <span className={`h-2 w-2 rounded-full shrink-0 ${critical ? 'bg-red-500 animate-pulse' : 'bg-amber-400'}`} />
