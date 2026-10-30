@@ -57,3 +57,8 @@ export function timeAgo(date: string) {
   if (minutes < 1440) return `${Math.floor(minutes / 60)}h ago`;
   return `${Math.floor(minutes / 1440)}d ago`;
 }
+
+// small red/amber dot the "needs a human" widgets share
+export function Dot({ critical }: { critical: boolean }) {
+  return <span className={`h-2 w-2 rounded-full shrink-0 ${critical ? 'bg-red-500 animate-pulse' : 'bg-amber-400'}`} />
+}
